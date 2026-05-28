@@ -3,9 +3,12 @@ import ClassicRoundClock from "./classic-round/ClassicRoundClock";
 import ReverseClock from "./reverse/ReverseClock";
 import RotatingDialsClock from "./rotating-dials/RotatingDialsClock";
 import TwentyFourHourClock from "./twenty-four-hour/TwentyFourHourClock";
-import FiveMinutesAheadClock from "./five-min-ahead/FiveMinutesAheadClock";
+import FiveMinutesAheadClock from "./five-minutes-ahead/FiveMinutesAheadClock";
 import UnrolledSpiralClock from "./archimedes/UnrolledSpiralClock";
 import FlipClock from "./flip/FlipClock";
+import LinearClock from "./ruler/LinearClock";
+import CartesianClock from "./cartesian/CartesianClock";
+import ModularChordsClock from "./modular-chords/ModularChordsClock";
 
 export type ClockEntry = {
   slug: string;
@@ -48,7 +51,7 @@ export const clocks: ClockEntry[] = [
     Component: TwentyFourHourClock,
   },
   {
-    slug: "five-min-ahead",
+    slug: "five-minutes-ahead",
     name: "提前五分钟",
     nameEn: "Five Minutes Ahead",
     description: "分针根部读正确时间，末端弯到提前 5 分钟的位置。",
@@ -67,6 +70,28 @@ export const clocks: ClockEntry[] = [
     nameEn: "Flip",
     description: "随秒针跳动，整个表盘以纵轴为轴旋转，30 秒刚好转到背面，每 60 秒一圈。",
     Component: FlipClock,
+  },
+  {
+    slug: "ruler",
+    name: "直尺钟",
+    nameEn: "Ruler",
+    description: "一根有刻度的直线，三根小竟针在上面滑。",
+    Component: LinearClock,
+  },
+  {
+    slug: "cartesian",
+    name: "坐标钟",
+    nameEn: "Cartesian",
+    description: "横轴是小时，纵轴是分钟。在对应位置画一个小方块，里面写当前秒数。",
+    Component: CartesianClock,
+  },
+  {
+    slug: "modular-chords",
+    name: "模乘法弦图钟",
+    nameEn: "Modular Chords",
+    description:
+      "60 点圈上画 i → (i·k) mod 60 的弦，k = 当前秒。",
+    Component: ModularChordsClock,
   },
 ];
 

@@ -39,11 +39,25 @@ export default function FlipClock() {
 
   return (
     <div
-      className="w-72 h-72 sm:w-96 sm:h-96"
+      className="relative w-72 h-72 sm:w-96 sm:h-96"
       style={{ perspective: "1000px" }}
     >
+      {/* Static edge-on silhouette: a thin vertical bar at the center, the
+          width of the dial. Always visible behind the flipping face, so when
+          the face is exactly perpendicular to the viewer the clock still
+          reads as a thin sliver instead of vanishing. */}
       <div
-        className="w-full h-full"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        style={{
+          width: "3px",
+          height: "96%",
+          background: "#1a1a1a",
+          borderRadius: "2px",
+        }}
+      />
+
+      <div
+        className="relative w-full h-full"
         style={{
           transformStyle: "preserve-3d",
           transform: `rotateY(${flipY}deg)`,

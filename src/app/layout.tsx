@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "clocks",
-  description: "clocks",
+  title: "qclocks",
+  description: "qclocks",
 };
 
 export default function RootLayout({

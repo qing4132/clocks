@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import ClassicRoundClock from "./classic-round/ClassicRoundClock";
 import ReverseClock from "./reverse/ReverseClock";
 import RotatingDialsClock from "./rotating-dials/RotatingDialsClock";
+import TwentyFourHourClock from "./twenty-four-hour/TwentyFourHourClock";
 
 export type ClockEntry = {
   slug: string;
@@ -30,6 +31,13 @@ export const clocks: ClockEntry[] = [
     description:
       "一根指针纹丝不动地指向正上方，时、分、秒三层同心圆盘自顾自地转——当前数字会转到指针下方。",
     Component: RotatingDialsClock,
+  },
+  {
+    slug: "twenty-four-hour",
+    name: "24 小时钟",
+    description:
+      "表盘被平均分成24格，0 在顶上，12 在正下。时针一天才走完一圈——看时间的密度成倒一半。",
+    Component: TwentyFourHourClock,
   },
 ];
 

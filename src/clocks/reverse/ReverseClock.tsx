@@ -32,7 +32,7 @@ export default function ReverseClock() {
       role="img"
       aria-label="Reverse analog clock"
     >
-      <circle cx="0" cy="0" r="96" fill="#f5f1e8" stroke="#1a1a1a" strokeWidth="3" />
+      <circle cx="0" cy="0" r="96" fill="#fafaf7" stroke="#1a1a1a" strokeWidth="3" />
 
       {/* minute ticks (symmetric — no mirroring needed) */}
       {Array.from({ length: 60 }).map((_, i) => {
@@ -102,12 +102,12 @@ export default function ReverseClock() {
             y1="20"
             x2="0"
             y2="-84"
-            stroke="#2a9d8f"
+            stroke="#c1121f"
             strokeWidth="1.5"
             strokeLinecap="round"
             transform={`rotate(${secondAngle})`}
           />
-          <circle cx="0" cy="0" r="1.5" fill="#2a9d8f" />
+          <circle cx="0" cy="0" r="1.5" fill="#c1121f" />
         </>
       )}
 

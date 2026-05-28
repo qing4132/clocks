@@ -22,9 +22,11 @@ export default function RotatingDialsClock() {
   const m = now ? now.getMinutes() : 0;
   const s = now ? now.getSeconds() : 0;
 
-  const secondsRotation = -(s * 6);
-  const minutesRotation = -(m * 6 + s * 0.1);
-  const hoursRotation = -(h * 30 + m * 0.5);
+  // All dials rotate clockwise; the numerals are laid out counter-clockwise
+  // so that the current value ends up under the top pointer.
+  const secondsRotation = s * 6;
+  const minutesRotation = m * 6 + s * 0.1;
+  const hoursRotation = h * 30 + m * 0.5;
 
   // Outer -> inner: seconds, minutes, hours.
   const R_SEC = 88;
@@ -50,7 +52,7 @@ export default function RotatingDialsClock() {
       {/* ===== SECOND DIAL (outer) ===== */}
       <g transform={`rotate(${secondsRotation})`}>
         {Array.from({ length: 60 }).map((_, i) => {
-          const a = ((i * 6) - 90) * (Math.PI / 180);
+          const a = ((-i * 6) - 90) * (Math.PI / 180);
           const inner = R_SEC - (i % 5 === 0 ? 6 : 3);
           return (
             <line
@@ -67,7 +69,7 @@ export default function RotatingDialsClock() {
         })}
         {Array.from({ length: 12 }).map((_, i) => {
           const val = i * 5;
-          const a = ((val * 6) - 90) * (Math.PI / 180);
+          const a = ((-val * 6) - 90) * (Math.PI / 180);
           const r = R_SEC - 13;
           const x = round(Math.cos(a) * r);
           const y = round(Math.sin(a) * r);
@@ -92,7 +94,7 @@ export default function RotatingDialsClock() {
       {/* ===== MINUTE DIAL (middle) ===== */}
       <g transform={`rotate(${minutesRotation})`}>
         {Array.from({ length: 60 }).map((_, i) => {
-          const a = ((i * 6) - 90) * (Math.PI / 180);
+          const a = ((-i * 6) - 90) * (Math.PI / 180);
           const inner = R_MIN - (i % 5 === 0 ? 5 : 2.5);
           return (
             <line
@@ -109,7 +111,7 @@ export default function RotatingDialsClock() {
         })}
         {Array.from({ length: 12 }).map((_, i) => {
           const val = i * 5;
-          const a = ((val * 6) - 90) * (Math.PI / 180);
+          const a = ((-val * 6) - 90) * (Math.PI / 180);
           const r = R_MIN - 11;
           const x = round(Math.cos(a) * r);
           const y = round(Math.sin(a) * r);
@@ -135,7 +137,7 @@ export default function RotatingDialsClock() {
       <g transform={`rotate(${hoursRotation})`}>
         {Array.from({ length: 12 }).map((_, i) => {
           const num = i === 0 ? 12 : i;
-          const a = ((i * 30) - 90) * (Math.PI / 180);
+          const a = ((-i * 30) - 90) * (Math.PI / 180);
           const x = round(Math.cos(a) * R_HOUR);
           const y = round(Math.sin(a) * R_HOUR);
           return (
@@ -154,15 +156,16 @@ export default function RotatingDialsClock() {
         })}
       </g>
 
-      <circle cx="0" cy="0" r="3" fill={INK} />
-
-      {/* ===== Fixed pointer at top ===== */}
+      {/* ===== Fixed pointer at top (slim red needle from center) ===== */}
       <polygon
-        points="0,-96 -4,-86 4,-86"
+        points="-1.4,6 1.4,6 0.7,-92 0,-95 -0.7,-92"
         fill={RED}
         stroke={INK}
-        strokeWidth="0.6"
+        strokeWidth="0.4"
+        strokeLinejoin="round"
       />
+      <circle cx="0" cy="0" r="3" fill={INK} />
+      <circle cx="0" cy="0" r="1.2" fill={RED} />
     </svg>
   );
 }

@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "脑洞钟表馆",
-  description: "一个收集各种奇怪表盘的网站。",
+  title: "clocks",
+  description: "clocks",
 };
 
 export default function RootLayout({

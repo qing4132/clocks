@@ -16,12 +16,15 @@ export default function Home() {
         </header>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {clocks.map(({ slug, name, description, Component }) => (
+          {clocks.map(({ slug, name, description, Component }, idx) => (
             <Link
               key={slug}
               href={`/clocks/${slug}`}
-              className="group block rounded-2xl border border-neutral-200 bg-white p-6 hover:border-neutral-900 hover:shadow-lg transition"
+              className="group relative block rounded-2xl border border-neutral-200 bg-white p-6 hover:border-neutral-900 hover:shadow-lg transition"
             >
+              <span className="absolute top-4 right-5 font-mono text-xs text-neutral-400 tabular-nums">
+                #{String(idx + 1).padStart(3, "0")}
+              </span>
               <div className="aspect-square flex items-center justify-center mb-4">
                 <div className="scale-75 origin-center">
                   <Component />

@@ -69,8 +69,6 @@ export default function ReverseClock() {
             fontFamily="Georgia, 'Times New Roman', serif"
             fontSize="14"
             fill="#1a1a1a"
-            // mirror each numeral horizontally so it looks like a mirror image
-            transform={`scale(-1 1) translate(${-2 * x} 0)`}
           >
             {num}
           </text>

@@ -11,7 +11,6 @@ export default function ClassicRoundClock() {
     return () => clearInterval(id);
   }, []);
 
-  // Server / first paint: render a static 12:00:00 to avoid hydration mismatch.
   const h = now ? now.getHours() % 12 : 0;
   const m = now ? now.getMinutes() : 0;
   const s = now ? now.getSeconds() : 0;
@@ -71,43 +70,45 @@ export default function ClassicRoundClock() {
         );
       })}
 
-      {/* hour hand */}
-      <line
-        x1="0"
-        y1="10"
-        x2="0"
-        y2="-50"
-        stroke="#1a1a1a"
-        strokeWidth="5"
-        strokeLinecap="round"
-        transform={`rotate(${hourAngle})`}
-      />
-      {/* minute hand */}
-      <line
-        x1="0"
-        y1="14"
-        x2="0"
-        y2="-74"
-        stroke="#1a1a1a"
-        strokeWidth="3"
-        strokeLinecap="round"
-        transform={`rotate(${minuteAngle})`}
-      />
-      {/* second hand */}
-      <line
-        x1="0"
-        y1="20"
-        x2="0"
-        y2="-84"
-        stroke="#c1121f"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        transform={`rotate(${secondAngle})`}
-      />
+      {/* hands — only render after mount, so we never paint a "wrong" 12:00 first */}
+      {now && (
+        <>
+          <line
+            x1="0"
+            y1="10"
+            x2="0"
+            y2="-50"
+            stroke="#1a1a1a"
+            strokeWidth="5"
+            strokeLinecap="round"
+            transform={`rotate(${hourAngle})`}
+          />
+          <line
+            x1="0"
+            y1="14"
+            x2="0"
+            y2="-74"
+            stroke="#1a1a1a"
+            strokeWidth="3"
+            strokeLinecap="round"
+            transform={`rotate(${minuteAngle})`}
+          />
+          <line
+            x1="0"
+            y1="20"
+            x2="0"
+            y2="-84"
+            stroke="#c1121f"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            transform={`rotate(${secondAngle})`}
+          />
+          <circle cx="0" cy="0" r="1.5" fill="#c1121f" />
+        </>
+      )}
 
-      {/* center cap */}
+      {/* center cap (always visible so the dial doesn't look hollow) */}
       <circle cx="0" cy="0" r="4" fill="#1a1a1a" />
-      <circle cx="0" cy="0" r="1.5" fill="#c1121f" />
     </svg>
   );
 }

@@ -75,42 +75,43 @@ export default function ReverseClock() {
         );
       })}
 
-      {/* hour hand */}
-      <line
-        x1="0"
-        y1="10"
-        x2="0"
-        y2="-50"
-        stroke="#1a1a1a"
-        strokeWidth="5"
-        strokeLinecap="round"
-        transform={`rotate(${hourAngle})`}
-      />
-      {/* minute hand */}
-      <line
-        x1="0"
-        y1="14"
-        x2="0"
-        y2="-74"
-        stroke="#1a1a1a"
-        strokeWidth="3"
-        strokeLinecap="round"
-        transform={`rotate(${minuteAngle})`}
-      />
-      {/* second hand */}
-      <line
-        x1="0"
-        y1="20"
-        x2="0"
-        y2="-84"
-        stroke="#2a9d8f"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        transform={`rotate(${secondAngle})`}
-      />
+      {now && (
+        <>
+          <line
+            x1="0"
+            y1="10"
+            x2="0"
+            y2="-50"
+            stroke="#1a1a1a"
+            strokeWidth="5"
+            strokeLinecap="round"
+            transform={`rotate(${hourAngle})`}
+          />
+          <line
+            x1="0"
+            y1="14"
+            x2="0"
+            y2="-74"
+            stroke="#1a1a1a"
+            strokeWidth="3"
+            strokeLinecap="round"
+            transform={`rotate(${minuteAngle})`}
+          />
+          <line
+            x1="0"
+            y1="20"
+            x2="0"
+            y2="-84"
+            stroke="#2a9d8f"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            transform={`rotate(${secondAngle})`}
+          />
+          <circle cx="0" cy="0" r="1.5" fill="#2a9d8f" />
+        </>
+      )}
 
       <circle cx="0" cy="0" r="4" fill="#1a1a1a" />
-      <circle cx="0" cy="0" r="1.5" fill="#2a9d8f" />
     </svg>
   );
 }

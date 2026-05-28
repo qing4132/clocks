@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 
 /**
- * Rotating dials clock:
- *   - One fixed pointer at the top (12 o'clock position).
- *   - Three concentric dials (hours / minutes / seconds) rotate so that the
- *     current value passes under the pointer.
+ * Rotating dials clock (classic-styled):
+ *   - Cream face, black ink, red accent — matches the classic round clock.
+ *   - One fixed red pointer at the top (12 o'clock).
+ *   - Three concentric dials rotate so the current value passes under the pointer.
+ *   - Layer order from outside in: SECONDS, MINUTES, HOURS.
  */
 export default function RotatingDialsClock() {
   const [now, setNow] = useState<Date | null>(null);
@@ -21,16 +22,21 @@ export default function RotatingDialsClock() {
   const m = now ? now.getMinutes() : 0;
   const s = now ? now.getSeconds() : 0;
 
-  // Each dial rotates so the current value lines up under the top pointer.
-  // Smooth motion: minutes drift with seconds, hours drift with minutes.
   const secondsRotation = -(s * 6);
   const minutesRotation = -(m * 6 + s * 0.1);
   const hoursRotation = -(h * 30 + m * 0.5);
 
-  // Radii for the three dials.
-  const R_HOUR = 90;
-  const R_MIN = 64;
-  const R_SEC = 38;
+  // Outer -> inner: seconds, minutes, hours.
+  const R_SEC = 88;
+  const R_MIN = 60;
+  const R_HOUR = 32;
+
+  const INK = "#1a1a1a";
+  const FAINT = "#1a1a1a55";
+  const RED = "#c1121f";
+  const FACE = "#fafaf7";
+
+  const round = (n: number) => Math.round(n * 1000) / 1000;
 
   return (
     <svg
@@ -39,37 +45,107 @@ export default function RotatingDialsClock() {
       role="img"
       aria-label="Rotating dials clock"
     >
-      {/* background */}
-      <circle cx="0" cy="0" r="98" fill="#0f172a" />
+      <circle cx="0" cy="0" r="96" fill={FACE} stroke={INK} strokeWidth="3" />
 
-      {/* ===== HOUR DIAL (outer) ===== */}
-      <g transform={`rotate(${hoursRotation})`}>
-        <circle
-          cx="0"
-          cy="0"
-          r={R_HOUR}
-          fill="none"
-          stroke="#1e293b"
-          strokeWidth="1"
-        />
-        {Array.from({ length: 12 }).map((_, i) => {
-          const num = i === 0 ? 12 : i;
-          // value i sits at angle (i * 30) - 90 (i.e. 12 on top when rotation=0)
-          const a = ((i * 30) - 90) * (Math.PI / 180);
-          const x = Math.round(Math.cos(a) * R_HOUR * 1000) / 1000;
-          const y = Math.round(Math.sin(a) * R_HOUR * 1000) / 1000;
-          // counter-rotate the text so numerals stay upright
+      {/* ===== SECOND DIAL (outer) ===== */}
+      <g transform={`rotate(${secondsRotation})`}>
+        {Array.from({ length: 60 }).map((_, i) => {
+          const a = ((i * 6) - 90) * (Math.PI / 180);
+          const inner = R_SEC - (i % 5 === 0 ? 6 : 3);
           return (
-            <g
+            <line
               key={i}
-              transform={`translate(${x} ${y}) rotate(${-hoursRotation})`}
-            >
+              x1={round(Math.cos(a) * R_SEC)}
+              y1={round(Math.sin(a) * R_SEC)}
+              x2={round(Math.cos(a) * inner)}
+              y2={round(Math.sin(a) * inner)}
+              stroke={INK}
+              strokeWidth={i % 5 === 0 ? 2 : 0.8}
+              strokeLinecap="round"
+            />
+          );
+        })}
+        {Array.from({ length: 12 }).map((_, i) => {
+          const val = i * 5;
+          const a = ((val * 6) - 90) * (Math.PI / 180);
+          const r = R_SEC - 13;
+          const x = round(Math.cos(a) * r);
+          const y = round(Math.sin(a) * r);
+          return (
+            <g key={i} transform={`translate(${x} ${y}) rotate(${-secondsRotation})`}>
               <text
                 textAnchor="middle"
                 dominantBaseline="central"
                 fontFamily="Georgia, 'Times New Roman', serif"
-                fontSize="11"
-                fill="#e2e8f0"
+                fontSize="7"
+                fill={INK}
+              >
+                {val.toString().padStart(2, "0")}
+              </text>
+            </g>
+          );
+        })}
+      </g>
+
+      <circle cx="0" cy="0" r={R_SEC - 22} fill="none" stroke={FAINT} strokeWidth="0.5" />
+
+      {/* ===== MINUTE DIAL (middle) ===== */}
+      <g transform={`rotate(${minutesRotation})`}>
+        {Array.from({ length: 60 }).map((_, i) => {
+          const a = ((i * 6) - 90) * (Math.PI / 180);
+          const inner = R_MIN - (i % 5 === 0 ? 5 : 2.5);
+          return (
+            <line
+              key={i}
+              x1={round(Math.cos(a) * R_MIN)}
+              y1={round(Math.sin(a) * R_MIN)}
+              x2={round(Math.cos(a) * inner)}
+              y2={round(Math.sin(a) * inner)}
+              stroke={INK}
+              strokeWidth={i % 5 === 0 ? 1.6 : 0.6}
+              strokeLinecap="round"
+            />
+          );
+        })}
+        {Array.from({ length: 12 }).map((_, i) => {
+          const val = i * 5;
+          const a = ((val * 6) - 90) * (Math.PI / 180);
+          const r = R_MIN - 11;
+          const x = round(Math.cos(a) * r);
+          const y = round(Math.sin(a) * r);
+          return (
+            <g key={i} transform={`translate(${x} ${y}) rotate(${-minutesRotation})`}>
+              <text
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontFamily="Georgia, 'Times New Roman', serif"
+                fontSize="7"
+                fill={INK}
+              >
+                {val.toString().padStart(2, "0")}
+              </text>
+            </g>
+          );
+        })}
+      </g>
+
+      <circle cx="0" cy="0" r={R_MIN - 18} fill="none" stroke={FAINT} strokeWidth="0.5" />
+
+      {/* ===== HOUR DIAL (inner) ===== */}
+      <g transform={`rotate(${hoursRotation})`}>
+        {Array.from({ length: 12 }).map((_, i) => {
+          const num = i === 0 ? 12 : i;
+          const a = ((i * 30) - 90) * (Math.PI / 180);
+          const x = round(Math.cos(a) * R_HOUR);
+          const y = round(Math.sin(a) * R_HOUR);
+          return (
+            <g key={i} transform={`translate(${x} ${y}) rotate(${-hoursRotation})`}>
+              <text
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontFamily="Georgia, 'Times New Roman', serif"
+                fontSize="10"
+                fill={INK}
               >
                 {num}
               </text>
@@ -78,118 +154,15 @@ export default function RotatingDialsClock() {
         })}
       </g>
 
-      {/* ===== MINUTE DIAL (middle) ===== */}
-      <g transform={`rotate(${minutesRotation})`}>
-        <circle
-          cx="0"
-          cy="0"
-          r={R_MIN}
-          fill="none"
-          stroke="#1e293b"
-          strokeWidth="1"
-        />
-        {Array.from({ length: 60 }).map((_, i) => {
-          const a = ((i * 6) - 90) * (Math.PI / 180);
-          const x1 = Math.round(Math.cos(a) * R_MIN * 1000) / 1000;
-          const y1 = Math.round(Math.sin(a) * R_MIN * 1000) / 1000;
-          const inner = R_MIN - (i % 5 === 0 ? 5 : 2.5);
-          const x2 = Math.round(Math.cos(a) * inner * 1000) / 1000;
-          const y2 = Math.round(Math.sin(a) * inner * 1000) / 1000;
-          return (
-            <line
-              key={i}
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke="#94a3b8"
-              strokeWidth={i % 5 === 0 ? 1.2 : 0.6}
-            />
-          );
-        })}
-        {Array.from({ length: 12 }).map((_, i) => {
-          const val = i * 5;
-          const a = ((val * 6) - 90) * (Math.PI / 180);
-          const r = R_MIN - 11;
-          const x = Math.round(Math.cos(a) * r * 1000) / 1000;
-          const y = Math.round(Math.sin(a) * r * 1000) / 1000;
-          return (
-            <g
-              key={i}
-              transform={`translate(${x} ${y}) rotate(${-minutesRotation})`}
-            >
-              <text
-                textAnchor="middle"
-                dominantBaseline="central"
-                fontFamily="ui-sans-serif, system-ui, sans-serif"
-                fontSize="6"
-                fill="#94a3b8"
-              >
-                {val.toString().padStart(2, "0")}
-              </text>
-            </g>
-          );
-        })}
-      </g>
-
-      {/* ===== SECOND DIAL (inner) ===== */}
-      <g transform={`rotate(${secondsRotation})`}>
-        <circle
-          cx="0"
-          cy="0"
-          r={R_SEC}
-          fill="#1e293b"
-          stroke="#334155"
-          strokeWidth="0.5"
-        />
-        {Array.from({ length: 60 }).map((_, i) => {
-          const a = ((i * 6) - 90) * (Math.PI / 180);
-          const x1 = Math.round(Math.cos(a) * R_SEC * 1000) / 1000;
-          const y1 = Math.round(Math.sin(a) * R_SEC * 1000) / 1000;
-          const inner = R_SEC - (i % 5 === 0 ? 4 : 2);
-          const x2 = Math.round(Math.cos(a) * inner * 1000) / 1000;
-          const y2 = Math.round(Math.sin(a) * inner * 1000) / 1000;
-          return (
-            <line
-              key={i}
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke="#64748b"
-              strokeWidth={i % 5 === 0 ? 1 : 0.5}
-            />
-          );
-        })}
-        {Array.from({ length: 12 }).map((_, i) => {
-          const val = i * 5;
-          const a = ((val * 6) - 90) * (Math.PI / 180);
-          const r = R_SEC - 9;
-          const x = Math.round(Math.cos(a) * r * 1000) / 1000;
-          const y = Math.round(Math.sin(a) * r * 1000) / 1000;
-          return (
-            <g
-              key={i}
-              transform={`translate(${x} ${y}) rotate(${-secondsRotation})`}
-            >
-              <text
-                textAnchor="middle"
-                dominantBaseline="central"
-                fontFamily="ui-sans-serif, system-ui, sans-serif"
-                fontSize="5"
-                fill="#cbd5e1"
-              >
-                {val.toString().padStart(2, "0")}
-              </text>
-            </g>
-          );
-        })}
-        <circle cx="0" cy="0" r="2" fill="#f97316" />
-      </g>
+      <circle cx="0" cy="0" r="3" fill={INK} />
 
       {/* ===== Fixed pointer at top ===== */}
-      <polygon points="0,-98 -5,-86 5,-86" fill="#f97316" />
-      <line x1="0" y1="-86" x2="0" y2="-80" stroke="#f97316" strokeWidth="1.5" />
+      <polygon
+        points="0,-96 -4,-86 4,-86"
+        fill={RED}
+        stroke={INK}
+        strokeWidth="0.6"
+      />
     </svg>
   );
 }

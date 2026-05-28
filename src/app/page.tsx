@@ -6,7 +6,7 @@ export default function Home() {
     <main className="min-h-screen bg-neutral-50 text-neutral-900 px-6 py-16 sm:py-24">
       <div className="max-w-5xl mx-auto">
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {clocks.map(({ slug, Component }, idx) => (
+          {clocks.map(({ slug, nameEn, Component }, idx) => (
             <Link
               key={slug}
               href={`/clocks/${slug}`}
@@ -19,6 +19,9 @@ export default function Home() {
                 <div className="scale-75 origin-center">
                   <Component />
                 </div>
+              </div>
+              <div className="mt-2 text-center text-sm text-neutral-500 tracking-wide">
+                {nameEn}
               </div>
             </Link>
           ))}

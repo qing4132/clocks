@@ -60,6 +60,20 @@ export default function CartesianClock() {
       role="img"
       aria-label="Cartesian grid clock"
     >
+      {/* Mask: show everything by default (white) except the seconds-label
+          bounding box (black = hidden). Painted on the grid + axes + dashes
+          group so they all get the same hole punched in them. This works
+          on any background colour. */}
+      {now && (
+        <defs>
+          <mask id="cartesian-label-mask" maskUnits="userSpaceOnUse" x="-100" y="-100" width="200" height="200">
+            <rect x="-100" y="-100" width="200" height="200" fill="#ffffff" />
+            <rect x={cellCx - 9} y={cellCy - 7} width="18" height="14" fill="#000000" />
+          </mask>
+        </defs>
+      )}
+
+      <g mask={now ? "url(#cartesian-label-mask)" : undefined}>
       {/* axes — bounded to [0, 12] × [0, 60], no overshoot */}
       <line x1={X0} y1={Y0} x2={X0 + W} y2={Y0} stroke="#1a1a1a" strokeWidth="1" />
       <line x1={X0} y1={Y0} x2={X0} y2={Y0 - Hgt} stroke="#1a1a1a" strokeWidth="1" />
@@ -102,48 +116,45 @@ export default function CartesianClock() {
 
       {now && (
         <>
-          {/* Projection dashes that stop at the seconds label's bounding box.
-              No mask rectangle — the gap is naturally invisible on any
-              background colour. */}
-          {(() => {
-            const halfW = 9; // half-width of label box
-            const halfH = 7; // half-height of label box
-            return (
-              <>
-                <line
-                  x1={cellCx}
-                  y1={cellCy + halfH}
-                  x2={cellCx}
-                  y2={Y0}
-                  stroke="#1a1a1a"
-                  strokeWidth="0.6"
-                  strokeDasharray="3 2"
-                />
-                <line
-                  x1={cellCx - halfW}
-                  y1={cellCy}
-                  x2={X0}
-                  y2={cellCy}
-                  stroke="#1a1a1a"
-                  strokeWidth="0.6"
-                  strokeDasharray="3 2"
-                />
-              </>
-            );
-          })()}
-          <text
-            x={cellCx}
-            y={cellCy - 1.2}
-            textAnchor="middle"
-            dominantBaseline="central"
-            fontFamily="Georgia, 'Times New Roman', serif"
-            fontSize="11"
-            fill="#c1121f"
-            fontWeight="600"
-          >
-            {String(s).padStart(2, "0")}
-          </text>
+          {/* Projection dashes from the cell centre down to x-axis and left
+              to y-axis. They (and the axes / ticks above) get clipped at
+              the seconds-label box by the mask. */}
+          <line
+            x1={cellCx}
+            y1={cellCy}
+            x2={cellCx}
+            y2={Y0}
+            stroke="#1a1a1a"
+            strokeWidth="0.6"
+            strokeDasharray="3 2"
+          />
+          <line
+            x1={cellCx}
+            y1={cellCy}
+            x2={X0}
+            y2={cellCy}
+            stroke="#1a1a1a"
+            strokeWidth="0.6"
+            strokeDasharray="3 2"
+          />
         </>
+      )}
+      </g>
+
+      {/* seconds label sits OUTSIDE the mask so it always renders */}
+      {now && (
+        <text
+          x={cellCx}
+          y={cellCy - 1.2}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontFamily="Georgia, 'Times New Roman', serif"
+          fontSize="11"
+          fill="#c1121f"
+          fontWeight="600"
+        >
+          {String(s).padStart(2, "0")}
+        </text>
       )}
     </svg>
   );

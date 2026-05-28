@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react";
 
 /**
- * 24-hour clock:
- *   - The dial is divided into 24 hours instead of 12.
- *   - 0 (midnight) sits at the top, 12 (noon) at the bottom, 6 to the right, 18 to the left.
- *   - The hour hand makes a single full rotation per day.
- *   - Minute and second hands behave normally.
+ * 24-hour clock — the classic round clock with every numeral doubled
+ * (2, 4, 6, ..., 24). The hour hand makes a single full rotation per day.
+ * Minute and second hands behave normally.
  */
 export default function TwentyFourHourClock() {
   const [now, setNow] = useState<Date | null>(null);
@@ -22,8 +20,8 @@ export default function TwentyFourHourClock() {
   const m = now ? now.getMinutes() : 0;
   const s = now ? now.getSeconds() : 0;
 
-  // 360 / 24 = 15 deg per hour.
-  const hourAngle = H * 15 + m * 0.25 + s * (0.25 / 60);
+  // 12 positions, each 30°, but the dial values are 2H. So one real hour = 15°.
+  const hourAngle = H * 15 + m * 0.25;
   const minuteAngle = m * 6 + s * 0.1;
   const secondAngle = s * 6;
 
@@ -38,18 +36,7 @@ export default function TwentyFourHourClock() {
     >
       <circle cx="0" cy="0" r="96" fill="#fafaf7" stroke="#1a1a1a" strokeWidth="3" />
 
-      {/* day/night arc — subtle top half lighter, bottom half a touch darker */}
-      <path
-        d="M -96 0 A 96 96 0 0 1 96 0 L 96 0 Z"
-        fill="#fafaf7"
-      />
-      <path
-        d="M -96 0 A 96 96 0 0 0 96 0 L 96 0 Z"
-        fill="#1a1a1a"
-        opacity="0.04"
-      />
-
-      {/* minute ticks: 60 around the rim */}
+      {/* minute ticks */}
       {Array.from({ length: 60 }).map((_, i) => {
         const isHour = i % 5 === 0;
         return (
@@ -58,37 +45,22 @@ export default function TwentyFourHourClock() {
             x1="0"
             y1={-92}
             x2="0"
-            y2={isHour ? -84 : -88}
+            y2={isHour ? -82 : -88}
             stroke="#1a1a1a"
-            strokeWidth={isHour ? 1.5 : 0.6}
+            strokeWidth={isHour ? 2.5 : 1}
             strokeLinecap="round"
             transform={`rotate(${i * 6})`}
           />
         );
       })}
 
-      {/* 24 hour ticks (thicker) */}
-      {Array.from({ length: 24 }).map((_, i) => (
-        <line
-          key={i}
-          x1="0"
-          y1={-92}
-          x2="0"
-          y2={-82}
-          stroke="#1a1a1a"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          transform={`rotate(${i * 15})`}
-        />
-      ))}
-
-      {/* 24 hour numerals: 0 at top (midnight), 12 at bottom (noon) */}
-      {Array.from({ length: 24 }).map((_, i) => {
-        const angle = ((i * 15) - 90) * (Math.PI / 180);
+      {/* hour numerals — doubled: 2, 4, 6, ..., 24 */}
+      {Array.from({ length: 12 }).map((_, i) => {
+        const num = i === 0 ? 24 : i * 2;
+        const angle = ((i * 30) - 90) * (Math.PI / 180);
         const r = 70;
         const x = round(Math.cos(angle) * r);
         const y = round(Math.sin(angle) * r);
-        const isMajor = i % 6 === 0; // 0, 6, 12, 18
         return (
           <text
             key={i}
@@ -97,42 +69,16 @@ export default function TwentyFourHourClock() {
             textAnchor="middle"
             dominantBaseline="central"
             fontFamily="Georgia, 'Times New Roman', serif"
-            fontSize={isMajor ? 13 : 9}
-            fontWeight={isMajor ? 600 : 400}
+            fontSize="14"
             fill="#1a1a1a"
           >
-            {i}
+            {num}
           </text>
         );
       })}
 
-      {/* tiny labels for orientation */}
-      <text
-        x="0" y="-44"
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontFamily="Georgia, 'Times New Roman', serif"
-        fontSize="5"
-        fill="#1a1a1a99"
-        letterSpacing="1.5"
-      >
-        子夜
-      </text>
-      <text
-        x="0" y="44"
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontFamily="Georgia, 'Times New Roman', serif"
-        fontSize="5"
-        fill="#1a1a1a99"
-        letterSpacing="1.5"
-      >
-        正午
-      </text>
-
       {now && (
         <>
-          {/* hour hand */}
           <line
             x1="0"
             y1="10"
@@ -143,7 +89,6 @@ export default function TwentyFourHourClock() {
             strokeLinecap="round"
             transform={`rotate(${hourAngle})`}
           />
-          {/* minute hand */}
           <line
             x1="0"
             y1="14"
@@ -154,7 +99,6 @@ export default function TwentyFourHourClock() {
             strokeLinecap="round"
             transform={`rotate(${minuteAngle})`}
           />
-          {/* second hand */}
           <line
             x1="0"
             y1="20"

@@ -16,7 +16,7 @@ export default async function ClockPage({
   if (!clock) notFound();
 
   const idx = clocks.findIndex((c) => c.slug === slug);
-  const { name, description, Component } = clock;
+  const { name, Component } = clock;
 
   return (
     <main className="min-h-screen bg-neutral-50 text-neutral-900 flex flex-col">
@@ -35,9 +35,6 @@ export default async function ClockPage({
           #{String(idx + 1).padStart(3, "0")}
         </div>
         <h1 className="mt-2 text-2xl font-semibold tracking-tight">{name}</h1>
-        <p className="mt-3 max-w-md text-center text-neutral-600 text-sm leading-relaxed">
-          {description}
-        </p>
       </div>
     </main>
   );

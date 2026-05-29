@@ -2,17 +2,18 @@ import type { ComponentType } from "react";
 import ClassicRoundClock from "./classic-round/ClassicRoundClock";
 import ReverseClock from "./reverse/ReverseClock";
 import RotatingDialsClock from "./rotating-dials/RotatingDialsClock";
-import TwentyFourHourClock from "./twenty-four-hour/TwentyFourHourClock";
-import FiveMinutesAheadClock from "./five-minutes-ahead/FiveMinutesAheadClock";
+import TwentyFourHourClock from "./24-hour/TwentyFourHourClock";
+import FiveMinutesAheadClock from "./5-minutes-ahead/FiveMinutesAheadClock";
 import UnrolledSpiralClock from "./archimedes/UnrolledSpiralClock";
 import FlipClock from "./flip/FlipClock";
 import LinearClock from "./ruler/LinearClock";
 import CartesianClock from "./cartesian/CartesianClock";
 import ModularChordsClock from "./modular-chords/ModularChordsClock";
 import DigitalClock from "./digital/DigitalClock";
-import ThirtyHourClock from "./thirty-hour/ThirtyHourClock";
+import ThirtyHourClock from "./30-hour/ThirtyHourClock";
 import UnixClock from "./unix/UnixClock";
 import WedgesClock from "./wedges/WedgesClock";
+import SleepClock from "./sleep/SleepClock";
 
 export type ClockEntry = {
   slug: string;
@@ -47,7 +48,7 @@ export const clocks: ClockEntry[] = [
     Component: RotatingDialsClock,
   },
   {
-    slug: "twenty-four-hour",
+    slug: "24-hour",
     name: "24 小时钟",
     nameEn: "24-Hour",
     description:
@@ -55,9 +56,9 @@ export const clocks: ClockEntry[] = [
     Component: TwentyFourHourClock,
   },
   {
-    slug: "five-minutes-ahead",
+    slug: "5-minutes-ahead",
     name: "提前五分钟",
-    nameEn: "Five Minutes Ahead",
+    nameEn: "5 Minutes Ahead",
     description: "分针根部读正确时间，末端弯到提前 5 分钟的位置。",
     Component: FiveMinutesAheadClock,
   },
@@ -105,7 +106,7 @@ export const clocks: ClockEntry[] = [
     Component: DigitalClock,
   },
   {
-    slug: "thirty-hour",
+    slug: "30-hour",
     name: "30 小时钟",
     nameEn: "30-Hour",
     description:
@@ -125,6 +126,13 @@ export const clocks: ClockEntry[] = [
     nameEn: "Wedges",
     description: "三层同心扉形从 12 点位按时间填满。",
     Component: WedgesClock,
+  },
+  {
+    slug: "sleep",
+    name: "睡眠钟",
+    nameEn: "Sleep",
+    description: "#004 挖掉 22–06 点的那一块。夜里不用了解时间。",
+    Component: SleepClock,
   },
 ];
 

@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 /**
  * Rotating dials clock (classic-styled):
  *   - Cream face, black ink, red accent — matches the classic round clock.
- *   - One fixed red pointer at the top (12 o'clock).
- *   - Three concentric dials rotate so the current value passes under the pointer.
+ *   - One fixed red pointer at the RIGHT (3 o'clock) — horizontal layout
+ *     makes the current numeral easier to read than a vertical pointer.
+ *   - Three concentric dials rotate so the current value passes under the
+ *     pointer.
  *   - Layer order from outside in: SECONDS, MINUTES, HOURS.
  */
 export default function RotatingDialsClock() {
@@ -54,7 +56,7 @@ export default function RotatingDialsClock() {
       <>
       <g transform={`rotate(${secondsRotation})`}>
         {Array.from({ length: 60 }).map((_, i) => {
-          const a = ((i * 6) - 90) * (Math.PI / 180);
+          const a = (i * 6) * (Math.PI / 180);
           const inner = R_SEC - (i % 5 === 0 ? 6 : 3);
           return (
             <line
@@ -71,7 +73,7 @@ export default function RotatingDialsClock() {
         })}
         {Array.from({ length: 12 }).map((_, i) => {
           const val = i * 5;
-          const a = ((val * 6) - 90) * (Math.PI / 180);
+          const a = (val * 6) * (Math.PI / 180);
           const r = R_SEC - 13;
           const x = round(Math.cos(a) * r);
           const y = round(Math.sin(a) * r);
@@ -96,7 +98,7 @@ export default function RotatingDialsClock() {
       {/* ===== MINUTE DIAL (middle) ===== */}
       <g transform={`rotate(${minutesRotation})`}>
         {Array.from({ length: 60 }).map((_, i) => {
-          const a = ((i * 6) - 90) * (Math.PI / 180);
+          const a = (i * 6) * (Math.PI / 180);
           const inner = R_MIN - (i % 5 === 0 ? 5 : 2.5);
           return (
             <line
@@ -113,7 +115,7 @@ export default function RotatingDialsClock() {
         })}
         {Array.from({ length: 12 }).map((_, i) => {
           const val = i * 5;
-          const a = ((val * 6) - 90) * (Math.PI / 180);
+          const a = (val * 6) * (Math.PI / 180);
           const r = R_MIN - 11;
           const x = round(Math.cos(a) * r);
           const y = round(Math.sin(a) * r);
@@ -139,7 +141,7 @@ export default function RotatingDialsClock() {
       <g transform={`rotate(${hoursRotation})`}>
         {Array.from({ length: 12 }).map((_, i) => {
           const num = i === 0 ? 12 : i;
-          const a = ((i * 30) - 90) * (Math.PI / 180);
+          const a = (i * 30) * (Math.PI / 180);
           const x = round(Math.cos(a) * R_HOUR);
           const y = round(Math.sin(a) * R_HOUR);
           return (
@@ -160,16 +162,18 @@ export default function RotatingDialsClock() {
       </>
       )}
 
-      {/* ===== Fixed pointer at top (slim red needle from center) ===== */}
-      <polygon
-        points="-1.4,6 1.4,6 0.7,-92 0,-95 -0.7,-92"
-        fill={RED}
-        stroke={INK}
-        strokeWidth="0.4"
-        strokeLinejoin="round"
+      {/* ===== Fixed pointer at right — same look as #001's second hand:
+          straight red line from a tail behind the hub out to the rim. ===== */}
+      <line
+        x1="-20"
+        y1="0"
+        x2="84"
+        y2="0"
+        stroke={RED}
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
-      <circle cx="0" cy="0" r="3" fill={INK} />
-      <circle cx="0" cy="0" r="1.2" fill={RED} />
+      <circle cx="0" cy="0" r="4" fill={INK} />
     </svg>
   );
 }

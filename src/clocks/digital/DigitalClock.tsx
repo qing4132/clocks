@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useWallClock } from "../useWallClock";
 import { Colon, Digit, DigitalPanel } from "./segments";
 
 /**
@@ -11,12 +11,7 @@ import { Colon, Digit, DigitalPanel } from "./segments";
  *   red seconds, thin black border).
  */
 export default function DigitalClock() {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 250);
-    return () => clearInterval(id);
-  }, []);
+  const now = useWallClock(250);
 
   const HH = now ? String(now.getHours()).padStart(2, "0") : "00";
   const MM = now ? String(now.getMinutes()).padStart(2, "0") : "00";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useWallClock } from "../useWallClock";
 
 /**
  * #015 — Sleep clock.
@@ -16,13 +16,7 @@ import { useEffect, useState } from "react";
  *   reminder that time is still passing.
  */
 export default function SleepClock() {
-  const [now, setNow] = useState<Date | null>(null);
-
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  const now = useWallClock(1000);
 
   const H = now ? now.getHours() : 0; // 0..23
   const m = now ? now.getMinutes() : 0;

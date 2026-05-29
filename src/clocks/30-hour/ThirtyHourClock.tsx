@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useWallClock } from "../useWallClock";
 import { Colon, Digit, DigitalPanel } from "../digital/segments";
 
 /**
@@ -13,12 +13,7 @@ import { Colon, Digit, DigitalPanel } from "../digital/segments";
  *   Same 7-segment look as #011.
  */
 export default function ThirtyHourClock() {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 250);
-    return () => clearInterval(id);
-  }, []);
+  const now = useWallClock(250);
 
   const civilHour = now ? now.getHours() : 0;
   const displayHour = civilHour < 6 ? civilHour + 24 : civilHour;

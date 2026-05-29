@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useWallClock } from "../useWallClock";
 
 /**
  * #010 — Modular times-table clock.
@@ -20,12 +20,7 @@ import { useEffect, useState } from "react";
  *   So h / m / s are read by which dot is "lit" on each ring.
  */
 export default function ModularChordsClock() {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  const now = useWallClock(1000);
 
   const h = now ? now.getHours() % 12 : 0;
   const m = now ? now.getMinutes() : 0;

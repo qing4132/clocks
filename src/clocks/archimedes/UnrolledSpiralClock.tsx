@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useWallClock } from "../useWallClock";
 
 /**
  * #006 — Unrolled-spiral clock
@@ -46,13 +46,7 @@ import { useEffect, useState } from "react";
  *   ratio is √(1 + (2π)²) ≈ 6.36 — the spiral's speed factor at θ = 2π.
  */
 export default function UnrolledSpiralClock() {
-  const [now, setNow] = useState<Date | null>(null);
-
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  const now = useWallClock(1000);
 
   const H = now ? now.getHours() % 12 : 0;
   const m = now ? now.getMinutes() : 0;

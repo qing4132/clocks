@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useWallClock } from "../useWallClock";
 
 /**
  * 24-hour clock — the classic round clock with every numeral doubled
@@ -8,13 +8,7 @@ import { useEffect, useState } from "react";
  * Minute and second hands behave normally.
  */
 export default function TwentyFourHourClock() {
-  const [now, setNow] = useState<Date | null>(null);
-
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  const now = useWallClock(1000);
 
   const H = now ? now.getHours() : 0; // 0..23
   const m = now ? now.getMinutes() : 0;

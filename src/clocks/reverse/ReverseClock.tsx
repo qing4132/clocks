@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useWallClock } from "../useWallClock";
 
 /**
  * Reverse clock: hands tick counter-clockwise, and the numerals on the dial
@@ -8,13 +8,7 @@ import { useEffect, useState } from "react";
  * to read it "backwards". 12 is on top, but 1..11 walk to the left.
  */
 export default function ReverseClock() {
-  const [now, setNow] = useState<Date | null>(null);
-
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  const now = useWallClock(1000);
 
   const h = now ? now.getHours() % 12 : 0;
   const m = now ? now.getMinutes() : 0;

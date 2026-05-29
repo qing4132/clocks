@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useWallClock } from "../useWallClock";
 
 /**
  * #009 — Cartesian grid clock.
@@ -14,17 +14,7 @@ import { useEffect, useState } from "react";
  *   At midnight it teleports back to (0, 0).
  */
 export default function CartesianClock() {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    setNow(new Date());
-    let raf = 0;
-    const loop = () => {
-      setNow(new Date());
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
-  }, []);
+  const now = useWallClock(16);
 
   const H = now ? now.getHours() % 12 : 0; // 0..11 (12-hour scale)
   const m = now ? now.getMinutes() : 0;     // 0..59

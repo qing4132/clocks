@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useWallClock } from "../useWallClock";
 import { Digit, DigitalPanel } from "../digital/segments";
 
 /**
@@ -11,12 +11,7 @@ import { Digit, DigitalPanel } from "../digital/segments";
  *   digit highlighted in red so the "second" is obvious.
  */
 export default function UnixClock() {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 250);
-    return () => clearInterval(id);
-  }, []);
+  const now = useWallClock(250);
 
   const ts = now ? Math.floor(now.getTime() / 1000) : 0;
   const text = String(ts);

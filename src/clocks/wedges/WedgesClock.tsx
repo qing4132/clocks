@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useWallClock } from "../useWallClock";
 
 /**
  * #014 — Wedges clock.
@@ -13,12 +13,7 @@ import { useEffect, useState } from "react";
  *   Reading the time = how much of each pie is filled.
  */
 export default function WedgesClock() {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  const now = useWallClock(1000);
 
   const h = now ? now.getHours() % 12 : 0;
   const m = now ? now.getMinutes() : 0;

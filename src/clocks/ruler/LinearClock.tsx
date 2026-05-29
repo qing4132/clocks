@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useWallClock } from "../useWallClock";
 
 /**
  * #008 — Linear clock.
@@ -14,12 +14,7 @@ import { useEffect, useState } from "react";
  *   Each needle's x position is read off against the scale below.
  */
 export default function LinearClock() {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    setNow(new Date());
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  const now = useWallClock(1000);
 
   const H = now ? now.getHours() % 12 : 0;
   const m = now ? now.getMinutes() : 0;

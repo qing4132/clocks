@@ -115,3 +115,30 @@ fractal-as-static-design concept lives on in #015 hands-are-clocks.
 Files preserved:
 - `TwelveClocksClock.tsx` — the final version (fixed target at 12 o'clock,
   linear scale, all three levels with hands)
+
+## dead-pixel (formerly #016)
+
+**Concept.** A digital readout where the digits aren't drawn as vector
+shapes but emerge from the density of flickering pixels. The panel is
+filled with a regular pixel grid; each frame, each cell independently
+lights up with probability `pBg` outside the digit silhouette and `pFg`
+inside it. Because pFg ≫ pBg, the digit shapes "dither" out of the
+noise — they're never lit as a single solid block but their region is
+visibly denser than the surroundings.
+
+The digit shapes come from a hand-rolled 5×7 dotted font scaled to fit
+HH:MM:SS across the panel.
+
+**Variants kept (B = saved).**
+- B: cell=2, pBg=12%, pFg=90%, interval=1000ms — noise reroll once per
+  second, foreground "almost always lit" but with occasional fadeouts;
+  the most readable balance we found.
+- A/C/D/E explored lower-contrast / larger pixels / red seconds / slower
+  refresh — they all hurt readability.
+
+**Why it was archived.** Even at the most readable settings (B), users
+report it's still hard to read at a glance, which defeats the project's
+"clock you can tell the time from" rule.
+
+Files preserved:
+- `density.tsx` — full implementation + 5 variants

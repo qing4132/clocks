@@ -53,3 +53,30 @@ Files preserved:
 - `OrbClock.tsx` — full implementation with parameterised camera. The
   variant we kept the longest is the trimmed dial (rim + 4 cardinal
   ticks at 12 / 3 / 6 / 9, no numerals).
+
+## incense (formerly #012)
+
+**Concept.** A coiled stick of incense drawn as an Archimedean spiral
+from outer rim inward over 12 turns. The whole stick burns over one
+wall-clock day (86 400 s), at a uniform arc-length-per-second rate so
+the ember (the burn head) moves visibly faster on outer turns and
+slowly creeps inward over the day.
+
+- visuals: brown unburned stretch, dashed ash trail, red-yellow ember,
+  faint smoke wisps above the head
+- arc-length inversion was precomputed by numerical integration of
+  ds/dθ = √(r² + (dr/dθ)²) for r(θ) = R_outer − A·θ, then binary-searched
+  to invert s ↦ θ
+
+**Why it was archived.** Reading the time off a coil is uncomfortable
+no matter what readout you add: bare spiral (zen), hour ticks along
+the spiral, outer 12-hour ring with a radial projection, bottom
+progress bar, floating HH:MM label by the ember — all five tried and
+all visually noisy / fighting the spiral's own beauty. The "coil + an
+add-on" combo just doesn't work as a clock face.
+
+Files preserved:
+- `IncenseClock.tsx` — original single-design version (with the hour
+  tick / label readout that motivated the variants)
+- `IncenseBase.tsx` — shared spiral + burn math used by the variants
+- `variants.tsx` — five readout treatments A–E

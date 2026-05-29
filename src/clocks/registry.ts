@@ -9,6 +9,7 @@ import FlipClock from "./flip/FlipClock";
 import LinearClock from "./ruler/LinearClock";
 import CartesianClock from "./cartesian/CartesianClock";
 import ModularChordsClock from "./modular-chords/ModularChordsClock";
+import DigitalClock from "./digital/DigitalClock";
 
 export type ClockEntry = {
   slug: string;
@@ -92,6 +93,13 @@ export const clocks: ClockEntry[] = [
     description:
       "60 点圈上画 i → (i·k) mod 60 的弦，k = 当前秒。",
     Component: ModularChordsClock,
+  },
+  {
+    slug: "digital",
+    name: "数码钟",
+    nameEn: "Digital",
+    description: "HH:MM 大字号 + 秒数红字，保留 #001 的衣服语言。",
+    Component: DigitalClock,
   },
 ];
 

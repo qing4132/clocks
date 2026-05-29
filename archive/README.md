@@ -142,3 +142,21 @@ report it's still hard to read at a glance, which defeats the project's
 
 Files preserved:
 - `density.tsx` — full implementation + 5 variants
+
+## breath (formerly #016–#018)
+
+**Concept.** Three "正念呼吸钟"，#001 风格：奶油底 + 黑边 + 衬线字 +
+红色高亮当前相位。完全图形/动画引导，没有倒计时数字。
+
+- BoxBreath（盒式 4-4-4-4）：红点沿圆角方形跑一圈，上/下边吸呼，
+  左/右边屏息（虚线表示）；中央圆同步胀缩。
+- ResonantBreath（共振 5-5）：纯正弦呼吸，圆慢慢胀缩，红点贴顶。
+- RelaxationBreath（4-7-8）：外圈分三段弧，按相位长度切，
+  当前段红色填充进度；中心圆吸涨—屏息—长呼。
+
+**为什么归档.** 和钟表馆其它"一眼读时间"的钟违和：呼吸钟需要你
+停下来跟着它呼吸，不适合做日常报时。底部那个淡淡的 HH:MM 反而显得
+多余。作为一组独立的"正念小品"留着，未必属于这个馆。
+
+Files preserved:
+- `breath.tsx` — BoxBreath / ResonantBreath / RelaxationBreath

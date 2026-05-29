@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Colon, Digit, DigitalPanel } from "./segments";
+import { Colon, Digit, DigitalPanel } from "../digital/segments";
 
 /**
- * #011 — Classic digital clock.
+ * #012 — 30-hour digital clock (broadcast TV convention).
  *
- *   HH:MM:SS in a 7-segment LED layout, fixed-width digit grid so colons
- *   never shift. Same colour language as #001 (cream face, black ink,
- *   red seconds, thin black border).
+ *   00:00..05:59 civil → displays 24..29
+ *   06:00..23:59 civil → displays 06..23
+ *   so the "day boundary" is 06:00.
+ *
+ *   Same 7-segment look as #011.
  */
-export default function DigitalClock() {
+export default function ThirtyHourClock() {
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
     setNow(new Date());
@@ -18,7 +20,10 @@ export default function DigitalClock() {
     return () => clearInterval(id);
   }, []);
 
-  const HH = now ? String(now.getHours()).padStart(2, "0") : "00";
+  const civilHour = now ? now.getHours() : 0;
+  const displayHour = civilHour < 6 ? civilHour + 24 : civilHour;
+
+  const HH = String(displayHour).padStart(2, "0");
   const MM = now ? String(now.getMinutes()).padStart(2, "0") : "00";
   const SS = now ? String(now.getSeconds()).padStart(2, "0") : "00";
   const ms = now ? now.getMilliseconds() : 0;
@@ -45,7 +50,7 @@ export default function DigitalClock() {
       viewBox="-100 -100 200 200"
       className="w-72 h-72 sm:w-96 sm:h-96 drop-shadow-xl"
       role="img"
-      aria-label="Digital clock"
+      aria-label="30-hour digital clock"
     >
       <DigitalPanel>
         {now &&

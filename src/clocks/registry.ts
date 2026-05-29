@@ -10,6 +10,9 @@ import LinearClock from "./ruler/LinearClock";
 import CartesianClock from "./cartesian/CartesianClock";
 import ModularChordsClock from "./modular-chords/ModularChordsClock";
 import DigitalClock from "./digital/DigitalClock";
+import ThirtyHourClock from "./thirty-hour/ThirtyHourClock";
+import UnixClock from "./unix/UnixClock";
+import WedgesClock from "./wedges/WedgesClock";
 
 export type ClockEntry = {
   slug: string;
@@ -100,6 +103,28 @@ export const clocks: ClockEntry[] = [
     nameEn: "Digital",
     description: "HH:MM 大字号 + 秒数红字，保留 #001 的衣服语言。",
     Component: DigitalClock,
+  },
+  {
+    slug: "thirty-hour",
+    name: "30 小时钟",
+    nameEn: "30-Hour",
+    description:
+      "广播电视台的 30 小时制：凌晨 00–05 点读为 24–29点，归于前一天。",
+    Component: ThirtyHourClock,
+  },
+  {
+    slug: "unix",
+    name: "Unix 钟",
+    nameEn: "Unix",
+    description: "当前 Unix 时间戳（1970-01-01 UTC 以来的秒数）。",
+    Component: UnixClock,
+  },
+  {
+    slug: "wedges",
+    name: "扉形钟",
+    nameEn: "Wedges",
+    description: "三层同心扉形从 12 点位按时间填满。",
+    Component: WedgesClock,
   },
 ];
 

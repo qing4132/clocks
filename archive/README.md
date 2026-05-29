@@ -80,3 +80,38 @@ Files preserved:
   tick / label readout that motivated the variants)
 - `IncenseBase.tsx` — shared spiral + burn math used by the variants
 - `variants.tsx` — five readout treatments A–E
+
+## twelve-clocks (formerly #014, second design)
+
+**Concept.** Self-similar fractal: one main clock holds 12 mini-clocks at
+its numeral positions, each mini holds 12 grandchildren of the same
+shape. Every 5 seconds the camera linearly zooms into the 12-o'clock
+mini-clock. By the end of the zoom that mini fills the viewport and —
+because it contains 12 grandchildren of its own — the image is visually
+identical to the un-zoomed starting frame, so scale wraps from 8 to 1
+seamlessly. All 1 + 12 + 144 = 157 clocks carry their own hour and
+minute hands, synced to the real time via a single rAF loop that writes
+transform attributes directly (no React re-render per frame).
+
+The math that ties it together:
+```
+T(p) = scale·p + t
+require T(c) = (1-u)·c   →   t = (1 - u - scale)·c
+```
+giving the identity transform at u=0 and "target at origin, scaled 8x"
+at u=1.
+
+**Why it was archived.** Multiple rounds of redesign (target-follows-
+seconds, target-fixed-at-12, linear vs exponential zoom, with/without
+grandchildren-hands) never produced a visually satisfying loop. The
+combination of (a) wanting the start frame to be a "full clock", (b) the
+end frame to be the same full clock self-similarly, and (c) the camera
+to track the second hand around the dial turned out to be only partially
+satisfiable — every viable compromise had at least one of: a visible
+jump on each 5-second boundary, target sliding through the frame mid-
+animation, or the intuitive "zoom-into-fractal" feel being lost. The
+fractal-as-static-design concept lives on in #015 hands-are-clocks.
+
+Files preserved:
+- `TwelveClocksClock.tsx` — the final version (fixed target at 12 o'clock,
+  linear scale, all three levels with hands)

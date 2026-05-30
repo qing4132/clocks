@@ -18,6 +18,7 @@ import {
   BreathingBlossom,
 } from "./breathing-blossom/variants";
 import RemainingClock from "./remaining/RemainingClock";
+import CenturyClock from "./century/CenturyClock";
 
 export type ClockEntry = {
   slug: string;
@@ -154,6 +155,15 @@ export const clocks: ClockEntry[] = [
       "#004 的 24 小时盘，但当天已经过去的那部分会被吃掉——留在表面上的是今天尚未流逝的那一段。缺口从午夜（正上方）开始随时间张大，表盘从满圆一路啃成傍晚的细牙，午夜重置。表盘被切到哪儿，就读到几点。",
     Component: RemainingClock,
   },
+  {
+    slug: "century",
+    name: "世纪钟",
+    nameEn: "Century",
+    description:
+      "一只忠实的 #001 圆盘，时分秒照常走；只是最外圈那道边不再只是边框——它是本世纪（2000→2100）的进度条，从 12 点顺时针填满，走过的部分化作一圈闪着金沙的黄金弧，像空岛上的黄金钟。你一生看着它几乎不动，它却在静静镀亮整整一百年。",
+    Component: CenturyClock,
+  },
+
 ];
 
 export function getClock(slug: string): ClockEntry | undefined {

@@ -17,7 +17,7 @@ import SleepClock from "./sleep/SleepClock";
 import {
   BreathingBlossom,
 } from "./breathing-blossom/variants";
-import ElapsedClock from "./elapsed/ElapsedClock";
+import RemainingClock from "./remaining/RemainingClock";
 
 export type ClockEntry = {
   slug: string;
@@ -147,12 +147,12 @@ export const clocks: ClockEntry[] = [
     Component: BreathingBlossom,
   },
   {
-    slug: "elapsed",
-    name: "流逝钟",
-    nameEn: "Elapsed",
+    slug: "remaining",
+    name: "剩余钟",
+    nameEn: "Remaining",
     description:
-      "#004 的 24 小时盘，但当天已经过去的那部分会被吃掉——缺口从午夜（正上方）开始随时间张大，表盘从满圆一路啃成傍晚的细牙，午夜重置。剩余表盘的切边正好在时针下，过去的时间一去不返。",
-    Component: ElapsedClock,
+      "#004 的 24 小时盘，但当天已经过去的那部分会被吃掉——留在表面上的是今天尚未流逝的那一段。缺口从午夜（正上方）开始随时间张大，表盘从满圆一路啃成傍晚的细牙，午夜重置。表盘被切到哪儿，就读到几点。",
+    Component: RemainingClock,
   },
 ];
 

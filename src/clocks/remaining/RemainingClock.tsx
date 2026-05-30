@@ -3,13 +3,14 @@
 import { useWallClock } from "../useWallClock";
 
 /**
- * #017 — Elapsed clock.
+ * #017 — Remaining clock.
  *
  *   Built on the 24-hour dial (#004, one full hand revolution per day), but
  *   the slice of the dial for time that has ALREADY passed today is eaten
- *   away. The mouth opens at midnight (24:00, straight up) and widens
- *   clockwise as the day goes on, so the face shrinks from a full disc at
- *   00:00 to a thin sliver just before midnight — then resets to whole.
+ *   away — what stays on the face is the part of the day still ahead. The
+ *   mouth opens at midnight (24:00, straight up) and widens clockwise as the
+ *   day goes on, so the face shrinks from a full disc at 00:00 to a thin
+ *   sliver just before midnight — then resets to whole.
  *
  *   The leading edge of what remains sits exactly under the hour hand: you
  *   read the hour from where the dial has been cut to. The minute and second
@@ -17,7 +18,7 @@ import { useWallClock } from "../useWallClock";
  *   that the spent time is gone for good. The wedge is cut the same way as
  *   the Sleep clock (#015) — clean radial edges to the centre.
  */
-export default function ElapsedClock() {
+export default function RemainingClock() {
   const now = useWallClock(1000);
 
   const H = now ? now.getHours() : 0; // 0..23
@@ -52,7 +53,7 @@ export default function ElapsedClock() {
       viewBox="-100 -100 200 200"
       className="w-72 h-72 sm:w-96 sm:h-96 drop-shadow-xl"
       role="img"
-      aria-label="Elapsed-time clock"
+      aria-label="Remaining-time clock"
     >
       {/* face — the day's remaining slice; what has passed is gone */}
       {wholeDisc ? (

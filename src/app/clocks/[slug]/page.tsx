@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { clocks, getClock } from "@/clocks/registry";
+import { BackButton } from "./BackButton";
 
 export function generateStaticParams() {
   return clocks.map((c) => ({ slug: c.slug }));
@@ -20,13 +20,7 @@ export default async function ClockPage({
 
   return (
     <main className="min-h-screen bg-neutral-50 text-neutral-900 flex flex-col">
-      <Link
-        href="/"
-        aria-label="Back"
-        className="absolute top-6 left-6 text-2xl text-neutral-400 hover:text-neutral-900 transition leading-none"
-      >
-        ←
-      </Link>
+      <BackButton />
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-24">
         <Component />
         <div className="mt-12 font-mono text-xs text-neutral-400 tabular-nums">

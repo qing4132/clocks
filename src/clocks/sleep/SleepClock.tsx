@@ -6,7 +6,7 @@ import { useWallClock } from "../useWallClock";
  * #015 — Sleep clock.
  *
  *   Based on the 24-hour clock (one full hand revolution per day) but
- *   with the 22:00–06:00 sector physically removed from the dial. The
+ *   with the 23:00–07:00 sector physically removed from the dial. The
  *   message is: don't be thinking about time during sleep hours.
  *
  *   The dial values that survive are 6, 8, 10, 12, 14, 16, 18, 20.
@@ -53,7 +53,7 @@ export default function SleepClock() {
       role="img"
       aria-label="Sleep-hours clock"
     >
-      {/* face — cream pac-man shape with the 22-06 sector cut out */}
+      {/* face — cream pac-man shape with the 23-07 sector cut out */}
       <path d={facePath} fill="#fafaf7" stroke="#1a1a1a" strokeWidth="3" strokeLinejoin="round" />
 
       {/* minute ticks — only those that fall inside the visible 240° wedge */}

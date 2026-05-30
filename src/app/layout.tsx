@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -15,6 +15,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "qclocks",
   description: "qclocks",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#fafafa",
+  colorScheme: "light",
+  // extend the page colour into the iOS safe areas (notch / home indicator)
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

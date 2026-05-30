@@ -14,6 +14,10 @@ import ThirtyHourClock from "./30-hour/ThirtyHourClock";
 import UnixClock from "./unix/UnixClock";
 import WedgesClock from "./wedges/WedgesClock";
 import SleepClock from "./sleep/SleepClock";
+import {
+  BreathingBlossom,
+} from "./breathing-blossom/variants";
+import ElapsedClock from "./elapsed/ElapsedClock";
 
 export type ClockEntry = {
   slug: string;
@@ -131,8 +135,24 @@ export const clocks: ClockEntry[] = [
     slug: "sleep",
     name: "睡眠钟",
     nameEn: "Sleep",
-    description: "#004 挖掉 22–06 点的那一块。夜里不用了解时间。",
+    description: "#004 挖掉 23–07 点的那一块。夜里不用了解时间。",
     Component: SleepClock,
+  },
+  {
+    slug: "breathing-blossom",
+    name: "花呼吸钟",
+    nameEn: "Breathing Blossom",
+    description:
+      "一朵单层樱花，无轮廓线，只留柔和的颜色消融在淡背景里；随 16 秒的箱式呼吸轻轻开合，读时在外圈——分是柔光弧、时是高亮刻点、秒是绕圈平滑轻移的光点。",
+    Component: BreathingBlossom,
+  },
+  {
+    slug: "elapsed",
+    name: "流逝钟",
+    nameEn: "Elapsed",
+    description:
+      "#004 的 24 小时盘，但当天已经过去的那部分会被吃掉——缺口从午夜（正上方）开始随时间张大，表盘从满圆一路啃成傍晚的细牙，午夜重置。剩余表盘的切边正好在时针下，过去的时间一去不返。",
+    Component: ElapsedClock,
   },
 ];
 

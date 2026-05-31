@@ -67,3 +67,51 @@ baseline), keep 012/013 (both carry a real twist).
 
 **Decision: do nothing for now.** Settle this only when scale forces a
 rethink of presentation / philosophy.
+
+## Julian Day clock (a cousin of the Unix clock #013)
+
+**Concept.** Show the *Julian Day* — a single continuous day-count used in
+astronomy, numbered from noon on 1 Jan 4713 BC (proleptic Julian). Today is
+≈ JD 2,461,192. The integer part ticks once per day; the fractional part
+encodes the time *within* the day.
+
+**The one twist that makes it not just "Unix #013 again":** Julian Day
+starts at **noon**, and time-of-day lives in the **decimals**:
+
+- `.0` = noon 12:00 · `.25` = 18:00 · `.5` = **midnight** · `.75` = 06:00
+
+So the reveal is the inverted boundary: at midnight the readout is `…​.5`,
+not `.0`; the number rolls over a *whole day* at lunch, not at midnight.
+
+**Why hold off.** Structurally it's the same "one giant accreting number" as
+the Unix clock (#013). To earn its place it must *not* be just another
+scrolling integer — it has to dramatize the **noon-flip + decimal-as-time**
+idea (e.g. a ring that sits at the half mark at midnight, integer digits
+nearly frozen while the decimals stream). Build only when we specifically
+want to tell that story; otherwise it reads as Unix-clock filler.
+
+**Scale aside.** Could pair with #013 as a "two continuous counts" duo
+(Unix: 1970, seconds, midnight epoch — Julian: 4713 BC, days, noon epoch).
+
+## Folded World — 折针世界钟 (multi-timezone on a single dial)
+
+**Concept.** A plain #001 round dial that reads *local* time as usual — but
+its **hour hand is a polyline instead of a straight line**. The inner circle
+is sliced into a few concentric rings, one per city (e.g. NYC / LON / TYO /
+local, inner→outer). The folded hand leaves the center and bends on each ring
+to that city's current hour-angle, the outermost fold landing back on the
+local dial like a normal hour hand. One hand reads four cities at once; the
+angle between adjacent folds *is* their time difference.
+
+**Why it matters.** It's the proof that a round dial *can* juxtapose multiple
+timezones (the thing I'd wrongly claimed only digital read-outs could do).
+Minute + second hands stay conventional (local), so readability is preserved.
+
+**Why parked.** Prototyped (three variants: faint 12h dials / 24h day-night
+shading / minimal dot-constellation, then a single #001-based folded-hand
+version) — all worked but didn't feel compelling enough to keep in the
+gallery. The folded hand reads as visual noise more than revelation at small
+sizes, and 4 concentric rings crowd the 200-unit face. Revisit if we ever
+want a dedicated "world clock" piece — likely needs fewer rings (2–3), a
+clearer fold/color treatment, or a larger canvas to earn its place.
+

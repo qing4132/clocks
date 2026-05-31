@@ -115,3 +115,39 @@ sizes, and 4 concentric rings crowd the 200-unit face. Revisit if we ever
 want a dedicated "world clock" piece — likely needs fewer rings (2–3), a
 clearer fold/color treatment, or a larger canvas to earn its place.
 
+## Sea — 海上钟 (the face is the sea; boats are hands)
+
+**Concept.** The dial *is* an ocean. The twelve numerals float on the surface
+like buoys, bobbing gently. The **second hand is a sweeping wave** — a
+foam-crested front that circles the face once a minute. The **hour & minute
+hands are two boats** (large = hour, small = minute) that also float, rocking,
+nudged around by the passing wave; read the hour by which numeral a boat is
+moored beside.
+
+**Texture is the whole point.** This piece lives or dies on *material feel*,
+not cleverness. Prototyped four finishes:
+
+- **Daylight** — realistic sunlit sea: `feTurbulence` + `feDiffuseLighting`
+  for embossed water glints/caustics; the wave front uses `feDisplacementMap`
+  for a frothy broken edge; proper sloop silhouettes (curved hull, billowed
+  mainsail + jib, mast) with mirrored water reflections.
+- **Moonlight** — night sea, a high moon casting a shimmering *moonglade*
+  (rectangles of reflected light streaming down the middle), silhouette boats.
+- **Ink** — ukiyo-e woodblock: paper grain, layered drifting ink swells,
+  Hokusai-style curling foam claws trailing the sweep, calligraphic boats.
+- **Chart** — antique nautical chart: parchment + hatched sea, rhumb lines
+  radiating from a hidden center compass, a dashed sounding-line second hand,
+  fine line-drawn boats, italic numerals.
+
+**Why parked.** All four rendered well and the brief was met (boats are
+believable sloops, not cartoons; water has real texture). Held back only to
+keep the gallery tight — it's a *mood/illustration* piece more than a new way
+of *encoding* time (the underlying read is still a plain 12-hour dial). Best
+revived as a flagship "atmosphere" clock, probably the **Daylight** or
+**Moonlight** finish; the heavy SVG filters (turbulence/lighting/displacement)
+are GPU-real-time fine at one instance but worth profiling on the gallery grid.
+
+**Reusable bits if revived.** The `Sloop`/`InkBoat`/`ChartBoat` silhouette
+components, the moonglade strip technique, the displacement-froth wave front,
+and the fractal-noise water-emboss filter recipe.
+

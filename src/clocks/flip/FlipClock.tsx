@@ -29,6 +29,13 @@ export default function FlipClock() {
   const hourAngle = h * 30 + m * 0.5;
   const flipY = s * 6; // 360° per 60s
 
+  // The static sliver exists ONLY at the exact edge-on angles (90° / 270°,
+  // i.e. s = 15 and s = 45). At those instants the face is a perfectly
+  // symmetric thin line, so a full-height bar lines up exactly. At every
+  // other angle it's hidden, so it can never poke past the perspective-
+  // skewed face.
+  const showSliver = now != null && (s === 15 || s === 45);
+
   const round = (n: number) => Math.round(n * 1000) / 1000;
 
   return (
@@ -36,19 +43,21 @@ export default function FlipClock() {
       className="relative w-72 h-72 sm:w-96 sm:h-96"
       style={{ perspective: "1000px" }}
     >
-      {/* Static edge-on silhouette: a thin vertical bar at the center, the
-          width of the dial. Always visible behind the flipping face, so when
-          the face is exactly perpendicular to the viewer the clock still
-          reads as a thin sliver instead of vanishing. */}
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{
-          width: "3px",
-          height: "96%",
-          background: "#1a1a1a",
-          borderRadius: "2px",
-        }}
-      />
+      {/* Static edge-on sliver: a thin vertical bar the full height of the
+          dial frame. Shown ONLY at the exact edge-on angles (90° / 270°),
+          where the face is a symmetric line, so it lines up perfectly and
+          never pokes out. Hidden at every other angle. */}
+      {showSliver && (
+        <div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          style={{
+            width: "3px",
+            height: "97.5%",
+            background: "#1a1a1a",
+            borderRadius: "2px",
+          }}
+        />
+      )}
 
       <div
         className="relative w-full h-full"

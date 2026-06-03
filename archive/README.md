@@ -160,3 +160,106 @@ Files preserved:
 
 Files preserved:
 - `breath.tsx` — BoxBreath / ResonantBreath / RelaxationBreath
+
+## twelve-tunnel (formerly #019–#023, the "endless dive" family)
+
+A whole family that grew out of one idea: render the "twelve clocks"
+cycle as **flight down a tunnel of concentric hour-rings**. Five members
+were built and explored together, then archived as a documented chapter.
+
+### The shared mechanism
+
+Every member draws `RING_COUNT` identical base rings (a `<circle r=100>`)
+and, each animation frame, repositions them so they appear to stream out
+of a vanishing point toward the rim. The core loop is the same for all:
+
+```ts
+// continuous outward flow: one whole ring-step every ADVANCE seconds
+const phase = (sFrac % ADVANCE) / ADVANCE;
+
+// vanishing point sweeps around the dial (one full turn per SWEEP seconds)
+const dir = (((sFrac / SWEEP) * 360 - 90) * Math.PI) / 180;
+const vx = Math.cos(dir) * VP_R;
+const vy = Math.sin(dir) * VP_R;
+
+for (let i = 0; i < RING_COUNT; i++) {
+  // ring i sits at a GEOMETRIC radius; advancing phase by one whole step
+  // maps the set onto itself → a perfectly seamless, no-pop loop
+  const r = R0 * Math.pow(GROW, phase + i);
+  const scale = r / 100;                 // base ring is drawn at r=100
+  const lean = 1 - Math.min(1, r / 110); // nearer rings lean more
+  const cx = vx * lean;
+  const cy = vy * lean;
+  const opacity = Math.min(1, r / 8);    // fade up out of the vanishing point
+  g.setAttribute("transform", `translate(${cx} ${cy}) scale(${scale})`);
+  g.setAttribute("opacity", opacity);
+}
+```
+
+Two properties make it work:
+- **Geometric spacing (`GROW`).** Because radii are `R0·GROW^(phase+i)`,
+  bumping `phase` from 0→1 slides every ring onto the slot of its
+  outward neighbour. The frame at `phase=1` is identical to `phase=0`,
+  so the dive loops with no seam and nothing ever "pops in" — new rings
+  are born at zero size at the vanishing point.
+- **The vanishing point is the second hand.** Its drift direction
+  (`dir`) is itself an angle that completes one turn a minute, so the
+  tunnel's lean *is* the seconds readout. The hour/minute hands are the
+  only conventional part, pinned to the moving hub.
+
+### The five members
+
+**#019 twelve-tunnel — the original.** `RING_COUNT=11`, `GROW=1.6`,
+`VP_R=10`. Rings carry 12 hour ticks; the vanishing point doesn't drift
+smoothly but **eases between twelve compass directions**, one every 5 s
+(a smoothstep on the first 20% of each window), literally "cycling
+through the twelve" hour-directions. Ink-on-paper.
+
+**#020 twelve-tunnel-drift — the refined template.** Same as #019 but the
+vanishing point **drifts continuously** (30°/5 s = one smooth turn a
+minute) and leans much further (`VP_R=26`), and the hour ticks are
+dropped for a cleaner tube. This became the base every later variant was
+derived from. `RING_COUNT=11`, `GROW=1.6`, `R0=2.2`.
+
+**#021 twelve-tunnel-vast — opened up wide.** Same mechanism, parameters
+pushed to the cavernous extreme: only `RING_COUNT=7` bold rings
+(`strokeWidth 3.4`), a large `GROW=2.0` so the gaps yawn, and a hard
+`VP_R=44` lean. A dramatic banking dive instead of a steady stream.
+
+**#022 twelve-tunnel-notch — hands made of holes.** An experiment in
+telling the time *using only circles*. The hour and minute hands keep
+#020's exact shape and width (round-capped lines, stroke 3 and 2) but
+are painted in the **paper background colour** and **extended far past
+the rim** (`y2 = -200`). Sitting on the top layer, each hand erases the
+rings it crosses, so the two hands carve clean **radial notches** down
+the whole tunnel. No hand is ever drawn — you read the time from the two
+seams of absence the rings show.
+
+```tsx
+// paper-coloured, greatly lengthened — same stroke widths as #020
+<line x1="0" y1="3" x2="0" y2="-200" stroke={PAPER} strokeWidth="3" strokeLinecap="round" />
+<line x1="0" y1="4" x2="0" y2="-200" stroke={PAPER} strokeWidth="2" strokeLinecap="round" />
+```
+
+**#023 twelve-tunnel-warp — warp speed.** The drift tunnel with the rings
+**broken into dashes** so they read as streaking stars. `RING_COUNT=13`,
+`GROW=1.55`. The dash/gap both grow with depth (`dash=6+depth·5`,
+`gap=26+depth·6`) so streaks lengthen as they rush past, the whole field
+slowly rolls over the minute, all on a near-black radial-gradient sky.
+A side effect noticed here — the dasharray lives in each ring's *un-scaled*
+local space, so smaller/farther rings show many short segments while near
+rings show a few long ones — was the seed for several later ideas.
+
+**Why it was archived.** A thoroughly explored single idea. #020 (drift)
+is the clean canonical version; #019 is its rougher first cut; #021/#023
+are the two most striking parameter extremes; #022 is the conceptual
+endpoint (a clock with no drawn hands at all). Rather than keep five
+near-identical tubes live in the gallery, the whole dive is preserved
+here as one documented family.
+
+Files preserved:
+- `TunnelClock.tsx` — #019, original with hour ticks + eased 12-step drift
+- `TunnelDriftClock.tsx` — #020, the canonical continuous-drift template
+- `TunnelVastClock.tsx` — #021, few bold rings, hard lean
+- `TunnelNotchClock.tsx` — #022, paper-coloured extended hands carve notches
+- `TunnelWarpClock.tsx` — #023, dashed rings as warp-speed star streaks

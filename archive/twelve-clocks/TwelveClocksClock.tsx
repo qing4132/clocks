@@ -1,42 +1,73 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type JSX } from "react";
 
 /**
- * #014 — Twelve Clocks (seamless fractal zoom).
+ * #019 — Twelve Clocks (seamless fractal zoom, cycling through the dozen).
  *
- *   Layout: one main clock + 12 mini-clocks (one at each numeral position)
- *   + 144 grand-mini-clocks (one at each mini's numeral positions). All
- *   levels carry their own hour & minute hands, all synced to real time.
+ *   A #001 dial holds 12 mini-clocks at its numeral positions; each mini
+ *   holds 12 of its own, and so on. Every clock shows the real time. Each
+ *   5-second window the camera dives into one child; over a minute it works
+ *   its way around all twelve.
  *
- *   Animation: every 5 seconds the camera linearly zooms in on the
- *   12-o'clock mini-clock. By the end of the 5-second window:
- *     - that mini-clock has grown to fill the viewport (scale = 8 = 96/12)
- *     - because the mini contains 12 grand-children of its own at the
- *       same relative layout, the image at scale 8 is visually identical
- *       to the image at scale 1
- *   So scale wraps from 8 back to 1 with no visible jump.
+ *   The irreducible trade-off
+ *   -------------------------
+ *   With NO view rotation, you cannot have all of: (a) dive into a DIFFERENT
+ *   child each cycle, (b) a perfectly seamless wrap, and (c) zero velocity
+ *   discontinuity. Proof sketch: a no-rotation camera is x ↦ s·x + t. A
+ *   seamless, smooth wrap forces the post-wrap motion (after the dived-into
+ *   child is relabelled as the new main) to keep heading toward that main's
+ *   TOP child — so to stay smooth every cycle must dive into the same
+ *   relative child, i.e. it can't cycle. Cycling therefore costs either a
+ *   small kink or a rotation. We keep the view upright and accept the kink.
  *
- *   Read time off the (always-visible) main hands.
+ *   Per-child fixed-point zoom (kills the big bounce)
+ *   -------------------------------------------------
+ *   Within a window we zoom about the child's accumulation point
+ *       p = c / (1 − k)        (c = child centre, k = child scale)
+ *   which is where that child's own nested top-children converge. A pure
+ *   scale about p,
+ *       T_u(x) = p + s·(x − p),   s = (1/k)^u,   u = (sec mod 5)/5,
+ *   is the identity at u=0 (full upright dial) and at u=1 sends the child's
+ *   centre to the origin scaled by exactly 1/k, so the child fills the frame
+ *   as a self-similar full dial — seamless. Because log(s) is linear in time
+ *   the PERCEIVED zoom speed is constant across the wrap (no zoom pulse).
+ *   The only residual is a gentle change of pan direction at the wrap as the
+ *   focus hops to the next child — the unavoidable kink above.
+ *
+ *   Hands: one extra nested level is rendered (down to HAND_DEPTH) so that a
+ *   child growing toward main size already contains hand-bearing grand- and
+ *   great-grand-children — the hands are simply THERE as they swell into
+ *   view instead of popping into existence.
  */
 export default function TwelveClocksClock() {
   const cameraRef = useRef<SVGGElement | null>(null);
-  const lvl0HourRef = useRef<SVGGElement | null>(null);
-  const lvl0MinRef = useRef<SVGGElement | null>(null);
-  const lvl1HourRefs = useRef<(SVGGElement | null)[]>(new Array(12).fill(null));
-  const lvl1MinRefs = useRef<(SVGGElement | null)[]>(new Array(12).fill(null));
-  const lvl2HourRefs = useRef<(SVGGElement | null)[]>(new Array(144).fill(null));
-  const lvl2MinRefs = useRef<(SVGGElement | null)[]>(new Array(144).fill(null));
+  const hourRefs = useRef<(SVGGElement | null)[]>([]);
+  const minRefs = useRef<(SVGGElement | null)[]>([]);
+
+  // Geometry.
+  const R = 66; // radius of the ring of children
+  const k = 0.16; // child scale ratio
+  const INV_K = 1 / k; // self-similar zoom factor (6.25)
+
+  // Recursion. Hands are rendered one level deeper than before so they never
+  // pop in. MAX_DEPTH = HAND_DEPTH here so the deepest hand-bearing clocks
+  // are also the leaves (their missing children are sub-pixel anyway).
+  const MAX_DEPTH = 3; // 1 + 12 + 144 + 1728 nodes
+  const HAND_DEPTH = 3;
+
+  // Radius of every child's accumulation point (where its own nested top-
+  // children converge) — the per-window fixed point the camera zooms about.
+  const ACCUM_R = R / (1 - k);
+  // Fraction of each 5-second window spent rounding the direction corner. The
+  // 30° change of dive direction is eased through here (smoothstep, zero
+  // velocity at both ends) right after the wrap, while the zoom is still ~1×
+  // so the off-centre aim is imperceptible; the rest of the window dives dead
+  // straight into the child. This turns the velocity kink into a small arc.
+  const CORNER = 0.18;
 
   useEffect(() => {
     let raf = 0;
-    // Geometry
-    const RING_R = 70;
-    const MINI_R = 12;
-    const FINAL_SCALE = 96 / MINI_R; // 8 exactly
-    // Target is the 12-o'clock mini, fixed forever for seamless loop.
-    const cx = 0;
-    const cy = -RING_R; // -70
 
     const loop = () => {
       const now = new Date();
@@ -44,102 +75,99 @@ export default function TwelveClocksClock() {
       const m = now.getMinutes();
       const h = now.getHours() % 12;
 
-      // 5-second window, linear progress 0..1.
-      const u = (sFrac % 5) / 5;
-      // Linear scale 1 → FINAL_SCALE.
-      const scale = 1 + (FINAL_SCALE - 1) * u;
-      // We want the transformation T(p) = scale·p + t such that:
-      //   T(c) = (1 - u) · c + u · 0      (target slides from c to 0 linearly)
-      // Solve for t:
-      //   scale·c + t = (1 - u) · c
-      //   t = (1 - u - scale) · c
-      // At u=0: scale=1, t = (1 - 0 - 1)·c = 0 → identity (full original frame)
-      // At u=1: scale=FINAL, t = (1 - 1 - FINAL)·c = -FINAL·c
-      //         → T(c) = FINAL·c - FINAL·c = 0 (target at origin), ✓
-      // At u=1 the target mini has been scaled by FINAL and centred,
-      // which is exactly the visually-identical self-similar frame.
-      const tx = (1 - u - scale) * cx;
-      const ty = (1 - u - scale) * cy;
+      // Which child this window dives into (one per 5 s, all twelve a minute).
+      const wf = sFrac / 5;
+      const w = Math.floor(wf);
+      const u = wf - w;
+
+      // Dive-direction angle: held at this child (θ_w = w·30 − 90) for most of
+      // the window, but eased up from the previous child's angle during the
+      // first CORNER fraction so the corner at the wrap becomes a smooth arc.
+      // At u=1 the angle is exactly θ_w, so the self-similar wrap is preserved.
+      const ease = u < CORNER ? (() => {
+        const x = u / CORNER;
+        return x * x * (3 - 2 * x); // smoothstep, zero slope at 0 and 1
+      })() : 1;
+      const angle = ((w * 30 - 90 - 30 + 30 * ease) * Math.PI) / 180;
+      const px = Math.cos(angle) * ACCUM_R;
+      const py = Math.sin(angle) * ACCUM_R;
+
+      // Pure exponential scale about that fixed point.
+      const s = Math.pow(INV_K, u); // 1 → 1/k
+      const tx = px * (1 - s);
+      const ty = py * (1 - s);
       cameraRef.current?.setAttribute(
         "transform",
-        `translate(${tx.toFixed(3)} ${ty.toFixed(3)}) scale(${scale.toFixed(4)})`,
+        `translate(${tx.toFixed(3)} ${ty.toFixed(3)}) scale(${s.toFixed(5)})`,
       );
 
-      const hourAngle = h * 30 + m * 0.5;
+      // Every hand at every level reads the true time.
+      const hourAngle = h * 30 + m * 0.5 + sFrac * (0.5 / 60);
       const minuteAngle = m * 6 + sFrac * 0.1;
-      const ha = `rotate(${hourAngle.toFixed(3)})`;
-      const ma = `rotate(${minuteAngle.toFixed(3)})`;
-      lvl0HourRef.current?.setAttribute("transform", ha);
-      lvl0MinRef.current?.setAttribute("transform", ma);
-      for (const r of lvl1HourRefs.current) r?.setAttribute("transform", ha);
-      for (const r of lvl1MinRefs.current) r?.setAttribute("transform", ma);
-      for (const r of lvl2HourRefs.current) r?.setAttribute("transform", ha);
-      for (const r of lvl2MinRefs.current) r?.setAttribute("transform", ma);
+      const ht = `rotate(${hourAngle.toFixed(3)})`;
+      const mt = `rotate(${minuteAngle.toFixed(3)})`;
+      for (const r of hourRefs.current) r?.setAttribute("transform", ht);
+      for (const r of minRefs.current) r?.setAttribute("transform", mt);
 
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [INV_K, ACCUM_R]);
 
   const round = (n: number) => Math.round(n * 1000) / 1000;
-  const RING_R = 70;
-  const MINI_R = 12;
-  const k = MINI_R / 100;
-
-  // Dial face: outer rim + 48 minor ticks. The 12 "hour ticks" are
-  // omitted because the mini-clocks sit at those positions.
-  const Dial = () => (
-    <>
-      <circle cx="0" cy="0" r="96" fill="#fafaf7" stroke="#1a1a1a" strokeWidth="3" />
-      {Array.from({ length: 60 }).map((_, i) => {
-        if (i % 5 === 0) return null;
-        return (
-          <line
-            key={i}
-            x1="0"
-            y1={-92}
-            x2="0"
-            y2={-88}
-            stroke="#1a1a1a"
-            strokeWidth="1"
-            strokeLinecap="round"
-            transform={`rotate(${i * 6})`}
-          />
-        );
-      })}
-    </>
-  );
-
-  const Hands = ({
-    hourRef,
-    minRef,
-  }: {
-    hourRef: (el: SVGGElement | null) => void;
-    minRef: (el: SVGGElement | null) => void;
-  }) => (
-    <>
-      <g ref={hourRef}>
-        <line x1="0" y1="10" x2="0" y2="-50" stroke="#1a1a1a" strokeWidth="5" strokeLinecap="round" />
-      </g>
-      <g ref={minRef}>
-        <line x1="0" y1="14" x2="0" y2="-74" stroke="#1a1a1a" strokeWidth="3" strokeLinecap="round" />
-      </g>
-      <circle cx="0" cy="0" r="4" fill="#1a1a1a" />
-    </>
-  );
 
   const childPositions = Array.from({ length: 12 }).map((_, i) => {
-    const angle = ((i * 30) - 90) * (Math.PI / 180);
-    return { x: round(Math.cos(angle) * RING_R), y: round(Math.sin(angle) * RING_R) };
+    const a = (i * 30 - 90) * (Math.PI / 180);
+    return { x: round(Math.cos(a) * R), y: round(Math.sin(a) * R) };
   });
+
+  // Reset hand-ref arrays on every render; ref callbacks repopulate them.
+  hourRefs.current = [];
+  minRefs.current = [];
+  const register = (el: SVGGElement | null, kind: "h" | "m") => {
+    if (kind === "h") hourRefs.current.push(el);
+    else minRefs.current.push(el);
+  };
+
+  // The dial is just a filled disc (no border).
+  const dial = (key: string): JSX.Element => (
+    <circle key={key} cx="0" cy="0" r="96" fill="#fafaf7" />
+  );
+
+  const hands = (key: string): JSX.Element => (
+    <g key={key}>
+      <g ref={(el) => register(el, "h")}>
+        <line x1="0" y1="7" x2="0" y2="-32" stroke="#1a1a1a" strokeWidth="5" strokeLinecap="round" />
+      </g>
+      <g ref={(el) => register(el, "m")}>
+        <line x1="0" y1="10" x2="0" y2="-46" stroke="#1a1a1a" strokeWidth="3" strokeLinecap="round" />
+      </g>
+      <circle cx="0" cy="0" r="4" fill="#1a1a1a" />
+    </g>
+  );
+
+  // Recursive self-similar node. Built once at mount; the loop only updates
+  // the camera transform and the hand rotations.
+  const renderNode = (depth: number, key: string): JSX.Element => (
+    <g key={key}>
+      {dial(`${key}-d`)}
+      {depth < MAX_DEPTH &&
+        childPositions.map((p, i) => (
+          <g key={i} transform={`translate(${p.x} ${p.y}) scale(${k})`}>
+            {renderNode(depth + 1, `${key}-${i}`)}
+          </g>
+        ))}
+      {depth <= HAND_DEPTH && hands(`${key}-h`)}
+    </g>
+  );
 
   return (
     <svg
       viewBox="-100 -100 200 200"
       className="w-72 h-72 sm:w-96 sm:h-96 drop-shadow-xl"
       role="img"
-      aria-label="Twelve clocks with infinite zoom"
+      aria-label="Twelve clocks — seamless fractal zoom diving through twelve self-similar clocks"
     >
       <defs>
         <clipPath id="twelve-clocks-clip">
@@ -148,36 +176,7 @@ export default function TwelveClocksClock() {
       </defs>
 
       <g clipPath="url(#twelve-clocks-clip)">
-        <g ref={cameraRef}>
-          {/* LEVEL 0: main dial */}
-          <Dial />
-
-          {/* LEVEL 1: 12 mini-clocks; each has a dial + hands + 12 grandchildren */}
-          {childPositions.map((p, i) => (
-            <g key={i} transform={`translate(${p.x} ${p.y}) scale(${k})`}>
-              <Dial />
-              {childPositions.map((q, j) => (
-                <g key={j} transform={`translate(${q.x} ${q.y}) scale(${k})`}>
-                  <Dial />
-                  <Hands
-                    hourRef={(el) => (lvl2HourRefs.current[i * 12 + j] = el)}
-                    minRef={(el) => (lvl2MinRefs.current[i * 12 + j] = el)}
-                  />
-                </g>
-              ))}
-              <Hands
-                hourRef={(el) => (lvl1HourRefs.current[i] = el)}
-                minRef={(el) => (lvl1MinRefs.current[i] = el)}
-              />
-            </g>
-          ))}
-
-          {/* LEVEL 0 hands on top */}
-          <Hands
-            hourRef={(el) => (lvl0HourRef.current = el)}
-            minRef={(el) => (lvl0MinRef.current = el)}
-          />
-        </g>
+        <g ref={cameraRef}>{renderNode(0, "n")}</g>
       </g>
     </svg>
   );

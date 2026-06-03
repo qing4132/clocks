@@ -151,3 +151,40 @@ are GPU-real-time fine at one instance but worth profiling on the gallery grid.
 components, the moonglade strip technique, the displacement-froth wave front,
 and the fractal-noise water-emboss filter recipe.
 
+## Reading time from the real night sky (the Horologium experiments)
+
+**Concept.** Tell the time with an astronomically *correct* sky rather than a
+painted starfield. Prototyped four variants off the #021 warp tunnel, all
+built on real data:
+
+- **Horologium** — the warp tunnel flown through the constellation Horologium
+  ("the Pendulum Clock," named by Lacaille in the 1750s after Huygens'
+  pendulum clock). Stylised star chain + a pendulum-swinging hour hand.
+- **Diurnal Motion** — real J2000 RA/Dec of Horologium and bright southern
+  neighbours, polar-projected about the **south celestial pole** and rotated
+  rigidly at the true sidereal rate (~15°/hr), oriented from **Local Sidereal
+  Time** (longitude estimated from the browser timezone) so it shows roughly
+  the real sky right now.
+- **Star Trails** — long-exposure concentric arcs about the pole; bright head =
+  the star "now," arc = where it just was; Horologium's trails picked out in
+  gold.
+- **Culmination** — an alt-az dome for a latitude −31° observer: Horologium
+  rises in the SE, culminates, and sets, vanishing below a real horizon.
+
+**The hook (the irony).** Horologium is named for a *clock* but is a terrible
+natural clock — too faint, oddly shaped, far from the pole, and (like any star
+clock) it runs on sidereal time, drifting ~4 min/day vs. civil time. The whole
+charm is the contradiction: *the clock constellation that can't tell time, made
+to tell time by software.* A future flagship version could lean into that —
+e.g. an explicit **civil-time ↔ sidereal-time** conversion ring on the dial.
+
+**Why parked.** Rendered well and the astronomy is genuine, but it pulled the
+"twelve / tunnel" family off-course into a starfield sub-theme; set aside to
+return to the #019–#021 tunnel discussion. The real-sky math is worth keeping.
+
+**Reusable bits if revived.** A `sky.ts` helper module: real Horologium +
+southern-neighbour star tables (J2000), `mulberry32` seeded field stars given
+as (ra, dec), `localSiderealDeg(now)` from wall-clock + timezone longitude,
+`projectPolar` (south-pole polar projection) and `altAz` (horizon projection
+for a given latitude), and a magnitude→dot-radius mapping.
+

@@ -21,6 +21,7 @@ import RemainingClock from "./remaining/RemainingClock";
 import CenturyClock from "./century/CenturyClock";
 import { GameOfLifeClock } from "./game-of-life/variants";
 import DecimalClock from "./decimal/DecimalClock";
+import ColorClock from "./color/ColorClock";
 
 export type ClockEntry = {
   slug: string;
@@ -178,8 +179,16 @@ export const clocks: ClockEntry[] = [
     name: "十进制革命钟",
     nameEn: "Decimal",
     description:
-      "法兰西共和国 1793 年的十进制时间：一天 = 10 小时，一小时 = 100 分，一分 = 100 秒。于是表盘被平分成 10 格而不是 12，时针一天才转一圈。它颗覆的是最根本的假设——“一天该分成几份”：5 点是正午，7.5 点是傍晚。下方用十进制 H:MM:SS 报出读数。",
+      "法兰西共和国 1793 年的十进制时间：一天 = 10 小时，一小时 = 100 分，一分 = 100 秒。于是表盘被平分成 10 格而不是 12，顶端是 10，时针一天才转一圈。它颠覆的是最根本的假设——“一天该分成几份”：5 点是正午，7.5 点是傍晚。时、分、秒三针仿照 #001 的走法，只是单位全是十进制。",
     Component: DecimalClock,
+  },
+  {
+    slug: "color",
+    name: "色彩钟",
+    nameEn: "Color",
+    description:
+      "整个表盘就是一块纯色：十六进制颜色值 #HHMMSS，三对数字正是当前的时、分、秒——所以 13:24:57 时，表盘恰好是 #132457。这是 Unix 钟“机器可读、人不可读”那一路的远亲：时间变成一种你读不准、却能感受到它在缓缓漂移的颜色，秒位不停拨动着蓝调。正中用等宽字标出当前色值，是对可读性唯一的妥协。",
+    Component: ColorClock,
   },
 ];
 

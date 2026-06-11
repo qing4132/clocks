@@ -188,3 +188,55 @@ as (ra, dec), `localSiderealDeg(now)` from wall-clock + timezone longitude,
 `projectPolar` (south-pole polar projection) and `altAz` (horizon projection
 for a given latitude), and a magnitude→dot-radius mapping.
 
+## Spectrum — HSL colour time (built, then parked)
+
+**Concept.** The whole face is one flat colour, mapped through HSL so it is
+always vivid (unlike the literal `#HHMMSS` hex clock #021, which stays near
+black because H/M/S are small numbers). Mapping that was prototyped:
+
+- **Hue** = how far through the day (`dayFrac × 360°`) — one full loop round
+  the colour wheel per 24 h: midnight red → morning yellow → midday green/cyan
+  → evening blue → late-night violet → back to red.
+- **Lightness** = the minute (≈42–58%, breathing dark→light across the hour).
+- **Saturation** = the second (≈62–80%, a gentle pulse across the minute).
+
+A monospace caption showed `H __° · S __% · L __%`.
+
+**Why parked.** Rendered fine and the hue-is-a-circle ↔ day-is-a-circle idea is
+clean, but the user judged it not good enough to keep. The literal hex clock
+(#021 Color) was kept instead. Code lived at `src/clocks/spectrum/`.
+
+**Reusable bits.** A self-contained `hslToRgb(h,s,l)` and a `readableInk(r,g,b)`
+contrast picker (black/white by relative luminance) — handy for any future
+colour-driven clock.
+
+## Fireworks — 烟火钟 (built, then parked)
+
+**Concept.** A night sky over a faint ground line. **Every second launches one
+firework** that blooms and fades over ~3.2 s, so a few bursts always overlap —
+the newest is brightest. The reading is *impressionistic*, not precise: a near-
+empty sky means the minute just rolled over; a crowded, busy sky means you're
+mid-minute. Accents mark the cadence: the **first burst of each minute is
+bigger and red**, and the **top of each hour is one large gold shell**.
+
+**Why parked.** Built and registered (was #027), driven by `useWallClock(100)`
+with a PRNG (`rng(seed)`) seeded per launch (seed = `launchSec + h*3600 + m*60`)
+so a given burst always looks identical frame-to-frame. The user judged it — and
+the whole batch it shipped in (rings / ascii / balance / ink / crystal /
+fireworks) — not good enough to keep. Known rough edges that would need fixing
+if revived: **bursts cluster toward the upper-right** (spawn box was
+`cx ∈ [-70,70]`, `cy ∈ [-60,10]`, not balanced about the face) and the **ground
+line slightly overflows** the round frame at the ends.
+
+**Why it's a weak "twist" anyway.** Like Sea, it's more *mood/animation* than a
+new way of **encoding** time — you can't actually read the time off it, only
+sense "early vs. late in the minute." If revived it needs a genuine readable
+layer (e.g. burst count or position truly encoding minutes), not just
+atmosphere.
+
+**Reusable bits.** The seeded-per-event PRNG pattern (deterministic bursts that
+stay stable across renders), the age-based fade (`age = secsSinceLaunch /
+LIFETIME`, `fade = 1 - age`, `spread = radius · min(1, age·1.4)`), and the
+radial-spoke burst drawing (N petals = lines + end dots, jittered angles).
+
+

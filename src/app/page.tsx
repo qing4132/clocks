@@ -15,10 +15,8 @@ export default function Home() {
               <span className="absolute top-4 right-5 font-mono text-xs text-neutral-400 tabular-nums">
                 #{String(idx + 1).padStart(3, "0")}
               </span>
-              <div className="aspect-square flex items-center justify-center">
-                <div className="scale-75 origin-center">
-                  <Component />
-                </div>
+              <div className="aspect-square w-full flex items-center justify-center [&_svg]:w-full [&_svg]:h-full">
+                <Component />
               </div>
               <div className="mt-2 text-center text-sm text-neutral-500 tracking-wide">
                 {nameEn}

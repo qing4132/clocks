@@ -22,6 +22,7 @@ import CenturyClock from "./century/CenturyClock";
 import { GameOfLifeClock } from "./game-of-life/variants";
 import DecimalClock from "./decimal/DecimalClock";
 import ColorClock from "./color/ColorClock";
+import { SorobanClock } from "./abacus/variants";
 
 export type ClockEntry = {
   slug: string;
@@ -189,6 +190,14 @@ export const clocks: ClockEntry[] = [
     description:
       "整个表盘就是一块纯色：十六进制颜色值 #HHMMSS，三对数字正是当前的时、分、秒——所以 13:24:57 时，表盘恰好是 #132457。这是 Unix 钟“机器可读、人不可读”那一路的远亲：时间变成一种你读不准、却能感受到它在缓缓漂移的颜色，秒位不停拨动着蓝调。正中用等宽字标出当前色值，是对可读性唯一的妥协。",
     Component: ColorClock,
+  },
+  {
+    slug: "soroban",
+    name: "算盘钟",
+    nameEn: "Soroban",
+    description:
+      "日式算盘（soroban）记时：每档上一珠当 5、下四珠每颗当 1，拨向中间的横梁即为“拨入”，一档恰好表示 0–9。六档从左到右读出时、分、秒的十位个位。算珠是小圆角方块，搂在一块圆角背景上（与 #011／#021 同宽同圆角），发丝般的档线，大量留白。上一下四，方珠随时间滑动归位。秒的两档拨红珠。",
+    Component: SorobanClock,
   },
 ];
 

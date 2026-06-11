@@ -45,17 +45,15 @@ export default function ColorClock() {
       role="img"
       aria-label="Color clock — the face is the colour #HHMMSS"
     >
-      {/* the colour fills the whole face; thin #001-style border keeps it a dial */}
+      {/* the colour fills the whole face; no border — the face IS the colour */}
       <rect
-        x="-96"
-        y="-96"
-        width="192"
-        height="192"
+        x="-94"
+        y="-94"
+        width="188"
+        height="188"
         rx="10"
         ry="10"
         fill={now ? hex : "#000000"}
-        stroke="#1a1a1a"
-        strokeWidth="3"
       />
       {now && (
         <text

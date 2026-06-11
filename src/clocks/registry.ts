@@ -20,6 +20,7 @@ import {
 import RemainingClock from "./remaining/RemainingClock";
 import CenturyClock from "./century/CenturyClock";
 import { GameOfLifeClock } from "./game-of-life/variants";
+import DecimalClock from "./decimal/DecimalClock";
 
 export type ClockEntry = {
   slug: string;
@@ -171,6 +172,14 @@ export const clocks: ClockEntry[] = [
     description:
       "一台真正运转的康威生命游戏机器，被拿来当钟。四个 Snark——Mike Playle 于 2013 年发现的、已知最小的稳定 90° 滑翔机反射器——以四重对称摆放，让一架只发射一次的滑翔机被逐个转角反射、永远绕环飞行。那架绕行的滑翔机就是一根真正活着的秒针：绕一圈恰好 60 秒（环的周期是 360 代，即每秒精确 6 代），且严格锁定墙上时钟、绝不漂移。这里没有一处是假的——一架真正的滑翔机按真正的 B3/S23 规则绕真正的反射器环跑，四个 Snark 正对上下左右、是淡墨色的机芯。时与分写在环中央那块没有细胞的空白里：用 Georgia 斜体把时与分上下叠着写出来，连续的笔画一眼就是“写上去的字”、不会被误认为参与生命游戏的细胞。",
     Component: GameOfLifeClock,
+  },
+  {
+    slug: "decimal",
+    name: "十进制革命钟",
+    nameEn: "Decimal",
+    description:
+      "法兰西共和国 1793 年的十进制时间：一天 = 10 小时，一小时 = 100 分，一分 = 100 秒。于是表盘被平分成 10 格而不是 12，时针一天才转一圈。它颗覆的是最根本的假设——“一天该分成几份”：5 点是正午，7.5 点是傍晚。下方用十进制 H:MM:SS 报出读数。",
+    Component: DecimalClock,
   },
 ];
 

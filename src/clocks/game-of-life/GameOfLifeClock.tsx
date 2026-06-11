@@ -125,13 +125,17 @@ export function buildPaths(grid: Uint8Array, cell: number) {
 
 const GEN_PER_SEC = PERIOD / 60;
 
-// Phase-align the glider to a real second hand WITHOUT rotating the field (the
-// four Snarks stay pointing up/down/left/right). At gen 0 the glider sits ~48°
-// (= 48 generations, since 360° = 360 gens) anticlockwise of 12 o'clock, so we
-// start the simulation 48 generations ahead. A residual ±~11° wobble remains
-// because the glider moves at constant speed around a diamond, not constant
-// angular speed around a circle — that part is geometric and can't be removed.
-const SECOND_PHASE = 48;
+// Phase the glider WITHOUT rotating the field (the four Snarks stay pointing
+// up/down/left/right). The glider runs clean along each diamond edge, then
+// briefly scrambles (~3.5 s) as it bounces off a Snark at a corner. We offset
+// the simulation so each corner-bounce STRADDLES a 15-second mark (0/15/30/45):
+// half the scramble falls at the end of one quarter and half at the start of
+// the next, instead of bunching at an edge's tail. Measured (browser + script):
+// at phase 48 the scramble centre sat at sec≈14 — 1 s (6 gens) early — so 42
+// puts the bounce centre on the marks. A small fixed offset from a "true"
+// second hand remains, plus the geometric wobble of constant-speed-around-a-
+// diamond vs constant-angular-speed-around-a-circle.
+const SECOND_PHASE = 42;
 
 /** Runs the phase-locked simulation; re-renders once per generation. */
 function useLifeGrid(): Uint8Array | null {

@@ -19,6 +19,7 @@ import {
 } from "./breathing-blossom/variants";
 import RemainingClock from "./remaining/RemainingClock";
 import CenturyClock from "./century/CenturyClock";
+import { GameOfLifeClock } from "./game-of-life/variants";
 
 export type ClockEntry = {
   slug: string;
@@ -162,6 +163,14 @@ export const clocks: ClockEntry[] = [
     description:
       "一只忠实的 #001 圆盘，时分秒照常走；只是最外圈那道边不再只是边框——它是本世纪（2000→2100）的进度条，从 12 点顺时针填满，走过的部分化作一圈闪着金沙的黄金弧，像空岛上的黄金钟。你一生看着它几乎不动，它却在静静镀亮整整一百年。",
     Component: CenturyClock,
+  },
+  {
+    slug: "game-of-life",
+    name: "生命游戏钟",
+    nameEn: "Game of Life",
+    description:
+      "一台真正运转的康威生命游戏机器，被拿来当钟。四个 Snark——Mike Playle 于 2013 年发现的、已知最小的稳定 90° 滑翔机反射器——以四重对称摆放，让一架只发射一次的滑翔机被逐个转角反射、永远绕环飞行。那架绕行的滑翔机就是一根真正活着的秒针：绕一圈恰好 60 秒（环的周期是 360 代，即每秒精确 6 代），且严格锁定墙上时钟、绝不漂移。这里没有一处是假的——一架真正的滑翔机按真正的 B3/S23 规则绕真正的反射器环跑，四个 Snark 正对上下左右、是淡墨色的机芯。时与分写在环中央那块没有细胞的空白里：用 Georgia 斜体把时与分上下叠着写出来，连续的笔画一眼就是“写上去的字”、不会被误认为参与生命游戏的细胞。",
+    Component: GameOfLifeClock,
   },
 ];
 

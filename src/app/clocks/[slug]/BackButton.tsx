@@ -1,18 +1,26 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { forgetHomeClockNavigation, prepareHomeReturn } from "@/app/homeScroll";
 
-// Go back the way the browser would (restores the home scroll position),
-// falling back to the home route when the page was opened directly.
+// Always returns to the gallery. If this detail page was entered from the
+// gallery, the gallery restores its previous scroll position on mount.
 export function BackButton() {
   const router = useRouter();
 
+  useEffect(() => {
+    window.addEventListener("pagehide", forgetHomeClockNavigation);
+    return () => {
+      window.removeEventListener("pagehide", forgetHomeClockNavigation);
+      forgetHomeClockNavigation();
+    };
+  }, []);
+
   function handleBack() {
-    if (typeof window !== "undefined" && window.history.length > 1) {
-      router.back();
-    } else {
-      router.push("/");
-    }
+    const restoreScroll =
+      typeof window !== "undefined" && prepareHomeReturn(window.location.pathname);
+    router.push("/", { scroll: !restoreScroll });
   }
 
   return (

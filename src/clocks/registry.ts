@@ -24,6 +24,7 @@ import DecimalClock from "./decimal/DecimalClock";
 import ColorClock from "./color/ColorClock";
 import { SorobanClock } from "./soroban/SorobanClock";
 import ShengxiaoClock from "./shengxiao/ShengxiaoClock";
+import YearClock from "./year/YearClock";
 
 export type ClockEntry = {
   slug: string;
@@ -207,6 +208,14 @@ export const clocks: ClockEntry[] = [
     description:
       "中国传统的十二时辰，每个时辰两小时，以地支和生肖命名。子时（23:00–01:00）在最上，于是午夜落在鼠、正午落在午（马）——整个表盘其实是一天。十二只生肖用 Google 的 Noto 动画 emoji 像数字一样绕成一圈，当前时辰那只会放大、发光；正中显示此刻完整的干支（如“丁未时”）。时干由日干按五鼠遁推得，日干来自六十甲子的日序（以 2000-01-07 甲子为镀）。",
     Component: ShengxiaoClock,
+  },
+  {
+    slug: "year",
+    name: "Year",
+    nameEn: "Year",
+    description:
+      "复刻 #018 世纪钟的结构，但外圈不再标记百年，而是标记当前年份（1 月 1 日 → 下一年 1 月 1 日）的进度。走过的部分化作一圈缓缓流动的蓝色细砂。",
+    Component: YearClock,
   },
 ];
 

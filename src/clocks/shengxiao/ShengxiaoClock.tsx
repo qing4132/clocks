@@ -197,14 +197,6 @@ export default function ShengxiaoClock() {
           position: "relative",
           width: "100%",
           height: "100%",
-          borderRadius: "9999px",
-          background: "#fafaf7",
-          border: "3px solid #1a1a1a",
-          boxSizing: "border-box",
-          // box-shadow (not the wrapper's drop-shadow) so the shadow follows the
-          // round face; Safari mis-renders filter:drop-shadow on this div as a
-          // square, leaving a horizontal shadow band under the dial.
-          boxShadow: "0 18px 30px -12px rgba(0,0,0,0.28)",
         }}
         role="img"
         aria-label="Shengxiao — Chinese zodiac double-hour clock"

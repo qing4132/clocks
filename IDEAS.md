@@ -113,6 +113,59 @@ three translated SVG groups:
 feels close to #001 with a registration-error effect. If revived, it needs a
 stronger rule for why the three plates drift apart, not just fixed offsets.
 
+## Envelope — 包络线钟（built, then parked）
+
+**Concept.** A minute is represented by 60 short line segments. Together they
+form a changing envelope-like texture; the current second is the one red
+segment. The first version encoded hour/minute only implicitly through the
+overall rotation and internal modulation; a later pass added explicit readout
+rings so it could actually be read as a clock.
+
+**Implementation that was tried.** Built as `src/clocks/envelope/EnvelopeClock.tsx`.
+The component used `useWallClock(1000)` and rendered:
+
+- a #001-style cream round face with black rim
+- 60 short segments, one per second
+- one red segment for the current second
+- an inner 60-dot minute ring, with the current minute enlarged
+- an outer 12-dot hour ring, with the current hour enlarged
+- faint helper lines from the center to the active hour/minute dots
+
+The key geometry was:
+
+```tsx
+const hourTurn = h * 30 + m * 0.5;
+const minuteTurn = m * 6;
+const hourPoint = polar(hourTurn, 86);
+const minutePoint = polar(minuteTurn, 72);
+
+Array.from({ length: 60 }).map((_, i) => {
+  const age = (s - i + 60) % 60;
+  const opacity = i <= s ? 0.14 + (i / Math.max(1, s)) * 0.5 : 0.06;
+  const angle = hourTurn + i * 6;
+  const center = polar(angle, 38 + Math.sin((i + m) * 0.31) * 16);
+  const dir = polar(angle + 90 + minuteTurn * 0.08, 10 + (age % 12) * 0.8);
+
+  return (
+    <line
+      x1={Math.round((center.x - dir.x) * 1000) / 1000}
+      y1={Math.round((center.y - dir.y) * 1000) / 1000}
+      x2={Math.round((center.x + dir.x) * 1000) / 1000}
+      y2={Math.round((center.y + dir.y) * 1000) / 1000}
+      stroke={i === s ? "#c1121f" : "#1a1a1a"}
+      strokeWidth={i === s ? 1.4 : 0.7}
+      opacity={i === s ? 1 : opacity}
+      strokeLinecap="round"
+    />
+  );
+})
+```
+
+**Why parked.** Once the hour/minute rings were added, it became readable, but
+the result felt like two different clocks layered together: an expressive
+envelope texture plus conventional dot-ring readouts. The envelope itself still
+does not carry enough readable structure on its own.
+
 ## Round-dial 30-hour clock (a pair for the digital #012)
 
 **Concept.** A 30-hour clock built on the round 24-hour dial (#004: 24

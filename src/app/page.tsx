@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { clocks } from "@/clocks/registry";
-import { HomeScrollMemory } from "./HomeScrollMemory";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-neutral-50 text-neutral-900 px-6 py-16 sm:py-24">
-      <HomeScrollMemory />
       <div className="max-w-5xl mx-auto">
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {clocks.map(({ slug, nameEn, Component }, idx) => (

@@ -13,6 +13,9 @@ import { useWallClock } from "../useWallClock";
  *
  *   Small rounded-square beads, hairline rods and a soft rounded background
  *   (188 wide, rx 10 — matched to #011 / #021), with generous whitespace.
+ *
+ *   NOTE: the bead size, spacing and the beam/rod lengths are likely to be
+ *   fine-tuned later — this layout is not considered final.
  */
 
 const INK = "#1a1a1a";
@@ -30,15 +33,39 @@ function toDigits(h: number, m: number, s: number): number[] {
 }
 
 // ---------- layout geometry (shared by all six designs) ----------
+// Ten slots down each rod (2 above the beam, 8 below). `G` is the EDGE GAP
+// between neighbouring bead edges; it is NOT free — it is solved from the fixed
+// gray-rod length so the beads fill the rod exactly. The rod length splits as:
+//   2*ROD_HALF = 10 bead-heights + ½G (top) + ½G (bottom) + 10G of gaps
+//              = 10*(2*BH) + ½G + ½G + (8 normal + 1 doubled) G
+//              = 20*BH + 11*G
+// so slot 1 / slot 10 keep exactly ½G + BH to each rod end, and the gap across
+// the beam (slots 2↔3) is doubled.
+const BH = 4.4; // bead half-height (matches SQUARE.beadH); full bead height = 2*BH
+const ROD_HALF = 82; // gray rod (灰线) half-length — FIXED; rod spans ±82 (length 164)
+const G = (2 * ROD_HALF - 20 * BH) / 11; // edge gap, solved from the rod length
+const STEP = 2 * BH + G; // normal centre-to-centre pitch
+const STEP2 = 2 * BH + 2 * G; // doubled pitch across the beam (slots 2↔3)
+const SPAN = 8 * STEP + STEP2; // centre-to-centre span, slot 1 → slot 10
+const Y1 = -SPAN / 2; // slot 1; symmetric, leaving ½G + BH to each rod end
 const VROD_X = [-72, -50, -11, 11, 50, 72]; // grouped into three pairs: 时 | 分 | 秒
-const VBEAM_Y = -42;
-const HEAVEN_REST = -70; // single heaven bead, idle (up)
-const HEAVEN_DOWN = -52; // single heaven bead, active (down to beam)
-// earth beads indexed 0..3 (0 = nearest the beam); each has an "up" slot
-// (pushed to the beam) and a "rest" slot (piled at the bottom). Giving every
-// physical bead a stable slot pair is what lets it SLIDE between the two.
-const EARTH_ACTIVE = [-30, -14, 2, 18]; // bead i pushed up to the beam
-const EARTH_REST = [30, 46, 62, 78]; // bead i resting at the bottom
+const SLOT_Y = [
+  Y1, // 1 — heaven idle (top)
+  Y1 + STEP, // 2 — heaven down (at beam)
+  Y1 + STEP + STEP2, // 3 — earth active 0
+  Y1 + 2 * STEP + STEP2, // 4
+  Y1 + 3 * STEP + STEP2, // 5
+  Y1 + 4 * STEP + STEP2, // 6
+  Y1 + 5 * STEP + STEP2, // 7 — earth rest 0
+  Y1 + 6 * STEP + STEP2, // 8
+  Y1 + 7 * STEP + STEP2, // 9
+  Y1 + 8 * STEP + STEP2, // 10 (bottom)
+];
+const VBEAM_Y = (SLOT_Y[1] + SLOT_Y[2]) / 2; // beam centred in the doubled gap
+const HEAVEN_REST = SLOT_Y[0]; // slot 1 — heaven bead idle (topmost)
+const HEAVEN_DOWN = SLOT_Y[1]; // slot 2 — heaven bead pushed down to the beam
+const EARTH_ACTIVE = [SLOT_Y[2], SLOT_Y[3], SLOT_Y[4], SLOT_Y[5]]; // slots 3–6
+const EARTH_REST = [SLOT_Y[6], SLOT_Y[7], SLOT_Y[8], SLOT_Y[9]]; // slots 7–10
 
 type Shape = "bicone" | "circle" | "rsquare" | "ring";
 
@@ -132,9 +159,15 @@ function VerticalSuanpan({ cfg, label }: { cfg: VConfig; label: string }) {
       )}
 
       <g transform={`scale(${scale})`}>
-        {/* beam */}
+        {/* rods (vertical hairlines) — drawn first, beneath the beam */}
+        {VROD_X.map((cx, i) => (
+          <line key={`rod-${i}`} x1={cx} y1={-ROD_HALF} x2={cx} y2={ROD_HALF} stroke={cfg.rodColor} strokeWidth={cfg.rodWidth} />
+        ))}
+
+        {/* beam (division line) — on top of the rods */}
         <line x1={-80} y1={VBEAM_Y} x2={80} y2={VBEAM_Y} stroke={INK} strokeWidth={cfg.beamWidth} />
 
+        {/* beads — on top of everything */}
         {now &&
           VROD_X.map((cx, i) => {
             const red = i >= 4;
@@ -144,7 +177,6 @@ function VerticalSuanpan({ cfg, label }: { cfg: VConfig; label: string }) {
             const e = d % 5;
             return (
               <g key={i}>
-                <line x1={cx} y1={-80} x2={cx} y2={80} stroke={cfg.rodColor} strokeWidth={cfg.rodWidth} />
                 <Bead shape={cfg.shape} cx={cx} y={heavenY} w={cfg.beadW} h={cfg.beadH} color={color} />
                 {[0, 1, 2, 3].map((bi) => {
                   const active = bi < e;

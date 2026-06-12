@@ -32,6 +32,87 @@ open-triangle hand geometry.
 **If revisited.** Keep it as a pure wireframe first; avoid vertex dots, heavy
 edges and decorative shading until the time-reading relation is strong enough.
 
+## Moire — 莫尔纹钟（built, then parked）
+
+**Concept.** Three dense line gratings sit on the same round face. The hour,
+minute and second each control one grating's angle; their interference produces
+the visible time pattern. A later pass matched the grating stroke weights and
+colours to #001's hands (hour black 5, minute black 3, second red 1.5) while
+keeping different line spacing per layer.
+
+**Why parked.** The mechanism is good, but at clock size the interference tends
+to read as visual texture before it reads as time. It may need a more deliberate
+readout layer or much clearer separation between the three gratings.
+
+## Melting — 融化钟（built, then parked）
+
+**Concept.** A #001-like dial is softened into a drooping, melting clock face:
+the outline sags, the numeral layer is skewed/pressed, and the hands still use
+the real wall-clock angles. The reference point was the famous surreal melting-
+clock motif, but the implementation stayed as an original #001-derived face.
+
+**Why parked.** It became more of a visual homage/material treatment than a new
+encoding of time. If revived, the melting deformation should be tied more
+directly to the time values rather than merely styling a conventional dial.
+
+## Gravity Well — 重力井钟（built, then parked）
+
+**Concept.** Turn hour, minute and second into three mass points that pull a
+grid toward themselves. The first version used a square face and square grid;
+the next explored a circular / polar grid with stronger distortion and smooth
+second motion.
+
+**Why parked.** The metaphor is legible, but the grid distortion reads more like
+a physics demo than a clock in this gallery. If revived, it needs a cleaner way
+to read H/M/S from the wells, not just stronger warping.
+
+## Chemical — 化学式钟（built, then parked）
+
+**Concept.** Encode time as chemistry-like tiles. Two versions were tried:
+
+- H / M / S as three periodic-table-style cells carrying the current hour,
+  minute and second, with a formula-like footer.
+- A stricter mapping where each value selects the element with that atomic
+  number (e.g. 26 → Fe, 33 → As), with 0 treated as a special empty element.
+
+**Why parked.** The graphic language is clear, but it reads too much like a
+labelled conversion table. It needs a stronger clock-native mechanism before it
+deserves a slot in the gallery.
+
+## Offset Layers — 错层钟（built, then parked）
+
+**Concept.** Split #001 into three transparent printing plates: an hour layer,
+a minute layer and a second layer. Each layer carries only its own ring and hand,
+then the three plates are slightly misregistered. Time is read from the fact that
+the layers no longer share one perfectly aligned dial.
+
+**Implementation that was tried.** Built as `src/clocks/offset-layers/OffsetLayersClock.tsx`.
+The component used `useWallClock(1000)` and rendered one faint shared face plus
+three translated SVG groups:
+
+```tsx
+<circle cx="0" cy="0" r="96" fill="#fafaf7" stroke="#1a1a1a" strokeWidth="3" opacity="0.18" />
+
+<Layer dx={-7} dy={-5} stroke="#1a1a1a" opacity={0.7}>
+  <circle cx="0" cy="0" r="72" fill="none" strokeWidth="1" />
+  <line x1="0" y1="8" x2="0" y2="-50" strokeWidth="5" strokeLinecap="round" transform={`rotate(${h * 30 + m * 0.5})`} />
+</Layer>
+
+<Layer dx={5} dy={2} stroke="#1a1a1a" opacity={0.55}>
+  <circle cx="0" cy="0" r="82" fill="none" strokeWidth="1" />
+  <line x1="0" y1="12" x2="0" y2="-74" strokeWidth="3" strokeLinecap="round" transform={`rotate(${m * 6 + s * 0.1})`} />
+</Layer>
+
+<Layer dx={1} dy={7} stroke="#c1121f" opacity={0.82}>
+  <circle cx="0" cy="0" r="92" fill="none" strokeWidth="1" />
+  <line x1="0" y1="16" x2="0" y2="-84" strokeWidth="1.5" strokeLinecap="round" transform={`rotate(${s * 6})`} />
+</Layer>
+```
+
+**Why parked.** The offset-printing metaphor is readable, but the result still
+feels close to #001 with a registration-error effect. If revived, it needs a
+stronger rule for why the three plates drift apart, not just fixed offsets.
+
 ## Round-dial 30-hour clock (a pair for the digital #012)
 
 **Concept.** A 30-hour clock built on the round 24-hour dial (#004: 24

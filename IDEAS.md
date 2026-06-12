@@ -5,6 +5,33 @@ built yet. Unlike `archive/`, these were never prototyped — they're waiting
 until the gallery grows enough to need them. Revisit when adding many more
 clocks or rethinking how the gallery is presented.
 
+## Pointer-tip tetrahedron — 指针尖端四面体（built, then parked）
+
+**Concept.** Start from #001's real hand geometry, but hide the dial, hands and
+numerals. Keep only four moving points:
+
+- the center of the clock
+- the hour-hand tip
+- the minute-hand tip
+- the second-hand tip
+
+Connect the three hand tips into a triangle, then connect the center to all
+three tips. The result is a tetrahedron-like wireframe whose projected shape is
+entirely determined by the current time. A later pass tried soft face shading so
+the four triangular faces read like a solid.
+
+**What was tried.** Built as `pointer-tip-triangle` after #025. Iterations:
+single triangle from the three hand tips → add center point and spokes → add
+face shading → remove vertex dots → thin the edges.
+
+**Why parked.** The premise is clean, but in the small 200-unit clock face the
+solid/shaded version becomes a generic abstract polyhedron more than a readable
+time encoding. The best surviving branch from this family is still #025's
+open-triangle hand geometry.
+
+**If revisited.** Keep it as a pure wireframe first; avoid vertex dots, heavy
+edges and decorative shading until the time-reading relation is strong enough.
+
 ## Round-dial 30-hour clock (a pair for the digital #012)
 
 **Concept.** A 30-hour clock built on the round 24-hour dial (#004: 24

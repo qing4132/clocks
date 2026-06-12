@@ -150,7 +150,6 @@ function Animal({
         height: size,
         transform: "translate(-50%, -50%)",
         transition: "width 0.3s ease, height 0.3s ease",
-        filter: active ? "drop-shadow(0 2px 4px rgba(0,0,0,0.18))" : "none",
       }}
     >
       {data ? (

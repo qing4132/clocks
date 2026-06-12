@@ -25,6 +25,7 @@ import ColorClock from "./color/ColorClock";
 import { SorobanClock } from "./soroban/SorobanClock";
 import ShengxiaoClock from "./shengxiao/ShengxiaoClock";
 import YearClock from "./year/YearClock";
+import PointerTrianglesClock from "./pointer-triangles/PointerTrianglesClock";
 
 export type ClockEntry = {
   slug: string;
@@ -216,6 +217,14 @@ export const clocks: ClockEntry[] = [
     description:
       "复刻 #018 世纪钟的结构，但外圈不再标记百年，而是标记当前年份（1 月 1 日 → 下一年 1 月 1 日）的进度。走过的部分化作一圈缓缓流动的蓝色细砂。",
     Component: YearClock,
+  },
+  {
+    slug: "pointer-triangles",
+    name: "三角指针钟",
+    nameEn: "Pointer Triangles",
+    description:
+      "基于 #001 的圆形钟。时、分、秒三根指针各自把尖端作为正三角形的一个顶点；另外两个顶点由这个尖端绕表心旋转 120° 和 240° 得到，因此每个三角形的重心都落在表心，并随对应指针一起转动。",
+    Component: PointerTrianglesClock,
   },
 ];
 

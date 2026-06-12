@@ -48,6 +48,11 @@ const DRAGON_CP = "1f409";
 const DRAGON_MID = 60;
 const HORSE_CP = "1f40e"; // its Lottie is the shortest (~0.5s), so play it three times
 const restFrameOf = (cp: string) => (cp === DRAGON_CP ? DRAGON_MID : 0);
+const DESKTOP_FACE_CONTENT = 384 - 2 * 3;
+const ANIMAL_SIZE = {
+  inactive: `${(52 / DESKTOP_FACE_CONTENT) * 100}%`,
+  active: `${(74 / DESKTOP_FACE_CONTENT) * 100}%`,
+};
 
 // one zodiac animal, drawn entirely from its animated Noto Lottie. It rests
 // frozen on its static pose; on each `beat` (minute boundary) it plays once,
@@ -124,7 +129,7 @@ function Animal({
     }
   }, [beat, active, data, cp]);
 
-  const size = active ? 74 : 52;
+  const size = active ? ANIMAL_SIZE.active : ANIMAL_SIZE.inactive;
   // The dragon's Noto animation translates off-canvas as it flies; a CSS mask
   // on its layer fades the alpha to 0 at the left/right edges, so the fly-out /
   // fly-in dissolves into the face instead of being hard-clipped. The opaque

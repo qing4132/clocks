@@ -23,6 +23,7 @@ import { GameOfLifeClock } from "./game-of-life/variants";
 import DecimalClock from "./decimal/DecimalClock";
 import ColorClock from "./color/ColorClock";
 import { SorobanClock } from "./abacus/variants";
+import ShengxiaoClock from "./shengxiao/ShengxiaoClock";
 
 export type ClockEntry = {
   slug: string;
@@ -198,6 +199,14 @@ export const clocks: ClockEntry[] = [
     description:
       "日式算盘（soroban）记时：每档上一珠当 5、下四珠每颗当 1，拨向中间的横梁即为“拨入”，一档恰好表示 0–9。六档从左到右读出时、分、秒的十位个位。算珠是小圆角方块，搂在一块圆角背景上（与 #011／#021 同宽同圆角），发丝般的档线，大量留白。上一下四，方珠随时间滑动归位。秒的两档拨红珠。",
     Component: SorobanClock,
+  },
+  {
+    slug: "shengxiao",
+    name: "生肖时辰钟",
+    nameEn: "Shengxiao",
+    description:
+      "中国传统的十二时辰，每个时辰两小时，以地支和生肖命名。子时（23:00–01:00）在最上，于是午夜落在鼠、正午落在午（马）——整个表盘其实是一天。十二只生肖用 Google 的 Noto 动画 emoji 像数字一样绕成一圈，当前时辰那只会放大、发光；正中显示此刻完整的干支（如“丁未时”）。时干由日干按五鼠遁推得，日干来自六十甲子的日序（以 2000-01-07 甲子为镀）。",
+    Component: ShengxiaoClock,
   },
 ];
 

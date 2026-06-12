@@ -15,7 +15,7 @@ import { useWallClock } from "../useWallClock";
  *   (188 wide, rx 10 — matched to #011 / #021), with generous whitespace.
  *
  *   NOTE: the bead size, spacing and the beam/rod lengths are likely to be
- *   fine-tuned later — this layout is not considered final.
+ *   fine-tuned later — this layout may not be final.
  */
 
 const INK = "#1a1a1a";

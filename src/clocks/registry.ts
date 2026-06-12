@@ -22,7 +22,7 @@ import CenturySandClock from "./century/CenturySandClock";
 import { GameOfLifeClock } from "./game-of-life/variants";
 import DecimalClock from "./decimal/DecimalClock";
 import ColorClock from "./color/ColorClock";
-import { SorobanClock } from "./abacus/variants";
+import { SorobanClock } from "./soroban/SorobanClock";
 import ShengxiaoClock from "./shengxiao/ShengxiaoClock";
 
 export type ClockEntry = {

@@ -18,7 +18,7 @@ import {
   BreathingBlossom,
 } from "./breathing-blossom/variants";
 import RemainingClock from "./remaining/RemainingClock";
-import CenturyClock from "./century/CenturyClock";
+import CenturySandClock from "./century/CenturySandClock";
 import { GameOfLifeClock } from "./game-of-life/variants";
 import DecimalClock from "./decimal/DecimalClock";
 import ColorClock from "./color/ColorClock";
@@ -164,8 +164,8 @@ export const clocks: ClockEntry[] = [
     name: "世纪钟",
     nameEn: "Century",
     description:
-      "一只忠实的 #001 圆盘，时分秒照常走；只是最外圈那道边不再只是边框——它是本世纪（2000→2100）的进度条，从 12 点顺时针填满，走过的部分化作一圈闪着金沙的黄金弧，像空岛上的黄金钟。你一生看着它几乎不动，它却在静静镀亮整整一百年。",
-    Component: CenturyClock,
+      "一只忠实的 #001 圆盘，时分秒照常走；只是最外圈那道边不再只是边框——它是本世纪（2000→2100）的进度条，从 12 点顺时针填满，走过的部分化作一圈缓缓流动的金沙，像空岛上的黄金钟。你一生看着它几乎不动，它却在静静镀亮整整一百年。",
+    Component: CenturySandClock,
   },
   {
     slug: "game-of-life",

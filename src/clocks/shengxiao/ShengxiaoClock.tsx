@@ -63,12 +63,16 @@ function Animal({
   cx,
   cy,
   beat,
+  second,
+  resumeBeat,
 }: {
   cp: string;
   active: boolean;
   cx: number;
   cy: number;
   beat: number;
+  second: number;
+  resumeBeat: { current: number | null };
 }) {
   const [data, setData] = useState<{ ip?: number; op?: number } | null>(null);
   const lottieRef = useRef<LottieRefCurrentProps>(null);
@@ -93,17 +97,22 @@ function Animal({
     if (!l || !data) return;
     l.goToAndStop(restFrameOf(cp), true);
   }, [data, cp]);
-  // play the wiggle once when the minute advances by exactly one (a natural
-  // tick). On first mount, or when `beat` jumps by more than one — e.g. the tab
-  // was hidden (rAF frozen) and the visibility handler fast-forwards `now` on
-  // return — we only update the baseline silently, so the animal doesn't wiggle
-  // just because you came back to the page.
+  // TODO: for fully correct hidden-tab behavior, drive the Lottie frame from
+  // wall-clock phase instead of minute events. If the tab returns at xx:xx:00.6,
+  // seek to the matching in-progress frame and continue from there.
+  // play the wiggle once when the minute advances by exactly one on the
+  // 0-second tick. On first mount, fast-forward, or visibility resume midway
+  // through a minute, update the baseline silently.
   useEffect(() => {
     const l = lottieRef.current;
     if (!l || !active || !data) return;
     const prev = prevBeat.current;
     prevBeat.current = beat;
-    if (prev === null || beat - prev !== 1) return; // mount or fast-forward: don't play
+    if (resumeBeat.current === beat) {
+      resumeBeat.current = null;
+      return;
+    }
+    if (prev === null || beat - prev !== 1 || second !== 0) return; // mount, fast-forward, or resume: don't play
     const ip = data.ip ?? 0;
     const op = data.op ?? 100;
     if (cp === DRAGON_CP) {
@@ -127,7 +136,7 @@ function Animal({
     } else {
       l.playSegments([ip, op], true);
     }
-  }, [beat, active, data, cp]);
+  }, [beat, second, active, data, cp, resumeBeat]);
 
   const size = active ? ANIMAL_SIZE.active : ANIMAL_SIZE.inactive;
   // The dragon's Noto animation translates off-canvas as it flies; a CSS mask
@@ -185,6 +194,18 @@ export default function ShengxiaoClock() {
   const k = now ? Math.floor(((h + 1) % 24) / 2) : -1;
   // a counter that ticks once per wall-clock minute (the 0-second mark)
   const beat = now ? Math.floor(now.getTime() / 60000) : 0;
+  const resumeBeat = useRef<number | null>(null);
+
+  useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") {
+        resumeBeat.current = Math.floor(Date.now() / 60000);
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
 
   const minuteAngle = (m + s / 60) * 6;
   const secondAngle = s * 6;
@@ -205,7 +226,7 @@ export default function ShengxiaoClock() {
             const ang = (i * 30 * Math.PI) / 180;
             const cx = 50 + Math.sin(ang) * R_RING;
             const cy = 50 - Math.cos(ang) * R_RING;
-            return <Animal key={cp} cp={cp} active={i === k} cx={cx} cy={cy} beat={beat} />;
+            return <Animal key={cp} cp={cp} active={i === k} cx={cx} cy={cy} beat={beat} second={s} resumeBeat={resumeBeat} />;
           })}
 
         {/* small minute & second hands in the empty centre */}

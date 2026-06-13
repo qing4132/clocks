@@ -5,6 +5,39 @@ built yet. Unlike `archive/`, these were never prototyped — they're waiting
 until the gallery grows enough to need them. Revisit when adding many more
 clocks or rethinking how the gallery is presented.
 
+## Frosted — 毛玻璃钟（built, then parked）
+
+**Concept.** A counterweight to #026 Anxiety: instead of a sharp extra hand
+spinning once per second, time becomes a few large color masses moving behind a
+frosted-glass layer. The intended mood was soft, slow and anti-anxious. Later
+iterations mapped the three blobs from largest to smallest as Sun / Earth /
+Moon colors.
+
+**What was tried.** Built as `src/clocks/frosted/FrostedClock.tsx` after #027.
+Iterations included:
+
+- three blurred color blobs for hour / minute / second under a round frosted
+  face
+- subtle orbit rings to explain the motion
+- removing rings and border after they made the face feel diagrammatic
+- shrinking the inner glass disc and allowing color to bleed past it
+- removing hard circular and square clipping artifacts
+- reintroducing a weak glass blur while keeping the effect inside #001's
+  original circular footprint
+- switching the palette to Sun / Earth / Moon: warm yellow, blue, silver white
+
+**Why parked.** The core feeling is attractive, but the implementation kept
+falling into visible clipping boundaries: first a round plate, then a square
+canvas, then a safety circle. Once those boundaries were removed or softened,
+the design also lost the clear "frosted glass clock" object. The time motion
+remained hard to understand without adding guides, and the guides made it less
+like fogged color and more like a diagram.
+
+**If revisited.** Start from a material model instead of CSS layers: treat the
+glass as a real object with a designed silhouette, or abandon the glass plate
+and make the idea a full-bleed color-field clock. Keep the Sun / Earth / Moon
+palette as a possible direction, but solve the boundary first.
+
 ## Pointer-tip tetrahedron — 指针尖端四面体（built, then parked）
 
 **Concept.** Start from #001's real hand geometry, but hide the dial, hands and

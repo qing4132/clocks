@@ -26,6 +26,8 @@ import { SorobanClock } from "./soroban/SorobanClock";
 import ShengxiaoClock from "./shengxiao/ShengxiaoClock";
 import YearClock from "./year/YearClock";
 import PointerTrianglesClock from "./pointer-triangles/PointerTrianglesClock";
+import AnxietyClock from "./anxiety/AnxietyClock";
+import QRClock from "./qr/QRClock";
 
 export type ClockEntry = {
   slug: string;
@@ -225,6 +227,22 @@ export const clocks: ClockEntry[] = [
     description:
       "基于 #001 的圆形钟。时、分、秒三根指针各自把尖端作为正三角形的一个顶点；另外两个顶点由这个尖端绕表心旋转 120° 和 240° 得到，因此每个三角形的重心都落在表心，并随对应指针一起转动。",
     Component: PointerTrianglesClock,
+  },
+  {
+    slug: "anxiety",
+    name: "焦虑",
+    nameEn: "Anxiety",
+    description:
+      "基于 #001 的圆形钟，额外叠加一根热橙色的焦虑指针。这根指针每 1 秒完整转一圈，像不属于正常计时系统的急躁噪声。",
+    Component: AnxietyClock,
+  },
+  {
+    slug: "qr",
+    name: "纠错钟",
+    nameEn: "QR",
+    description:
+      "每秒生成一个真实可扫的二维码，内容是当前 HH:MM:SS。二维码中央用三层方形轨道和三个模块点分别标记时、分、秒；视觉读时依赖轨道，机器读时依赖二维码纠错。",
+    Component: QRClock,
   },
 ];
 

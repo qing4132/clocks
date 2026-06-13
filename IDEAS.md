@@ -38,6 +38,68 @@ glass as a real object with a designed silhouette, or abandon the glass plate
 and make the idea a full-bleed color-field clock. Keep the Sun / Earth / Moon
 palette as a possible direction, but solve the boundary first.
 
+## Refraction — 折射钟（built, then parked）
+
+**Concept.** Start from #001's real hand angles, but instead of drawing each
+hand as a single solid stroke, pass it through a small prism-like center shape.
+Each hand splits into several offset coloured rays, so the time is still the
+classic analog geometry, but seen through a refracting medium.
+
+**What was tried.** Built as `src/clocks/refraction/RefractionClock.tsx` after
+#027. The prototype kept the #001 face, ticks and numerals, then replaced each
+hand with four coloured parallel/offset rays. A translucent diamond prism sat
+at the center, with the hour/minute/second hands using increasing spreads.
+
+**Why parked.** The mechanism was understandable, but visually it stayed too
+close to "#001 with chromatic aberration". The prism became decoration rather
+than a rule that deeply changes how the clock is read.
+
+**If revisited.** Make refraction structurally necessary: rays should bend at
+explicit entry/exit points, or the prism should occlude and remap the hands so
+the viewer reads time from the refracted endpoints rather than from familiar
+analog strokes.
+
+## Field Lines — 磁场线钟（built, then parked）
+
+**Concept.** Turn hour, minute and second into three moving magnetic poles. The
+dial is filled with field lines that bend around those poles; the current time
+is encoded by both the pole positions and the changing line field.
+
+**What was tried.** Built as `src/clocks/field-lines/FieldLinesClock.tsx` after
+#027. The prototype used 25 horizontal seed paths clipped to the round face;
+each path was displaced by three moving pole points. Hour, minute and second
+poles had different radii, strengths and twist values, and were marked by small
+black/blue/red dots.
+
+**Why parked.** It produced a readable physical texture, but the clock still
+depended on the three visible pole markers. Without them it was a field-line
+illustration; with them it became three dots plus background physics.
+
+**If revisited.** Let the field lines themselves carry the readout: for example
+make stable separatrices, null points or line intersections land on readable
+rings. Avoid relying on three labelled-looking pole markers.
+
+## Stitch — 针脚钟（built, then parked）
+
+**Concept.** Time is sewn into the surface. A ring of 60 stitches carries the
+seconds, an inner ring of holes carries minutes, and twelve larger knots carry
+hours. The current second is the red stitch being pulled tight.
+
+**What was tried.** Built as `src/clocks/stitch/StitchClock.tsx` after #027.
+The prototype drew 60 curved stitch paths around a #001-like face; already sewn
+seconds were darker, future stitches were faint, the active second was red, and
+a red thread curved from the current minute hole toward the current stitch.
+
+**Why parked.** The hand-made metaphor is promising, but this first version was
+too decorative at clock size: many small repeated marks formed a texture before
+they formed an immediately readable clock. The minute and hour rings also
+started to feel like separate UI overlays rather than one sewing mechanism.
+
+**If revisited.** Focus on one sewing action. The whole face could be a single
+thread path that accumulates through the minute, with hour/minute/second all
+encoded by tension, stitch position and thread slack instead of three separate
+rings.
+
 ## Pointer-tip tetrahedron — 指针尖端四面体（built, then parked）
 
 **Concept.** Start from #001's real hand geometry, but hide the dial, hands and

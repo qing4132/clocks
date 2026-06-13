@@ -173,6 +173,8 @@ export default function YearClock() {
           <circle cx="0" cy="0" r="1.5" fill="#c1121f" />
         </>
       )}
+
+      <circle cx="0" cy="0" r="4" fill="#1a1a1a" />
     </svg>
   );
 }

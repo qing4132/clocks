@@ -16,8 +16,9 @@ import { useWallClock } from "../useWallClock";
  *   /emoji/shengxiao), ringed like numerals. Each is its static PNG, enlarged
  *   while it is the current 时辰; that one animal also carries an animated
  *   Lottie that plays a single time at the top of every minute (the 0-second
- *   mark), so the current creature gives a little wiggle once a minute. Small
- *   minute and second hands sweep the empty centre.
+ *   mark), so the current creature gives a little wiggle once a minute. The
+ *   black centre hand is a two-hour 时辰-progress hand, not a modern minute
+ *   hand: one full turn means the current double-hour block has elapsed.
  */
 
 // Noto emoji codepoints (full-body animals), in 时辰 order (子→亥)
@@ -207,7 +208,9 @@ export default function ShengxiaoClock() {
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
 
-  const minuteAngle = (m + s / 60) * 6;
+  const shiftedHour = (h + 1) % 24;
+  const hoursIntoShichen = shiftedHour - k * 2;
+  const shichenProgressAngle = ((hoursIntoShichen * 60 + m + s / 60) / 120) * 360;
   const secondAngle = s * 6;
 
   return (
@@ -229,7 +232,7 @@ export default function ShengxiaoClock() {
             return <Animal key={cp} cp={cp} active={i === k} cx={cx} cy={cy} beat={beat} second={s} resumeBeat={resumeBeat} />;
           })}
 
-        {/* small minute & second hands in the empty centre */}
+        {/* small 时辰-progress and second hands in the empty centre */}
         {now && (
           <svg
             viewBox="-50 -50 100 100"
@@ -251,7 +254,7 @@ export default function ShengxiaoClock() {
               stroke="#1a1a1a"
               strokeWidth="3"
               strokeLinecap="round"
-              transform={`rotate(${minuteAngle})`}
+              transform={`rotate(${shichenProgressAngle})`}
             />
             <line
               x1="0"

@@ -7,6 +7,7 @@ const R = 96;
 const CIRC = Math.round(2 * Math.PI * R * 1000) / 1000;
 const BAND = 3;
 const TRACK = "#dbe5ee";
+const MONTH_ARC_START = -60; // circle dash starts at 3 o'clock; -60 puts it on the numeral 1
 
 function mulberry32(seed: number) {
   return function () {
@@ -90,9 +91,11 @@ export default function YearClock() {
   const minuteAngle = m * 6 + s * 0.1;
   const hourAngle = h * 30 + m * 0.5;
 
-  const YEAR_START = now ? new Date(now.getFullYear(), 0, 1, 0, 0, 0, 0).getTime() : 0;
-  const YEAR_END = now ? new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0, 0).getTime() : 1;
-  const frac = now ? Math.min(1, Math.max(0, (now.getTime() - YEAR_START) / (YEAR_END - YEAR_START))) : 0;
+  const monthIndex = now ? now.getMonth() : 0;
+  const monthStart = now ? new Date(now.getFullYear(), monthIndex, 1, 0, 0, 0, 0).getTime() : 0;
+  const nextMonthStart = now ? new Date(now.getFullYear(), monthIndex + 1, 1, 0, 0, 0, 0).getTime() : 1;
+  const monthFrac = now ? Math.min(1, Math.max(0, (now.getTime() - monthStart) / (nextMonthStart - monthStart))) : 0;
+  const frac = now ? (monthIndex + monthFrac) / 12 : 0;
   const dashOn = Math.round(frac * CIRC * 1000) / 1000;
 
   return (
@@ -100,7 +103,7 @@ export default function YearClock() {
       viewBox="-100 -100 200 200"
       className="w-72 h-72 sm:w-96 sm:h-96 drop-shadow-xl"
       role="img"
-      aria-label="Year clock — flowing blue sand on the rim marks the current year's progress"
+      aria-label="Year clock — flowing blue sand on the rim marks month-weighted year progress"
     >
       <circle cx="0" cy="0" r={R} fill="#fafaf7" />
       <circle cx="0" cy="0" r={R} fill="none" stroke={TRACK} strokeWidth={BAND} />
@@ -122,7 +125,7 @@ export default function YearClock() {
           strokeWidth={BAND}
           strokeDasharray={`0 ${dashOn} ${Math.round((CIRC - dashOn) * 1000) / 1000}`}
           strokeLinecap="butt"
-          transform="rotate(-90)"
+          transform={`rotate(${MONTH_ARC_START})`}
         />
       )}
 

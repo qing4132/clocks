@@ -17,6 +17,9 @@ export default function ThirtyHourClock() {
 
   const civilHour = now ? now.getHours() : 0;
   const displayHour = civilHour < 6 ? civilHour + 24 : civilHour;
+  const isExtended = displayHour >= 24;
+  const panelFill = isExtended ? "#eceef3" : "#fafaf7";
+  const panelStroke = isExtended ? "#424b5f" : "#1a1a1a";
 
   const HH = String(displayHour).padStart(2, "0");
   const MM = now ? String(now.getMinutes()).padStart(2, "0") : "00";
@@ -47,7 +50,7 @@ export default function ThirtyHourClock() {
       role="img"
       aria-label="30-hour digital clock"
     >
-      <DigitalPanel>
+      <DigitalPanel fill={panelFill} stroke={panelStroke}>
         {now &&
           slotX.map((slot, i) => {
             if (slot.type === "c") {

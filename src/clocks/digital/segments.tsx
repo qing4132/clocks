@@ -95,7 +95,15 @@ export const Colon = ({
 );
 
 /** Default panel + digit layout helpers used by every digital-family clock. */
-export const DigitalPanel = ({ children }: { children: React.ReactNode }) => (
+export const DigitalPanel = ({
+  children,
+  fill = "#fafaf7",
+  stroke = "#1a1a1a",
+}: {
+  children: React.ReactNode;
+  fill?: string;
+  stroke?: string;
+}) => (
   <>
     <rect
       x="-94"
@@ -104,9 +112,10 @@ export const DigitalPanel = ({ children }: { children: React.ReactNode }) => (
       height="60"
       rx="10"
       ry="10"
-      fill="#fafaf7"
-      stroke="#1a1a1a"
+      fill={fill}
+      stroke={stroke}
       strokeWidth="3"
+      style={{ transition: "fill 900ms ease, stroke 900ms ease" }}
     />
     {children}
   </>

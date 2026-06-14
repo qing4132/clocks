@@ -5,6 +5,14 @@ built yet. Unlike `archive/`, these were never prototyped — they're waiting
 until the gallery grows enough to need them. Revisit when adding many more
 clocks or rethinking how the gallery is presented.
 
+## Design principle — alternate time systems
+
+Modern readability is not always the first goal. For clocks like #020 Decimal
+or #023 Shengxiao, the first goal is to let the viewer enter another way of
+dividing the day. If a clock commits to a non-modern time system, its internal
+hands and marks should usually follow that system instead of translating back
+to ordinary HH:MM readability.
+
 ## Frosted — 毛玻璃钟（built, then parked）
 
 **Concept.** A counterweight to #026 Anxiety: instead of a sharp extra hand

@@ -13,6 +13,26 @@ dividing the day. If a clock commits to a non-modern time system, its internal
 hands and marks should usually follow that system instead of translating back
 to ordinary HH:MM readability.
 
+## Zulu — 祖鲁钟（built, then parked）
+
+**Concept.** A #011-style digital clock that refuses local time and shows only
+Zulu time / UTC+00: `HH:MM:SSZ`. The idea was to give UTC a more specific
+aviation, military, maritime and weather-reporting context instead of making a
+generic UTC+0 readout.
+
+**What was tried.** Built as `src/clocks/zulu/ZuluClock.tsx` after #027. The
+prototype reused the shared 7-segment digital family, switched to
+`getUTCHours()` / `getUTCMinutes()` / `getUTCSeconds()`, and added small
+`ZULU` and `UTC+00` labels around the panel.
+
+**Why parked.** It was correct and useful in a narrow sense, but it did not add
+enough beyond "UTC in #011's clothes". The Zulu label provided context, yet the
+clock still behaved like a minor variant of the existing digital family.
+
+**If revisited.** Give Zulu time a stronger operational frame: radio/aviation
+logbook styling, a compact `2359Z` notation, or a paired local-vs-Zulu display
+where the point is coordination rather than just another digital readout.
+
 ## Frosted — 毛玻璃钟（built, then parked）
 
 **Concept.** A counterweight to #026 Anxiety: instead of a sharp extra hand

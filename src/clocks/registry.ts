@@ -28,6 +28,7 @@ import YearClock from "./year/YearClock";
 import PointerTrianglesClock from "./pointer-triangles/PointerTrianglesClock";
 import AnxietyClock from "./anxiety/AnxietyClock";
 import QRClock from "./qr/QRClock";
+import NowClock from "./now/NowClock";
 
 export type ClockEntry = {
   slug: string;
@@ -243,6 +244,14 @@ export const clocks: ClockEntry[] = [
     description:
       "每秒生成一个真实可扫的二维码，内容是当前 HH:MM:SS。二维码中央用三层方形轨道和三个模块点分别标记时、分、秒；视觉读时依赖轨道，机器读时依赖二维码纠错。",
     Component: QRClock,
+  },
+  {
+    slug: "now",
+    name: "此刻",
+    nameEn: "Now",
+    description:
+      "对抗 #026 的焦虑钟：它不显示时、分、秒，也不提供任何可计算的进度，只把全部表盘留给一个词——now。",
+    Component: NowClock,
   },
 ];
 

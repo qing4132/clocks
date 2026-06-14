@@ -33,6 +33,25 @@ clock still behaved like a minor variant of the existing digital family.
 logbook styling, a compact `2359Z` notation, or a paired local-vs-Zulu display
 where the point is coordination rather than just another digital readout.
 
+## Typewriter — 打字机钟（built, then parked）
+
+**Concept.** Every second types one character. Each minute becomes a line on a
+sheet of paper; previous lines remain as faint records, and the current second
+is the red insertion point.
+
+**What was tried.** Built as `src/clocks/typewriter/TypewriterClock.tsx` after
+#028. The prototype generated deterministic pseudo-text per minute, rendered
+the last seven lines on a paper rectangle, and advanced the red cursor one
+character per second.
+
+**Why parked.** The mechanism is legible, but the first version became a texture
+of random characters rather than a strong clock. The typed content had no
+semantic relation to the time, so the typewriter metaphor felt arbitrary.
+
+**If revisited.** Type meaningful structured text: timestamps, log entries,
+or a line that reveals one time unit at a time. The paper should accumulate a
+real record, not just random glyphs.
+
 ## Frosted — 毛玻璃钟（built, then parked）
 
 **Concept.** A counterweight to #026 Anxiety: instead of a sharp extra hand

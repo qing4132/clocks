@@ -52,6 +52,33 @@ semantic relation to the time, so the typewriter metaphor felt arbitrary.
 or a line that reveals one time unit at a time. The paper should accumulate a
 real record, not just random glyphs.
 
+## Yamanote — 山手线钟（built, then parked）
+
+**Concept.** Use Tokyo's Yamanote Line as a clock mechanism: it is a real loop,
+has a strong railway visual language, and has exactly 30 stations. The cleanest
+time rule was one hour per loop, one station every two minutes, with seconds
+moving the train between stations.
+
+**What was tried.** Built as `src/clocks/yamanote/variants.tsx` after #028.
+Three prototype directions were tried:
+
+- `yamanote-loop`: a rounded-square line diagram with 30 station dots, a moving
+  train, six major station labels, and center `HH:MM` plus current → next station.
+- `yamanote-lcd`: a JR-style in-car LCD screen with `YAMANOTE LINE`, current
+  time, current/next station, and a horizontal 30-station strip.
+- `yamanote-sign`: a station-sign clock where the current station name is the
+  main display and a lower progress line shows movement to the next station.
+
+**Why parked.** The premise is strong, but the first three visual directions
+did not yet land. The loop version risks becoming a generic green route diagram;
+the LCD version becomes more interface than clock; the station-sign version has
+great identity but weakens the 30-station loop mechanism.
+
+**If revisited.** Keep the one-hour loop / two-minutes-per-station rule. Solve
+the visual language first: either commit fully to a JR station-sign artifact, or
+make a more original square-loop clock where the train movement, station count
+and current time are inseparable.
+
 ## Frosted — 毛玻璃钟（built, then parked）
 
 **Concept.** A counterweight to #026 Anxiety: instead of a sharp extra hand

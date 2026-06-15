@@ -33,6 +33,50 @@ clock still behaved like a minor variant of the existing digital family.
 logbook styling, a compact `2359Z` notation, or a paired local-vs-Zulu display
 where the point is coordination rather than just another digital readout.
 
+## Julian Day — 儒略日钟（built, then parked）
+
+**Concept.** A #011-style digital clock for Julian Day, the astronomy convention
+of counting continuous days from a noon epoch. It is a useful-format cousin of
+#013 Unix: Unix counts seconds from 1970-01-01, while Julian Day counts days
+from an ancient astronomical epoch.
+
+**What was tried.** Built as `src/clocks/julian-day/JulianDayClock.tsx` after
+#028. The prototype reused the shared 7-segment digital panel, computed
+`JD = unixMs / 86400000 + 2440587.5`, and showed the 7-digit integer plus 5 red
+fractional digits in one line. The 5 fractional digits give roughly 0.864-second
+resolution, matching the once-per-second update cadence.
+
+**Why parked.** The idea is correct and potentially useful, but the single-line
+layout fights the digital family geometry: 12 digits must be squeezed into the
+#011 panel, making the readout feel compressed, while splitting integer and
+fraction makes it less Unix-like. It needs a stronger layout decision before it
+earns a permanent slot.
+
+**If revisited.** Decide whether this is primarily a Unix-like machine number
+or an astronomy instrument. For the former, keep a single compact numeric line;
+for the latter, let the integer day and fractional day have distinct visual
+roles instead of forcing both into the #011 panel.
+
+## Interruption — 打断钟（built, then parked）
+
+**Concept.** A day is not a continuous ring but a set of fragments broken by
+interruptions. Notifications, meetings or context switches cut the 24-hour ring
+into pieces; the current fragment is red while past/future fragments fade.
+
+**What was tried.** Built as `src/clocks/interruption/InterruptionClock.tsx`
+after #028. The prototype used a fixed list of interruption cut points across
+the day, rendered each continuous segment as a separated arc, and placed a red
+dot at the current minute-of-day.
+
+**Why parked.** The content is strong, but this first version still looked like
+a segmented progress ring. It did not yet make interruptions feel like lived
+breaks in attention; the cuts were arbitrary marks rather than meaningful
+events.
+
+**If revisited.** Tie interruptions to a visible event model: recurring pings,
+meeting blocks, or externally supplied events. The point should be that
+attention is shattered, not merely that a circle has gaps.
+
 ## Typewriter — 打字机钟（built, then parked）
 
 **Concept.** Every second types one character. Each minute becomes a line on a

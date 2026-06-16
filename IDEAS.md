@@ -613,4 +613,31 @@ stay stable across renders), the age-based fade (`age = secsSinceLaunch /
 LIFETIME`, `fade = 1 - age`, `spread = radius · min(1, age·1.4)`), and the
 radial-spoke burst drawing (N petals = lines + end dots, jittered angles).
 
+## Milkmaid — 倒牛奶的女仆加钟（archived）
+
+**Concept.** Use Vermeer's *The Milkmaid* as the base image and place an antique
+wall clock on the blank wall. The current archived version uses real image
+assets only: the true painting as a background, a Gemini-generated clock body
+with no hands, and a separate Gemini-generated hand image rotated with CSS.
+
+**Archived files.** Saved in `archive/milkmaid/`:
+
+- `MilkmaidClock.tsx` — last React implementation, not registered in the gallery
+- `milkmaid.jpg` — true Vermeer source image used as background
+- `milkmaid-clock-face.png` — handless antique clock body
+- `milkmaid-clock-hand.png` — separate pointer image
+- `milkmaid-clock-cutout.png` — earlier cutout attempt, kept for comparison
+
+**Why not displayed now.** The implementation finally used the right structural
+approach — image assets for all static parts, CSS rotation only for moving hands
+— but the composite still needs careful art direction before it deserves a slot:
+clock scale/placement, hand pivot/length, cast shadow, and material matching all
+need another focused pass. Do not revive the old SVG-drawn clock versions.
+
+**If revisited.** Start from the archived image-layer implementation, not from
+scratch. Use image processing / manual editing to improve the clock-body alpha,
+make the shadow belong to the wall, and align the separate pointer image to the
+exact dial center. The final React surface should stay simple: background image,
+clock body image, and rotated hand image layers.
+
 

@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Clocks / 钟
 
-## Getting Started
+一个小小的钟表实验室。这里收集的不是实用时钟，而是一些关于“时间还能怎样被看见、被误读、被重新编码”的练习。
 
-First, run the development server:
+A small clock laboratory. The clocks here are not meant to be practical; they are exercises in how time can be seen, misread, and encoded differently.
+
+这个项目主要是我用于消遣、试验想法、以及消耗自己多余精力的地方。它会随时增删、归档、重做；没有宏大的路线图，也不保证每个想法都会留下来。
+
+This is a personal project for leisure, experiments, and spending my surplus energy. Clocks may be added, removed, archived, or rebuilt at any time; there is no grand roadmap, and not every idea is meant to stay.
+
+## Development / 开发
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Rights / 权利
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copyright (c) qinglin. All rights reserved.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+版权所有，保留所有权利。

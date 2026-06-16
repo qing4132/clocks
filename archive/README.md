@@ -263,3 +263,18 @@ Files preserved:
 - `TunnelVastClock.tsx` — #021, few bold rings, hard lean
 - `TunnelNotchClock.tsx` — #022, paper-coloured extended hands carve notches
 - `TunnelWarpClock.tsx` — #023, dashed rings as warp-speed star streaks
+
+## arc (formerly #028)
+
+**Concept.** Strip #001 down to one circular arc. The arc starts at a
+small moving hour dot and sweeps clockwise to the current minute position,
+so the visible length encodes the distance between the hour and minute
+hands instead of drawing both hands separately.
+
+**Why it was archived.** The idea is visually clean, but it cannot be read
+clearly as a clock: with no dial, ticks, or separate minute marker, the
+viewer has to reconstruct two positions from one arc length, so telling the
+actual time is too ambiguous.
+
+Files preserved:
+- `ArcClock.tsx` — the single-arc implementation.

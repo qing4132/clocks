@@ -29,7 +29,6 @@ import PointerTrianglesClock from "./pointer-triangles/PointerTrianglesClock";
 import AnxietyClock from "./anxiety/AnxietyClock";
 import QRClock from "./qr/QRClock";
 import NowClock from "./now/NowClock";
-import ArcClock from "./arc/ArcClock";
 
 export type ClockEntry = {
   slug: string;
@@ -253,14 +252,6 @@ export const clocks: ClockEntry[] = [
     description:
       "对抗 #026 的焦虑钟：它不显示时、分、秒，也不提供任何可计算的进度，只把全部表盘留给一个词——now。",
     Component: NowClock,
-  },
-  {
-    slug: "arc",
-    name: "弧线",
-    nameEn: "Arc",
-    description:
-      "从 #001 的圆盘只留下一道弧。弧的起点是一个走时的小黑点——时针；它顺时针扫到分针所在的位置，于是这段弧的长短，正是此刻时与分之间的距离。没有表盘也没有刻度，你读的不再是两根针各自指向哪里，而是它们彼此相距多远：弧将合拢时，时分将要重合；弧张到将满一圈时，它们正隔得最远。",
-    Component: ArcClock,
   },
 ];
 

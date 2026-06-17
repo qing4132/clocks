@@ -640,4 +640,56 @@ make the shadow belong to the wall, and align the separate pointer image to the
 exact dial center. The final React surface should stay simple: background image,
 clock body image, and rotated hand image layers.
 
+## Ulysses — 尤利西斯意识流钟 (built, then parked)
+
+**Concept.** A typographic stream-of-consciousness clock mapping the 24 hours of the day to the 18 chapters of James Joyce's *Ulysses* set on June 16-17, 1904. Time is experienced as continuous prose flow and monologue.
+
+## Sisyphus — 西西弗斯巨石钟 (built, then parked)
+
+**Concept.** A geometric and physical translation of Albert Camus' absurdism. Time is an accumulation of gravity, struggle, and effort that is destined to reset.
+
+## Zeno's Arrow — “飞矢不动”钟 (built, then parked)
+
+**Concept.** Based on Zeno's Arrow paradox of time and motion: time is a sequence of discrete motionless slices; movement is merely human sensory illusion.
+
+## Borges — 分岔小径钟 (The Garden of Forking Paths) (built, then parked)
+
+**Concept.** Time as an infinite bifurcating tree of parallel histories, choices, and coordinate tracks.
+
+## Gravity Well — 重力井钟 (built, then parked - updated)
+
+**Concept.** Time is space-time curvature caused by mass.
+
+## Turing Tape — 图灵纸带钟 (built, then parked)
+
+**Concept.** Time as a universal infinite Turing Machine executing states, instructions, and migrations.
+
+## Voronoi — 细胞划分子钟 (built, then parked)
+
+**Concept.** Time dynamically dividing and partitioning space into fluid, elastic cell compartments.
+
+## Fourier Epicycle — 傅里叶周转圆钟 (Harmonograph) (built, then parked)
+
+**Concept.** All complex periodic waves and time cycles are superpositions of nested circles.
+
+## Klein Bottle — 克莱因瓶钟 (built, then parked)
+
+**Concept.** Time as a non-orientable topological surface with no boundary, where inside and outside are inseparable.
+
+## Peano Curve — 皮亚诺填充线钟 (built, then parked)
+
+**Concept.** An order 3 space-filling curve mapping a 1-dimensional line to fill a 2-dimensional grid, exploring the occupation of time space.
+
+## Huffman Tree — 哈夫曼逻辑树钟 (built, then parked)
+
+**Concept.** A minimalist, prefix-free binary tree representing optimal data compression of current time values.
+
+## Bloom Filter — 细胞布隆概率钟 (built, then parked)
+
+**Concept.** Illustrating the probabilistic member checks of current time hashes.
+
+## Levenshtein Distance — 编辑距离变化钟 (built, then parked)
+
+**Concept.** Time progression is not a simple wipe, but an edit mutation of characters.
+
 

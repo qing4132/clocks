@@ -55,6 +55,32 @@ const ANIMAL_SIZE = {
   active: `${(74 / DESKTOP_FACE_CONTENT) * 100}%`,
 };
 
+// Module-level cache of the parsed Noto Lottie JSON, keyed by codepoint. These
+// assets are static, so once fetched they survive unmount/remount (e.g. when the
+// overview's IntersectionObserver scrolls this clock out of view and back). On
+// remount the data is available synchronously, so there is no re-fetch and no
+// blank “reload” flash. Concurrent first-time requests are de-duped via inflight.
+type LottieJSON = { ip?: number; op?: number };
+const animationCache = new Map<string, LottieJSON>();
+const animationInflight = new Map<string, Promise<LottieJSON>>();
+
+function loadAnimation(cp: string): Promise<LottieJSON> {
+  const cached = animationCache.get(cp);
+  if (cached) return Promise.resolve(cached);
+  let p = animationInflight.get(cp);
+  if (!p) {
+    p = fetch(`/emoji/shengxiao/${cp}.json`)
+      .then((r) => r.json())
+      .then((j: LottieJSON) => {
+        animationCache.set(cp, j);
+        animationInflight.delete(cp);
+        return j;
+      });
+    animationInflight.set(cp, p);
+  }
+  return p;
+}
+
 // one zodiac animal, drawn entirely from its animated Noto Lottie. It rests
 // frozen on its static pose; on each `beat` (minute boundary) it plays once,
 // then settles back onto the resting frame.
@@ -75,14 +101,17 @@ function Animal({
   second: number;
   resumeBeat: { current: number | null };
 }) {
-  const [data, setData] = useState<{ ip?: number; op?: number } | null>(null);
+  const [data, setData] = useState<LottieJSON | null>(() => animationCache.get(cp) ?? null);
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const prevBeat = useRef<number | null>(null);
 
   useEffect(() => {
+    if (animationCache.has(cp)) {
+      setData(animationCache.get(cp)!);
+      return;
+    }
     let alive = true;
-    fetch(`/emoji/shengxiao/${cp}.json`)
-      .then((r) => r.json())
+    loadAnimation(cp)
       .then((j) => {
         if (alive) setData(j);
       })

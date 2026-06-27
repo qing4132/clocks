@@ -30,6 +30,7 @@ import AnxietyClock from "./anxiety/AnxietyClock";
 import QRClock from "./qr/QRClock";
 import NowClock from "./now/NowClock";
 import TypewriterClock from "./typewriter/TypewriterClock";
+import AntiScreenshotClock from "./anti-screenshot/AntiScreenshotClock";
 
 export type ClockEntry = {
   slug: string;
@@ -261,6 +262,14 @@ export const clocks: ClockEntry[] = [
     description:
       "只有时分四个数字，没有秒，像一个正在被敲进去的输入框。分的个位后跟着一个每秒闪一次的光标。每当时间跳动，它只向左退掉真正变了的那几位，再把新数字逐个敲上去：1234→1235 删 4 打 5，1259→1300 删 259 打 300，0959→1000 则整串删光重打。",
     Component: TypewriterClock,
+  },
+  {
+    slug: "anti-screenshot",
+    name: "反截图",
+    nameEn: "Anti-Screenshot",
+    description:
+      "整块方屏都是动态黑白噪点，时间 HH:MM 由同样的噪点构成——所以任何一帧、也就是任何一张截图，都只是一片随机雪花，拍不下时间。只有相对运动才把数字勈出来：数字那片噪点向左漂移、背景向右漂移，于是你读出时间；一停下就消失在噪点里。每个点要么黑、要么背景色。",
+    Component: AntiScreenshotClock,
   },
 ];
 

@@ -266,7 +266,7 @@ export const clocks: ClockEntry[] = [
   {
     slug: "anti-screenshot",
     name: "反截图",
-    nameEn: "Anti-Screenshot",
+    nameEn: "Anti-screenshot",
     description:
       "整块方屏都是动态黑白噪点，时间 HH:MM 由同样的噪点构成——所以任何一帧、也就是任何一张截图，都只是一片随机雪花，拍不下时间。只有相对运动才把数字勈出来：数字那片噪点向左漂移、背景向右漂移，于是你读出时间；一停下就消失在噪点里。每个点要么黑、要么背景色。",
     Component: AntiScreenshotClock,

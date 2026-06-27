@@ -29,6 +29,7 @@ import PointerTrianglesClock from "./pointer-triangles/PointerTrianglesClock";
 import AnxietyClock from "./anxiety/AnxietyClock";
 import QRClock from "./qr/QRClock";
 import NowClock from "./now/NowClock";
+import TypewriterClock from "./typewriter/TypewriterClock";
 
 export type ClockEntry = {
   slug: string;
@@ -252,6 +253,14 @@ export const clocks: ClockEntry[] = [
     description:
       "对抗 #026 的焦虑钟：它不显示时、分、秒，也不提供任何可计算的进度，只把全部表盘留给一个词——now。",
     Component: NowClock,
+  },
+  {
+    slug: "typewriter",
+    name: "打字钟",
+    nameEn: "Typewriter",
+    description:
+      "只有时分四个数字，没有秒，像一个正在被敲进去的输入框。分的个位后跟着一个每秒闪一次的光标。每当时间跳动，它只向左退掉真正变了的那几位，再把新数字逐个敲上去：1234→1235 删 4 打 5，1259→1300 删 259 打 300，0959→1000 则整串删光重打。",
+    Component: TypewriterClock,
   },
 ];
 

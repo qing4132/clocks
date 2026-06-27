@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { clocks } from "@/clocks/registry";
+import { ClockPreview } from "./ClockPreview";
 
 export default function Home() {
   return (
@@ -17,7 +18,9 @@ export default function Home() {
               </span>
               <div className="aspect-square flex items-center justify-center">
                 <div className="scale-75 origin-center">
-                  <Component />
+                  <ClockPreview>
+                    <Component />
+                  </ClockPreview>
                 </div>
               </div>
               <div className="mt-2 text-center text-sm text-neutral-500 tracking-wide">

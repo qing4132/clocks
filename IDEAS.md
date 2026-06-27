@@ -5,6 +5,25 @@ built yet. Unlike `archive/`, these were never prototyped — they're waiting
 until the gallery grows enough to need them. Revisit when adding many more
 clocks or rethinking how the gallery is presented.
 
+## Core principle — display time, don't use the clock for other ends
+
+The gallery is **always about displaying the actual current time in a new
+form**. A clock must not be borrowed as a vehicle to express some *other*
+intention or topic (labour politics, doomsday warnings, illness, holidays,
+anticipation, mortality-as-message, etc.). Pieces like #015 Sleep, #028 Now and
+#026 Anxiety survive because they are attitudes toward **time itself** — refusing
+it, the felt passage of it — not messages about unrelated subjects. New ideas
+should be genuine alternate **representations** of the current time.
+
+## Do not propose again
+
+Directions the user has explicitly ruled out — don't resurface these:
+
+- **Tide / 潮汐**
+- **Sundial / 日晷**
+- **Braille / 盲文钟** — an alternate notation swap, not a new way of *displaying*
+  time.
+
 ## Design principle — alternate time systems
 
 Modern readability is not always the first goal. For clocks like #020 Decimal
@@ -691,5 +710,173 @@ clock body image, and rotated hand image layers.
 ## Levenshtein Distance — 编辑距离变化钟 (built, then parked)
 
 **Concept.** Time progression is not a simple wipe, but an edit mutation of characters.
+
+## Circadian — 生物钟 (built, then parked)
+
+**Concept.** A counterpoint to #015 Sleep: read time by the *body's* state, not
+by numbers. The day is the human circadian rhythm — core body temperature /
+alertness — with a pre-dawn trough (~04:30, when the body is at its lowest), a
+late-afternoon alertness peak, and the well-known post-lunch dip (~14:30). The
+form should be required by the content: not 12 ticks but one smooth
+physiological curve. The reading is "where am I on the body's day" — rising,
+peaking, dipping, or down in the small-hours trough — with colour following the
+state (cool indigo when low, warm amber when most awake).
+
+**What was tried.** Built four forms after #031 Typewriter:
+
+- `circadian` — the dial's whole *silhouette* is the body: a closed 24-hour
+  curve whose radius equals the state, pinching almost to the centre at ~04:30
+  and swelling toward the evening peak. A "now" light rides the curve.
+- `circadian-curve` — a literal energy chart: hours 0–24 on the x-axis, the
+  curve plotted as a line, night bands shaded, a vertical "you are here" marker.
+- `circadian-sun` — the state as a sun riding over a horizon; below the horizon
+  in the small hours = the trough / sleep. A dashed full-day trajectory.
+- `circadian-dial` — still a round 24-hour clock (midnight top, numbers every
+  3h, a straight hand to now) but the rim wave is the body.
+
+**Why parked.** The premise is strong and genuinely emotional (it tells you not
+*what* time it is but *how you should feel*), and #015 Sleep proves this family
+can earn a slot. But the abstract silhouette version was hard to read, and the
+three legible versions (chart / sun / dial) each drifted toward feeling like an
+*infographic* rather than a clock — the chart most of all. The user judged the
+whole batch not yet good enough and parked it.
+
+**If revisited.** Decide whether this is a clock or a diagram, and commit. The
+most promising directions were `circadian-sun` (most intuitive, most emotional —
+the "inner sun setting" reading lands without explanation) and `circadian-dial`
+(keeps real clock legibility). Avoid the bare silhouette and the literal line
+chart. The body model is reusable: `circadian = -cos(2π(t-4.5)/24)` plus a
+Gaussian post-lunch dip `-0.42·exp(-(t-14.5)²/2·1.1²)`, normalised across the
+day; cool→warm colour lerp `[70,84,120] → [233,164,64]` by normalised state.
+
+## Time-zone ideas — 时区系列 (parked, brainstorm)
+
+A batch of *simple, clear, interesting* time-zone concepts. The shared thesis:
+a time zone is not data, it is **separation and simultaneity** — someone is
+asleep while you work, somewhere it is already tomorrow, noon never stops.
+Keep each one to a single legible idea; resist turning them into a world-clock
+dashboard. (Note: do **not** revive tide or sundial framings for these.)
+
+1. **两地钟 — Two Cities.** Two plain faces side by side, "here" and a loved
+   one's city. The real subject is the **overlap window** when you are both
+   awake; the rest of the day one face is dimmed (they're asleep). Read the
+   relationship, not the hour.
+
+2. **日界线钟 — Date Line.** One Earth dial split into *today* and *tomorrow*.
+   At any instant part of the planet has already crossed midnight, so the
+   "tomorrow" slice grows across the day and resets. The quiet shock: it is
+   always already tomorrow somewhere.
+
+3. **正午奔跑钟 — Following Noon.** The subsolar point: noon is always
+   *somewhere*, racing west at ~1670 km/h. A single mark circles a world ring
+   showing where it is exactly 12:00 right now. Noon never stops; it just moves.
+
+4. **晨昏线钟 — Terminator / Meanwhile.** The day–night line sweeps the dial.
+   You don't read "my time" but "right now someone is at dawn, someone at
+   midnight." Against the illusion that time is yours alone.
+
+5. **偏移钟 — Offset (+8).** The whole clock is just your distance from UTC,
+   shown big: `+8`. No hands, no face — only how far you stand from the world's
+   agreed zero. A companion to #029 Zulu seen from the other side.
+
+6. **怪时区钟 — The Odd Zones.** Celebrate the fractional offsets the world
+   actually uses: India +5:30, Nepal +5:45, Newfoundland −3:30, Chatham +12:45.
+   A clock whose hand can only land on these quirky half/quarter marks —
+   trivia made into a face.
+
+7. **午夜行进钟 — Midnight March.** A ring of the world's zones; the one
+   currently striking 00:00 lights up, and the light marches around the planet
+   once per day. A new day is constantly being born somewhere. (New-Year's-Eve
+   variant: the wave of celebrations crossing the globe.)
+
+8. **世界条带钟 — World Strip.** A horizontal strip showing *every* zone's
+   local hour at once: at this instant it reads 14, 13, 12 … wrapping through
+   the whole planet. The entire world's clock in one glance.
+
+9. **故乡钟 — Home Time.** Abroad, but the clock stays on your *home* zone — the
+   heart lags behind the body. A bold home hand and a faint local hand; the gap
+   between them is homesickness / jet lag made visible.
+
+10. **会面之窗钟 — The Meeting Window.** For people split across three zones: the
+    only band where everyone's waking hours overlap. A narrow shifting strip
+    that is the single hour you can all be together — coordination as the
+    subject, not the clock.
+
+**Strongest first:** 1 Two Cities, 3 Following Noon, 9 Home Time — each carries
+a real feeling (togetherness / restlessness / longing) and is naturally a clock,
+not a dashboard. 5 Offset and 6 Odd Zones are the cleanest "interesting fact"
+pieces. Avoid letting 8 World Strip and 10 Meeting Window become infographics.
+
+## Doomsday Clock — 末日钟 (parked, history/philosophy)
+
+**Concept.** The real Bulletin of the Atomic Scientists clock (since 1947): a
+symbolic clock where **midnight = global catastrophe / the end of civilization**,
+and the only thing it shows is *how close humanity stands to it*. Created by
+Manhattan Project scientists; the dial (only the last minutes before midnight,
+designed by Martyl Langsdorf) has since widened its scope from nuclear weapons to
+climate change, biotech, AI and disinformation. It does **not** tell the time of
+day.
+
+**The key point — it is not computed.** There is no formula. Each January the
+Bulletin's Science and Security Board (with sponsors including Nobel laureates)
+**deliberates and votes** on whether to move the hand nearer or further from
+midnight relative to last year. The number is a collective expert *warning*, not
+a measurement. So in this gallery it must be a **hard-coded historical constant**,
+not anything derived from `Date.now()` — its "time" is a human judgement, which
+is exactly its philosophical weight: people pushed the hand here; no natural law
+forced it.
+
+**Hand history (the whole range in 78 years).** 1947: 7 min · 1953: 2 min
+(H-bomb tests) · 1991: **17 min** (farthest ever, end of Cold War) · 2020: 100
+seconds (first time in seconds) · 2023: 90 s · **2025-01: 89 seconds (closest
+ever)**. It barely moves, and lately only the wrong way.
+
+**Why it belongs here / the tension.** Every other clock in the gallery faithfully
+tells the time; the Doomsday Clock's twist is that it **refuses to**. It sits
+almost frozen against midnight. That near-stillness is either its power (in a room
+of ticking clocks, the one that won't move) or its weakness (it doesn't read as a
+clock). It is also heavy and static — it needs one living detail to not be a
+poster.
+
+**If built.** Show only the hard-coded setting (`secondsToMidnight = 89`,
+2025-01, source: Bulletin of the Atomic Scientists; updated by hand). Keep the
+dial cropped to the final minutes before 12. Give it its one motion: a second
+hand making the last approach toward midnight at the 89-second mark, **forever
+closing in and never quite arriving** — "we have stood at the brink the whole
+time without crossing it" as its only movement. Mood: grave, restrained, a
+counterweight to the playful pieces.
+
+## CAPTCHA — 验证码钟 (parked, representation)
+
+**Concept.** The exact inverse of #027 QR. The QR clock is *machine-readable,
+human-illegible*; the CAPTCHA clock is *human-readable, machine-illegible*. Same
+time, distorted two opposite ways — a clean conceptual pair. The face shows the
+current `HH:MM(:SS)` rendered as a classic warped-text CAPTCHA: per-character
+rotation / skew / baseline jitter / overlap, an overall wavy warp, plus speckle
+noise and a few crossing strike-lines.
+
+**Use a *real* CAPTCHA generator, not a hand-faked look.** In the spirit of
+#017 Game of Life ("nothing here is fake"), render the time with an actual
+text-CAPTCHA library (e.g. `svg-captcha`) fed the time string, rather than
+drawing a captcha-ish picture by hand. Note: reCAPTCHA / hCaptcha (the *services*)
+are unusable — they are interactive anti-bot challenges, need a server, and won't
+display our text.
+
+**Build notes.**
+- Determinism is mandatory: the library uses `Math.random`, which would jitter
+  every frame and break SSR hydration. Seed it — temporarily swap `Math.random`
+  for a seeded `mulberry32(timeValue)` around the generate call, then restore.
+  Same second → same image; each new second "refreshes" the captcha.
+- Risk: `svg-captcha` is Node-oriented and may not bundle cleanly to the browser
+  (fonts / Buffer). Fallback: replicate the same pipeline in-house — real font →
+  paths via `opentype.js` + seeded random bézier noise lines + speckle. Still a
+  genuine generator, just ours and controllable.
+- Readability is the red line: tune the displacement/rotation to "hard but
+  readable" — too strong and it loses its only selling point (a human *can* read
+  it).
+
+**Cadence options.** Reseed every second for the full captcha-refresh feel, or
+keep the warp field fixed per minute and let only the digits change (calmer).
+
 
 

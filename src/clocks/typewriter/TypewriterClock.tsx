@@ -15,6 +15,9 @@ import { useEffect, useRef, useState } from "react";
  *     1239 → 1240  delete 39, type 40
  *     1259 → 1300  delete 259, type 300
  *     0959 → 1000  delete 0959, type 1000
+ *
+ *   Idea once considered: occasionally "mistype" a digit and then correct
+ *   it, for a more human feel.
  */
 
 function hhmm(d: Date): string {

@@ -1,27 +1,22 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * Anti-Screenshot — 反截图.
  *
  *   A square block of dynamic black-on-background noise (a random-dot
  *   kinematogram). The time `HH:MM` is made of the *same* noise, so any single
- *   frame — and therefore any screenshot — is indistinguishable static: you can
- *   read nothing, and you cannot capture the time. The figure is revealed ONLY
- *   by relative motion (Gestalt "common fate"): the digit noise drifts one way
- *   while the background noise drifts the opposite way, splitting the digits out
- *   of the field. Stop the motion and they vanish into the snow. Every cell is
- *   either black or the page background colour.
+ *   frame — and therefore any screenshot — is indistinguishable static: you
+ *   cannot read it, and you cannot capture the time. The digits are revealed
+ *   ONLY by relative motion (Gestalt "common fate").
  *
- *   Implementation: two layered noise fields (background + a digit-masked
- *   figure), each a long non-repeating noise strip, scrolled in opposite
- *   directions by setting `transform` ourselves per frame (modulo-wrapped by one
- *   strip). We deliberately avoid a looping CSS/WAAPI animation — its iteration
- *   restart is what makes iOS Safari flash the whole layer. A plain transform
- *   update is a compositor-only move (GPU), and because the two copies of the
- *   strip are identical, the modulo wrap is visually seamless with no animation
- *   boundary.
+ *   Drawn on a canvas with a SHARED grid: every cell is a fixed, integer-pixel
+ *   square. The digit mask only chooses, per cell, WHICH scrolled noise field
+ *   that cell samples — figure cells a field flowing one way, background cells
+ *   the other. So a frozen frame shows no boundary (the digit outline does not
+ *   leak) and there are no sub-pixel edges. Motion is therefore whole-cell; the
+ *   cells are kept fine so the whole-cell steps read as smooth flow.
  */
 
 const FONT: Record<string, string[]> = {
@@ -38,7 +33,11 @@ const FONT: Record<string, string[]> = {
 };
 
 const BLACK = "#1a1a1a";
-const BG = "#fafafa"; // page background — the "transparent" cells blend into it
+const BG = "#fafafa";
+
+const CELLS_ACROSS = 240; // higher = finer, smoother noise cells
+const TEX_EXTRA = 480; // extra noise columns → long, non-repeating scroll
+const CELLS_PER_SEC = 30; // whole-cell scroll speed
 
 function makeRand(seed: number) {
   let x = seed || 123456789;
@@ -79,142 +78,129 @@ function digitBlocks(now: number, cols: number, rows: number): [number, number, 
   return blocks;
 }
 
-const B_CELL = 3;
-const B_N = 120; // square face side in cells → 360px
-const B_TILE = B_CELL * B_N; // 360 (square face + mask size)
-// The scrolling noise is a long, NON-repeating strip so the loop period is far
-// larger than the face (~20s instead of ~4s) and the repeat is hard to spot.
-// Each track lays two copies of this strip for coverage; the wrap happens at one
-// strip width and is seamless (identical copies). Track width (2×strip) is kept
-// under iOS's ~4096px composited-layer limit.
-const B_COLS = 600; // strip width in cells
-const LONG = B_CELL * B_COLS; // 1800px non-repeating noise strip
-
 export default function AntiScreenshotClock() {
-  const bgTrackRef = useRef<HTMLDivElement>(null);
-  const figTrackRef = useRef<HTMLDivElement>(null);
-  const figClipRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const makeNoiseURL = (seed: number) => {
-      const c = document.createElement("canvas");
-      c.width = LONG;
-      c.height = B_TILE;
-      const x = c.getContext("2d")!;
-      x.fillStyle = BG;
-      x.fillRect(0, 0, LONG, B_TILE);
-      x.fillStyle = BLACK;
-      const r = makeRand(seed);
-      for (let j = 0; j < B_N; j++)
-        for (let i = 0; i < B_COLS; i++) if (r() < 0.5) x.fillRect(i * B_CELL, j * B_CELL, B_CELL, B_CELL);
-      return c.toDataURL();
+    const canvas = ref.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let W = 0;
+    let H = 0;
+    let sq = 0;
+    let mx = 0;
+    let my = 0;
+    let rad = 0;
+    let CELL = 4;
+    let cols = 0;
+    let rows = 0;
+    let texCols = 0;
+    let tex = new Uint8Array(0);
+    let tex2 = new Uint8Array(0);
+    let mask = new Uint8Array(0);
+    let lastMin = -1;
+
+    const resize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      const cw = canvas.clientWidth;
+      const ch = canvas.clientHeight;
+      if (!cw || !ch) return;
+      W = Math.max(1, Math.round(cw * dpr));
+      H = Math.max(1, Math.round(ch * dpr));
+      canvas.width = W;
+      canvas.height = H;
+      const side = Math.min(W, H);
+      sq = Math.round(side * 0.94); // 188/200, matching #021
+      mx = Math.round((W - sq) / 2);
+      my = Math.round((H - sq) / 2);
+      rad = Math.round(side * 0.05); // rx 10/200
+      CELL = Math.max(2, Math.round(sq / CELLS_ACROSS));
+      cols = Math.ceil(sq / CELL);
+      rows = Math.ceil(sq / CELL);
+      texCols = cols + TEX_EXTRA;
+      tex = new Uint8Array(texCols * rows);
+      tex2 = new Uint8Array(texCols * rows);
+      const r = makeRand(99991);
+      for (let k = 0; k < tex.length; k++) {
+        tex[k] = r() < 0.5 ? 1 : 0;
+        tex2[k] = r() < 0.5 ? 1 : 0;
+      }
+      mask = new Uint8Array(cols * rows);
+      lastMin = -1;
     };
-    // Real tile children (no background-repeat) so iOS Safari always paints the
-    // area exposed by the transform.
-    const setTiles = (track: HTMLDivElement | null, url: string) => {
-      if (!track) return;
-      for (const child of Array.from(track.children)) {
-        (child as HTMLElement).style.backgroundImage = `url(${url})`;
+
+    const buildMask = (now: number) => {
+      mask.fill(0);
+      for (const [bx, by, bsz] of digitBlocks(now, cols, rows)) {
+        for (let yy = by; yy < by + bsz; yy++) {
+          if (yy < 0 || yy >= rows) continue;
+          for (let xx = bx; xx < bx + bsz; xx++) {
+            if (xx < 0 || xx >= cols) continue;
+            mask[yy * cols + xx] = 1;
+          }
+        }
       }
     };
-    setTiles(bgTrackRef.current, makeNoiseURL(99991));
-    setTiles(figTrackRef.current, makeNoiseURL(12345));
 
-    // Scroll by setting transform per frame (modulo-wrapped). No looping CSS
-    // animation → no iOS iteration-restart flash. Background drifts right, the
-    // figure drifts left.
+    const wrap = (n: number, m: number) => ((n % m) + m) % m;
+
     let raf = 0;
     const t0 = performance.now();
-    const speed = 0.09; // px/ms ≈ 90 px/s
     const loop = (t: number) => {
       raf = requestAnimationFrame(loop);
-      const off = Math.round((t - t0) * speed) % LONG; // integer px, [0, LONG)
-      if (bgTrackRef.current) bgTrackRef.current.style.transform = `translate3d(${off}px,0,0)`;
-      if (figTrackRef.current) figTrackRef.current.style.transform = `translate3d(${-off}px,0,0)`;
+      if (!cols) return;
+      const now = Date.now();
+      const minute = Math.floor(now / 60000);
+      if (minute !== lastMin) {
+        buildMask(now);
+        lastMin = minute;
+      }
+      const ox = Math.floor(((t - t0) / 1000) * CELLS_PER_SEC); // whole cells
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(mx, my, sq, sq, rad);
+      ctx.clip();
+
+      ctx.fillStyle = BG;
+      ctx.fillRect(mx, my, sq, sq);
+
+      ctx.fillStyle = BLACK;
+      for (let j = 0; j < rows; j++) {
+        const rowBase = j * texCols;
+        const yPix = my + j * CELL;
+        for (let i = 0; i < cols; i++) {
+          const fig = mask[j * cols + i] === 1;
+          // figure cells sample a field flowing left, background one flowing
+          // right — both full aligned squares on the same grid.
+          const bit = fig
+            ? tex[rowBase + wrap(i + ox, texCols)]
+            : tex2[rowBase + wrap(i - ox, texCols)];
+          if (bit) ctx.fillRect(mx + i * CELL, yPix, CELL, CELL);
+        }
+      }
+      ctx.restore();
     };
+
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
     raf = requestAnimationFrame(loop);
-
-    const makeMaskURL = () => {
-      const c = document.createElement("canvas");
-      c.width = B_TILE;
-      c.height = B_TILE;
-      const x = c.getContext("2d")!;
-      x.clearRect(0, 0, B_TILE, B_TILE);
-      x.fillStyle = "#000";
-      for (const [bx, by, bsz] of digitBlocks(Date.now(), B_N, B_N)) {
-        x.fillRect(bx * B_CELL, by * B_CELL, bsz * B_CELL, bsz * B_CELL);
-      }
-      return c.toDataURL();
-    };
-    const applyMask = () => {
-      const url = makeMaskURL();
-      const el = figClipRef.current;
-      if (!el) return;
-      el.style.webkitMaskImage = `url(${url})`;
-      el.style.maskImage = `url(${url})`;
-    };
-    applyMask();
-    let lastMin = new Date().getMinutes();
-    const iv = setInterval(() => {
-      const m = new Date().getMinutes();
-      if (m !== lastMin) {
-        lastMin = m;
-        applyMask();
-      }
-    }, 1000);
-
     return () => {
       cancelAnimationFrame(raf);
-      clearInterval(iv);
+      ro.disconnect();
     };
   }, []);
 
-  const trackBase: CSSProperties = {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    width: `${2 * LONG}px`,
-    display: "flex",
-    willChange: "transform",
-    backfaceVisibility: "hidden",
-  };
-  const trackBg: CSSProperties = { ...trackBase, left: `${-LONG}px` };
-  const trackFig: CSSProperties = { ...trackBase, left: 0 };
-  const tile: CSSProperties = {
-    flex: "0 0 auto",
-    width: `${LONG}px`,
-    height: "100%",
-    backgroundRepeat: "no-repeat",
-    backgroundSize: `${LONG}px 100%`,
-    imageRendering: "pixelated",
-    backfaceVisibility: "hidden",
-  };
-
   return (
-    <div className="w-72 h-72 sm:w-96 sm:h-96 relative" role="img" aria-label="Anti-screenshot clock">
-      <div style={{ position: "absolute", inset: "3%", borderRadius: "5%", overflow: "hidden", background: BG }}>
-        <div ref={bgTrackRef} style={trackBg}>
-          <div style={tile} />
-          <div style={tile} />
-        </div>
-        <div
-          ref={figClipRef}
-          style={{
-            position: "absolute",
-            inset: 0,
-            overflow: "hidden",
-            WebkitMaskRepeat: "no-repeat",
-            maskRepeat: "no-repeat",
-            WebkitMaskSize: "100% 100%",
-            maskSize: "100% 100%",
-          }}
-        >
-          <div ref={figTrackRef} style={trackFig}>
-            <div style={tile} />
-            <div style={tile} />
-          </div>
-        </div>
-      </div>
-    </div>
+    <canvas
+      ref={ref}
+      className="w-72 h-72 sm:w-96 sm:h-96"
+      role="img"
+      aria-label="Anti-screenshot clock"
+    />
   );
 }

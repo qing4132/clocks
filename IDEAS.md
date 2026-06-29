@@ -879,4 +879,76 @@ display our text.
 keep the warp field fixed per minute and let only the digits change (calmer).
 
 
+## π Finder — π 寻字钟 (parked, math representation)
+
+**Concept.** A finder over the digits of π. Every second the clock locates,
+inside a 1500-digit window of π, the first occurrence of `HH`, then the first
+occurrence of `MM` *after* that match ends, then the first `SS` *after* that.
+Three pairs are highlighted in distinct colours (hour / minute / second); the
+surrounding digits stay as a faint grey wash filling the whole face. The
+"current time" is a deterministic three-stage cursor walk through a famous
+irrational.
+
+**Key calibration — how many digits cover a whole day.** With strict 2-digit
+non-overlapping matches every HH:MM:SS in a day can be located within
+**1359 digits of π**; the worst triple is 00:50:43 (HH "00" at 307, MM "50"
+at 683, SS "43" at 1357). Relaxing the rule so single-digit values are also
+acceptable (so HH=9 accepts either "9" or "09") does *not* lower the bound:
+the new worst triple becomes 18:15:43 — all three values ≥ 10, so the
+single-digit shortcut can't help. **Same 1359 either way.**
+
+**Coverage across other famous constants** (same rule, 2-digit sequential
+search; minimum digits needed to host every HH:MM:SS):
+
+|   digits | constant                                  |
+| -------: | ----------------------------------------- |
+|    **792** | Champernowne 0.12345678910… (constructive — concatenation of ℕ) |
+|     1041 | √5                                        |
+|     1057 | eᵉ                                        |
+|     1093 | e                                         |
+|     1110 | π²                                        |
+|     1124 | √3                                        |
+|     1146 | log₁₀ 2                                   |
+|     1196 | π·e                                       |
+|     1347 | ζ(3) Apéry                                |
+|     1356 | G Catalan                                 |
+|   **1359** | π                                         |
+|     1432 | φ golden ratio                            |
+|     1437 | ln 10                                     |
+|     1505 | √2                                        |
+|     1569 | ln 2                                      |
+|     1973 | γ Euler–Mascheroni                        |
+|   **2966** | Copeland–Erdős 0.235711… (worst — sparse 2-digit coverage from primes) |
+
+**What was tried.** Lived as `src/app/clock-ideas-30/` (a 30-clock scratchpad
+that has since been deleted) and its sub-page `pi-variants/`. The variant
+exploration covered 12 directions: cols 25 / 30 / 35 / 40, font size 1.0–
+1.8× of cell height (controlling overlap), grey level for the unhighlighted
+background, plus four highlight styles (coloured background block, ink-only
+bold, underline, ellipse). A second pass added three "animated grow"
+variants where the matched pair scales from 1× to 1.7× / 2.4× / 3.2× via a
+bouncy `cubic-bezier(0.34, 1.56, 0.64, 1)` `font-size` transition over
+~0.55 s, with the underlying faint digits fading out underneath.
+
+**Why parked.** The rule itself is a satisfying *invariant*, and the 1359-
+digit coverage fact is genuinely beautiful (we even computed Champernowne =
+792 as a natural lower bound). But at gallery-tile size (~260 px) the 1500-
+digit wash is either too dense (and the matched patches read like coloured
+stains on noise) or too small (you can no longer see the digits as digits,
+only as a grey texture with three coloured cells). The animation variants
+help a lot — the grow-on-match motion is hard to look away from — but it
+still feels like the mechanism is stronger than the form it inhabits.
+
+**If revisited.** Either (a) give it its own full-page surface instead of
+a tile, so the 1500-digit ground can breathe; (b) drop to Champernowne
+(~800 digits, ~half the area) and let the constructive nature of the number
+do real work in the reading; or (c) lean entirely into the animated grow:
+let the background almost vanish and only the matched pair (with the
+0.55 s elastic scale) carry the clock — a piece that only ever briefly
+admits it is reading π.
+
+**Reusable bits.** Three scripts left in `scripts/`:
+`pi-coverage.py` (worst-case for any string of digits, strict 2-digit),
+`pi-coverage-flex.py` (same but accepts single-digit for values 0–9),
+`constants-coverage.py` (runs the search across 17 famous constants).
 

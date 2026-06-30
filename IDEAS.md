@@ -952,3 +952,45 @@ admits it is reading π.
 `pi-coverage-flex.py` (same but accepts single-digit for values 0–9),
 `constants-coverage.py` (runs the search across 17 famous constants).
 
+## Random Dot Stereogram — 随机点立体图钟 (built, then parked)
+
+**Concept.** A SIRDS (single-image random-dot stereogram, the Magic Eye
+trick) whose hidden depth map is the current `HH:MM:SS`. The viewer
+defocuses (wall-eye) and the time floats out of the noise. Refreshes once
+per second.
+
+**What was tried.** Lived in `src/app/idea-preview/` and went through four
+algorithm iterations:
+
+- Naive forward-copy with `Math.random()` seed — pattern flickered every
+  frame, focus lock kept breaking.
+- Union-find SIRDS keyed on `hash(root, y)` — stable noise outside text
+  but produced visible "text shadows" because background chains got
+  rerouted at text boundaries.
+- Thimbleby/Inglis/Witten `same[]` chain-walk algorithm (the 1994
+  reference), with colour noise to hide artifacts — colour ended up
+  *interfering* with reading the digits after fusion.
+- Back to forward-copy with chunky 3×3 grayscale dots — dots too coarse,
+  the texture dominated the whole image.
+- Final pass: forward-copy, per-pixel B&W noise, `SEP=80`, `SCALE=18`
+  — still no convincing 3D pop.
+
+**Why parked.** B&W random-dot autostereograms are genuinely hard at
+small canvas sizes. The fundamental tension: the text *must* leave a
+visible signature in the noise (otherwise no parallax), but the same
+signature reads as a "text shadow" before defocus. Real Magic Eye books
+sidestep this by using rich repeating textures (dragons, flowers) rather
+than random dots — texture pattern continuity hides depth artifacts.
+Also, npm has zero maintained SIRDS libraries — it's a 90s algorithm with
+no live JS ecosystem.
+
+**If revisited.** Don't use random dots. Pick a repeating *texture*
+(small pictograms, or a tiled noise pattern with mid-frequency structure)
+and apply the depth shift to it. The texture's own continuity will mask
+the text signature. Also consider switching to a static well-known SIRDS
+gallery image and animating only the depth-map digit positions inside it.
+
+**Reusable bits.** None worth keeping — the forward-copy and Thimbleby
+implementations are short enough to re-write if the texture-based
+direction is tried.
+

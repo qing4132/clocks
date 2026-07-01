@@ -16,8 +16,15 @@ import { useEffect, useRef, useState } from "react";
  *     1259 → 1300  delete 259, type 300
  *     0959 → 1000  delete 0959, type 1000
  *
- *   Idea once considered: occasionally "mistype" a digit and then correct
- *   it, for a more human feel.
+ *   Easter egg (once per device per day, only on the first :59→:00 wrap of
+ *   the session). The typist "miscounts" and treats MM=59+1 as MM=60,
+ *   typing `HH60` at the boundary before catching the mistake:
+ *     1659 → 1660 at 17:00:00 exactly (delete "59", type "60"), then a
+ *     short natural pause, then 1660 → 1700 (delete "660", type "700").
+ *   The wrong value lands ON the boundary; the correction finishes about
+ *   a second later. Consumed even if missed (tab hidden through boundary,
+ *   or the browser reloaded before the wrap could fire) — one shot per
+ *   local calendar day.
  */
 
 function hhmm(d: Date): string {
@@ -32,6 +39,17 @@ function hhmm(d: Date): string {
 const DELETE_MS = 130;
 const TYPE_MS = 220;
 
+// After the mistaken value lands ON the boundary, the typist takes a full
+// beat before starting to correct — long enough that the wrong value is
+// clearly perceived. Correction begins at boundary + EGG_PAUSE_MS.
+const EGG_PAUSE_MS = 3000;
+// During the egg's correction phase only, the typist backspaces twice as
+// fast — the mistake is obvious and the hand is already reaching for the
+// key. Typing speed for the new digits stays normal.
+const EGG_CORRECTION_DELETE_MS = DELETE_MS / 2;
+
+const EGG_STORAGE_KEY = "qc-typewriter-egg-day";
+
 // Monospace cell geometry. Digits are centered as a group and the caret
 // hangs just to their right, like a real text field.
 const CELL = 30; // horizontal advance per character
@@ -44,6 +62,51 @@ const CARET_H = 50;
 const CARET_DY = -2.5;
 const CARET_COLOR = "#c1121f";
 
+type Frame = { str: string; cost: number };
+
+function computeFrames(
+  from: string,
+  to: string,
+  deleteMs: number = DELETE_MS,
+  typeMs: number = TYPE_MS,
+): Frame[] {
+  let p = 0;
+  while (p < from.length && p < to.length && from[p] === to[p]) p++;
+
+  const frames: Frame[] = [];
+  let s = from;
+  for (let len = from.length; len > p; len--) {
+    s = s.slice(0, -1);
+    frames.push({ str: s, cost: deleteMs });
+  }
+  for (let len = p; len < to.length; len++) {
+    s = to.slice(0, len + 1);
+    frames.push({ str: s, cost: TYPE_MS });
+  }
+  return frames;
+}
+
+function todayKey(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function readEggArmed(): boolean {
+  try {
+    return localStorage.getItem(EGG_STORAGE_KEY) !== todayKey();
+  } catch {
+    return false;
+  }
+}
+
+function markEggConsumed() {
+  try {
+    localStorage.setItem(EGG_STORAGE_KEY, todayKey());
+  } catch {
+    // ignore (private mode / storage disabled)
+  }
+}
+
 export default function TypewriterClock() {
   const [display, setDisplay] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -51,11 +114,19 @@ export default function TypewriterClock() {
 
   const displayRef = useRef("");
 
-  // Plan each minute's animation so its final keystroke lands exactly on the
-  // :00 boundary. We look ahead to the next minute, work out the delete/type
-  // sequence from what's currently shown, and back-time every step from the
-  // boundary so the complete new digits appear precisely at :00.
+  // The egg is armed at mount (once per calendar day per device). It stays
+  // armed across normal-minute plans until the first :59→:00 wrap of this
+  // session paints its fake value at the boundary — that instant writes the
+  // storage flag and disarms. If the boundary passes while the tab is
+  // hidden or the page reloads before firing, `readEggArmed()` on the next
+  // mount still counts it as consumed as long as `markEggConsumed()` ran;
+  // see `visibilitychange` handler below for the recovery case.
+  const armedRef = useRef(false);
+  const scheduledEggBoundaryRef = useRef<number | null>(null);
+
   useEffect(() => {
+    armedRef.current = readEggArmed();
+
     const init = hhmm(new Date());
     displayRef.current = init;
     setDisplay(init);
@@ -66,59 +137,11 @@ export default function TypewriterClock() {
       timers.length = 0;
     };
 
-    const plan = () => {
-      clearTimers();
-      const now = Date.now();
-      const boundary = (Math.floor(now / 60000) + 1) * 60000; // next :00
-      const target = hhmm(new Date(boundary));
-      const cur = displayRef.current;
-
-      // Shared leading digits that don't change.
-      let p = 0;
-      while (p < cur.length && p < target.length && cur[p] === target[p]) p++;
-
-      // Frames: backspace down to the shared prefix, then type up to target.
-      // cost = the pause that follows each keystroke before the next one.
-      const frames: { str: string; cost: number }[] = [];
-      let s = cur;
-      for (let len = cur.length; len > p; len--) {
-        s = s.slice(0, -1);
-        frames.push({ str: s, cost: DELETE_MS });
-      }
-      for (let len = p; len < target.length; len++) {
-        s = target.slice(0, len + 1);
-        frames.push({ str: s, cost: TYPE_MS });
-      }
-
-      const finish = () => {
-        displayRef.current = target;
-        setDisplay(target);
-        // Refresh the blink phase to the live wall-clock value before handing
-        // the caret back to it. Otherwise the 80ms-sampled blinkOn state may
-        // still be the stale pre-boundary value and the caret blips off for a
-        // frame the instant `busy` clears.
-        setBlinkOn(Math.floor(Date.now() / 500) % 2 === 0);
-        setBusy(false);
-        plan(); // schedule the following minute
-      };
-
-      if (frames.length === 0) {
-        timers.push(setTimeout(finish, boundary - now + 20));
-        return;
-      }
-
-      // Back-time: last frame paints at the boundary; each earlier frame is
-      // its own cost ahead of the next.
-      const n = frames.length;
-      const paintAt = new Array<number>(n);
-      paintAt[n - 1] = boundary;
-      for (let i = n - 2; i >= 0; i--) paintAt[i] = paintAt[i + 1] - frames[i].cost;
-
-      // Caret turns solid the instant typing begins.
-      timers.push(
-        setTimeout(() => setBusy(true), Math.max(0, paintAt[0] - now)),
-      );
-
+    const scheduleFrames = (
+      frames: Frame[],
+      paintAt: number[],
+      now: number,
+    ) => {
       frames.forEach((f, i) => {
         timers.push(
           setTimeout(() => {
@@ -127,20 +150,161 @@ export default function TypewriterClock() {
           }, Math.max(0, paintAt[i] - now)),
         );
       });
+    };
+
+    const plan = () => {
+      clearTimers();
+      scheduledEggBoundaryRef.current = null;
+
+      const now = Date.now();
+      const boundary = (Math.floor(now / 60000) + 1) * 60000; // next :00
+      const target = hhmm(new Date(boundary));
+      const cur = displayRef.current;
+      const isWrap = cur.endsWith("59");
+
+      // Fake typing lands at the boundary, correction runs after a pause.
+      // Only fire when we still have room for the whole fake sequence in
+      // real time — if the page loaded within a few hundred ms of the
+      // boundary, fall back to a normal plan for this wrap; the egg stays
+      // armed and will wait for the next :59.
+      if (armedRef.current && isWrap) {
+        const fakeTarget = cur.slice(0, 2) + "60";
+        const fakeFrames = computeFrames(cur, fakeTarget);
+        const fN = fakeFrames.length;
+        const fakePaintAt = new Array<number>(fN);
+        fakePaintAt[fN - 1] = boundary;
+        for (let i = fN - 2; i >= 0; i--)
+          fakePaintAt[i] = fakePaintAt[i + 1] - fakeFrames[i].cost;
+
+        if (fakePaintAt[0] >= now) {
+          runEggPlan(now, boundary, target, fakeTarget, fakeFrames, fakePaintAt);
+          return;
+        }
+      }
+
+      runNormalPlan(now, boundary, cur, target);
+    };
+
+    const runNormalPlan = (
+      now: number,
+      boundary: number,
+      cur: string,
+      target: string,
+    ) => {
+      const frames = computeFrames(cur, target);
+
+      const finish = () => {
+        displayRef.current = target;
+        setDisplay(target);
+        setBlinkOn(Math.floor(Date.now() / 500) % 2 === 0);
+        setBusy(false);
+        plan();
+      };
+
+      if (frames.length === 0) {
+        timers.push(setTimeout(finish, boundary - now + 20));
+        return;
+      }
+
+      const n = frames.length;
+      const paintAt = new Array<number>(n);
+      paintAt[n - 1] = boundary;
+      for (let i = n - 2; i >= 0; i--)
+        paintAt[i] = paintAt[i + 1] - frames[i].cost;
+
+      timers.push(
+        setTimeout(() => setBusy(true), Math.max(0, paintAt[0] - now)),
+      );
+
+      scheduleFrames(frames, paintAt, now);
 
       timers.push(setTimeout(finish, boundary - now + 20));
+    };
+
+    const runEggPlan = (
+      now: number,
+      boundary: number,
+      target: string,
+      fakeTarget: string,
+      fakeFrames: Frame[],
+      fakePaintAt: number[],
+    ) => {
+      scheduledEggBoundaryRef.current = boundary;
+
+      const correctionFrames = computeFrames(
+        fakeTarget,
+        target,
+        EGG_CORRECTION_DELETE_MS,
+      );
+      const cN = correctionFrames.length;
+      const correctionStart = boundary + EGG_PAUSE_MS;
+      const correctionPaintAt = new Array<number>(cN);
+      correctionPaintAt[0] = correctionStart;
+      for (let i = 1; i < cN; i++)
+        correctionPaintAt[i] =
+          correctionPaintAt[i - 1] + correctionFrames[i - 1].cost;
+      const correctionEnd = correctionPaintAt[cN - 1];
+
+      const finish = () => {
+        displayRef.current = target;
+        setDisplay(target);
+        setBlinkOn(Math.floor(Date.now() / 500) % 2 === 0);
+        setBusy(false);
+        scheduledEggBoundaryRef.current = null;
+        plan();
+      };
+
+      timers.push(
+        setTimeout(() => setBusy(true), Math.max(0, fakePaintAt[0] - now)),
+      );
+
+      scheduleFrames(fakeFrames, fakePaintAt, now);
+
+      // At the boundary: the wrong value has landed. Consumption fires
+      // (whether or not the correction plays out) and the caret is handed
+      // back to the normal blinker for the pause so the typist visibly
+      // "pauses to notice the mistake" instead of holding a solid caret.
+      timers.push(
+        setTimeout(() => {
+          armedRef.current = false;
+          markEggConsumed();
+          setBusy(false);
+          setBlinkOn(Math.floor(Date.now() / 500) % 2 === 0);
+        }, Math.max(0, boundary - now)),
+      );
+
+      // When correction begins, the caret goes solid again.
+      timers.push(
+        setTimeout(() => setBusy(true), Math.max(0, correctionStart - now)),
+      );
+
+      scheduleFrames(correctionFrames, correctionPaintAt, now);
+
+      timers.push(setTimeout(finish, correctionEnd - now + 20));
     };
 
     plan();
 
     // Re-plan when returning to the tab, since background timers may drift.
+    // Also enforce the "strictly one shot per day" rule: if the egg was
+    // scheduled and its boundary has passed while we were hidden, consume
+    // it here so the next wrap this session cannot fire it again.
     const onVisible = () => {
-      if (document.visibilityState === "visible") {
-        displayRef.current = hhmm(new Date());
-        setDisplay(displayRef.current);
-        setBusy(false);
-        plan();
+      if (document.visibilityState !== "visible") return;
+
+      if (
+        armedRef.current &&
+        scheduledEggBoundaryRef.current !== null &&
+        Date.now() > scheduledEggBoundaryRef.current
+      ) {
+        armedRef.current = false;
+        markEggConsumed();
       }
+
+      displayRef.current = hhmm(new Date());
+      setDisplay(displayRef.current);
+      setBusy(false);
+      plan();
     };
     document.addEventListener("visibilitychange", onVisible);
 
@@ -201,3 +365,4 @@ export default function TypewriterClock() {
     </svg>
   );
 }
+

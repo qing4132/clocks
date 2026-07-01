@@ -287,8 +287,8 @@ export const clocks: ClockEntry[] = [
   },
   {
     slug: "cat",
-    name: "黑猫戏球",
-    nameEn: "Cat & Laser",
+    name: "猫",
+    nameEn: "Cat",
     description: "用拟物的手法演绎极其生动的表盘：毛茸茸的脑袋指向当前的「小时」，它会随着时间流逝缓缓扭动脖子；一条柔顺的短尾巴伸向外指示当前的「分钟」，上蹿下跳的红外激光点是秒针。黑猫的头永远平滑追踪，但它瞪大的瞳孔会不断地去捕捉激射的激光点。",
     Component: CatClock,
   },

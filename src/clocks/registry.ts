@@ -31,6 +31,7 @@ import QRClock from "./qr/QRClock";
 import NowClock from "./now/NowClock";
 import TypewriterClock from "./typewriter/TypewriterClock";
 import AntiScreenshotClock from "./anti-screenshot/AntiScreenshotClock";
+import SmileClock from "./smile/SmileClock";
 
 export type ClockEntry = {
   slug: string;
@@ -270,6 +271,14 @@ export const clocks: ClockEntry[] = [
     description:
       "整块方屏都是动态黑白噪点，时间 HH:MM 由同样的噪点构成——所以任何一帧、也就是任何一张截图，都只是一片随机雪花，拍不下时间。只有相对运动才把数字勈出来：数字那片噪点向左漂移、背景向右漂移，于是你读出时间；一停下就消失在噪点里。每个点要么黑、要么背景色。",
     Component: AntiScreenshotClock,
+  },
+  {
+    slug: "smile",
+    name: "笑脸",
+    nameEn: "Smile",
+    description:
+      "一张黄底黑边的圆脸：底部一段窄窄的浅笑，嘴角正好落在两只眼睛的正下方。没有眼眶，只有两颗黑色圆点作眼球——左眼是时针、右眼是分针，各自绕自己的眼位画一个小圆。于是每一分钟，两只眼睛都在不同方向地看，一天下来这张脸悄悄换过成千上万种滑稽表情。",
+    Component: SmileClock,
   },
 ];
 

@@ -398,6 +398,104 @@ the result felt like two different clocks layered together: an expressive
 envelope texture plus conventional dot-ring readouts. The envelope itself still
 does not carry enough readable structure on its own.
 
+## Barcode — 条形码钟（built, then parked）
+
+**Concept.** A one-dimensional cousin of #027 QR. Where QR is a 2-D machine
+matrix, Barcode is a horizontal Code 128-C bar/space pattern encoding the
+current `HHMMSS` as three digit pairs, with the checksum and stop character
+appended so a phone camera can actually scan the display and read back the
+time string. Below the bars a human-readable `HH MM SS` row echoes the value,
+with a faint `CODE 128 C` footer identifying the format.
+
+**What was tried.** Built as `src/clocks/barcode/BarcodeClock.tsx` after #031.
+The prototype included the full 107-entry Code 128 pattern table (11 modules
+per data character, 13 modules for the stop with terminator bar), computed the
+mod-103 checksum, and rendered every bar as an SVG rect with `shapeRendering="crispEdges"`
+inside the same cream/black frame the digital family uses.
+
+**Why parked.** The mechanism was correct and genuinely scannable, but as a
+gallery piece it was too close to #027 QR in spirit — both are "machine-perfect,
+human-illegible" encodings of the time string, only one is 1-D and the other 2-D.
+The barcode did not add a new *experience* of time; it added a second serving of
+the same idea. In the same conversation Cuneiform was also parked as another
+"same time, different notation" piece — the pair confirmed that swapping
+notation alone is not enough of a twist.
+
+**If revisited.** Make the 1-D nature do real work. Ideas: let the bar
+positions themselves visibly slide as seconds tick (rather than the whole strip
+redrawing atomically each second); or use a barcode format where the width of
+one specific bar continuously encodes a sub-second value, so the *bars breathe*
+rather than snap.
+
+## Cuneiform — 楔形文字钟（built, then parked）
+
+**Concept.** Base-60 sexagesimal digits for H : M : S in Babylonian cuneiform —
+tens as Winkelhakens (corner wedges) on the left, ones as vertical wedges on
+the right, following the standard "up to 3 per row, extra rows below" pyramid
+layout. This is not "a different font for the numbers"; the 60-minute hour we
+still use every day inherits directly from this notation, so the twist was to
+make that lineage literal.
+
+**What was tried.** Built as `src/clocks/cuneiform/CuneiformClock.tsx` after
+#031. Three digit slots for H / M / S, drawn as SVG triangles; late-Seleucid-
+era two-oblique-wedge zero placeholder for empty positions; seconds column
+tinted red for consistency with the digital family; small `BASE 60` footer.
+
+**Why parked.** The layout was correct and read clearly, but the piece landed
+as a "notation swap" — same three numbers as the digital clock, dressed in
+older typography. Without a second twist that made the sexagesimal *structure*
+do something (e.g. a shared H+M+S wedge count that reveals a pattern only base-60
+would produce), it stayed a font choice more than a new representation of time.
+Parked alongside Barcode as evidence that pure notation swaps are not enough.
+
+**If revisited.** Give base-60 formal necessity: use a single accumulating
+sexagesimal readout (like the day expressed as one long Babylonian number) so
+the base itself does visible work, or lean into the *material* of impressed
+clay — cursor-like fresh impressions that dry as their second passes, older
+wedges cracking into the tablet.
+
+## Split-flap — 翻页板钟（built, then parked）
+
+**Concept.** The Solari airport/train departure board as a clock: `HH:MM:SS`
+in six mechanical flip cards, each digit's card doing an authentic two-phase
+flip — the old digit's top half falling forward around its bottom hinge, then
+the new digit's bottom half rising into place around its top hinge — every
+time its value changes.
+
+**What was tried.** Built as `src/clocks/split-flap/variants.tsx` after #031.
+First a straight baseline, then three variants exploring different dimensions:
+
+- **Baseline** — 6 dark cards for HH:MM:SS with light dots between pairs;
+  each cell flips only when its digit changes.
+- **13a Vestaboard 词组板** — a 12-column × 2-row *letter* board that spells
+  the time in English words (row 1 hour, e.g. `   TWELVE   `; row 2 minute,
+  e.g. ` TWENTY FOUR`). Each letter cell can only flap *forward* through
+  the alphabet `A…Z ⎵`, so when the minute rolls over each changed cell
+  bursts through several letters at ~95 ms per flap before landing.
+- **13b Cascade 波纹** — the same 6-cell HH:MM:SS grid, but every second
+  triggers a left-to-right *wave* of flips at ~55 ms stagger, including
+  "phantom flips" on cells whose digit did not change. Every tick becomes a
+  coordinated 6-card ripple.
+- **13c Solo 独牌** — the whole face is reduced to a single 260×320 flap
+  card showing the two-digit seconds; one enormous thunk per second, with a
+  small `SECONDS` label below.
+
+**Why parked.** The two-phase flap mechanism was solid and the Vesta variant
+in particular was pleasing, but as a family the four prototypes were still
+mostly *"a digital clock in flap clothing"*: the medium changed but the
+representation of time did not. Vesta was the closest to earning its own slot
+(the *word* form is a genuine reframe), but even it felt like the letter cells
+were carrying more visual weight than the underlying idea. Parked while a
+sharper twist is found.
+
+**If revisited.** Push Vesta hardest: full sentences rather than two padded
+rows, and let the letter flaps become the point (e.g. a slowly composing line
+of prose whose current word *is* the time). For Cascade and Solo, either drop
+them or fold their motion/scale ideas into Vesta as one unified piece rather
+than three tiles.
+
+
+
 ## Round-dial 30-hour clock (a pair for the digital #012)
 
 **Concept.** A 30-hour clock built on the round 24-hour dial (#004: 24

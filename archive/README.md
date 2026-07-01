@@ -81,40 +81,68 @@ Files preserved:
 - `IncenseBase.tsx` — shared spiral + burn math used by the variants
 - `variants.tsx` — five readout treatments A–E
 
-## twelve-clocks (formerly #014, second design)
+## twelve-clocks (formerly #014, then briefly #032)
 
 **Concept.** Self-similar fractal: one main clock holds 12 mini-clocks at
 its numeral positions, each mini holds 12 grandchildren of the same
-shape. Every 5 seconds the camera linearly zooms into the 12-o'clock
-mini-clock. By the end of the zoom that mini fills the viewport and —
-because it contains 12 grandchildren of its own — the image is visually
-identical to the un-zoomed starting frame, so scale wraps from 8 to 1
-seamlessly. All 1 + 12 + 144 = 157 clocks carry their own hour and
-minute hands, synced to the real time via a single rAF loop that writes
-transform attributes directly (no React re-render per frame).
+shape. Every 5 seconds the camera zooms into one of the mini-clocks;
+because that mini contains 12 grandchildren of its own, the frame at
+the end of the zoom is visually identical to the un-zoomed starting
+frame, so scale wraps seamlessly. All 1 + 12 + 144 = 157 clocks carry
+their own hour and minute hands, synced to the real time via a single
+rAF loop that writes transform attributes directly (no React re-render
+per frame).
 
-The math that ties it together:
+The math that ties it together (exponential zoom about the child's
+accumulation point `p = c/(1-k)`):
 ```
-T(p) = scale·p + t
-require T(c) = (1-u)·c   →   t = (1 - u - scale)·c
+T_u(x) = p + s·(x − p),   s = (1/k)^u,   u = (sec mod 5)/5
 ```
-giving the identity transform at u=0 and "target at origin, scaled 8x"
-at u=1.
+Identity at u=0, "child centred at origin scaled by 1/k" at u=1 →
+seamless self-similar wrap. Log(s) linear in u ⇒ constant perceived
+zoom speed across the seam.
 
-**Why it was archived.** Multiple rounds of redesign (target-follows-
-seconds, target-fixed-at-12, linear vs exponential zoom, with/without
-grandchildren-hands) never produced a visually satisfying loop. The
-combination of (a) wanting the start frame to be a "full clock", (b) the
-end frame to be the same full clock self-similarly, and (c) the camera
-to track the second hand around the dial turned out to be only partially
-satisfiable — every viable compromise had at least one of: a visible
-jump on each 5-second boundary, target sliding through the frame mid-
-animation, or the intuitive "zoom-into-fractal" feel being lost. The
-fractal-as-static-design concept lives on in #015 hands-are-clocks.
+**Why it was archived — twice.** Two separate design attempts, each
+archived after the same underlying complaint: the fractal-zoom concept
+is elegant on paper but flat in practice.
+
+- **v2 (2025, was #014).** Cycled through all twelve children over each
+  minute; accepted a small "direction kink" at each wrap. Rendered the
+  parent's hands normally through the whole dive, so by u≈1 they had
+  ballooned to 6.25× and hovered giantly across the child that was
+  about to fill the frame. Multiple sub-variants (target-follows-seconds,
+  target-fixed-at-12, linear vs exponential zoom, with/without
+  grandchildren-hands) all produced some combination of: a visible
+  jump on each 5-second boundary, target sliding through the frame
+  mid-animation, or the intuitive "zoom-into-fractal" feel being lost.
+
+- **v3 (2026, was briefly #032).** Fixed all v2's known flaws:
+  aggressive linear fade on L0's hands (`max(0, 1 − 2.5·u)`, gone by
+  u=0.4) so the parent didn't dominate at u→1; used the 12-fold
+  symmetry of the dial (12 identical ticks, no numerals) so all twelve
+  dive destinations were geometrically equivalent — same animation,
+  different destination parameters — cycling through all twelve without
+  any special "corner smoothing"; dropped the red second hand entirely,
+  since "which child is being dived into" already IS the discrete
+  seconds indicator (12 slots per minute, one per 5s). Wrap was
+  mathematically seamless (self-similarity), fade was clean, cycling
+  worked.
+
+  Set aside anyway. Even with everything technically working — smooth
+  loop, no pop, no kink, no ghost hands — the piece read as "a clock
+  that keeps interrupting itself every 5 seconds" more than "a fractal
+  telling the time". Reading hour/minute during mid-dive frames took
+  work: the visible "main" hands smoothly hand off from L0 to the
+  dive-target child, but the eye still has to relocate its focus each
+  window. And the cycle direction (12 → 1 → 2 → …) is an abstraction
+  the viewer has to infer, not something they read at a glance. The
+  concept is beautiful; the clock isn't restful.
 
 Files preserved:
-- `TwelveClocksClock.tsx` — the final version (fixed target at 12 o'clock,
-  linear scale, all three levels with hands)
+- `TwelveClocksClock.tsx` — v2 (cycling with direction kink, hands
+  drawn plainly through the dive).
+- `TwelveClocksClockV3.tsx` — v3 (cycling with fade + no second hand,
+  the version briefly registered as #032).
 
 ## dead-pixel (formerly #016)
 

@@ -1118,3 +1118,42 @@ Code is preserved in `archive/cat/CatClock.tsx`.
 math, and the laser-glow filter recipe are all reusable for any future
 "animal follows a moving accent" clock.
 
+## Twelve Clocks — 十二钟（built twice, parked twice）
+
+**Concept.** A #001 face whose twelve hour marks aren't numerals but twelve
+smaller copies of the same face; each smaller copy holds twelve of its own;
+and so on. Every 5 seconds the camera zooms exponentially by 1/k about one
+of the twelve children's accumulation points. Because that child is a
+self-similar copy of the whole dial, the moment it fills the frame is
+visually identical to the starting moment — the wrap is invisible and the
+fall is infinite. Every dial on every level shows the real hour and minute.
+
+**What was tried (twice).** First around #014 (`archive/twelve-clocks/
+TwelveClocksClock.tsx`, "v2"), then again as briefly-#032 (`TwelveClocksClockV3.tsx`,
+"v3"). v3 fixed everything v2 was accused of: it faded L0's hands aggressively
+(`max(0, 1 − 2.5·u)`) so the parent didn't dominate at u→1; it used the dial's
+12-fold rotational symmetry so all twelve dive destinations were geometrically
+equivalent — same animation, different destination parameters — enabling clean
+cycling through all twelve; it dropped the red second hand since "which child
+is being dived into" is already the discrete seconds indicator (12 slots per
+minute). Wrap was mathematically seamless, cycling worked, no visible pop.
+
+**Why parked (both times).** Even with everything technically working, the
+piece reads as "a clock that keeps interrupting itself every 5 seconds"
+more than "a fractal telling the time". Reading hour/minute during mid-dive
+frames requires effort: the visible "main" hands hand off from L0 to the
+dive-target child, but the eye still has to relocate every window. And the
+cycle direction is an abstraction the viewer has to infer, not read at a
+glance. Beautiful concept, restless clock.
+
+**If revisited.** The accumulation-point exponential-zoom trick
+(`p = c/(1-k)`, `s = (1/k)^u`, seamless self-similar wrap with constant
+perceived pan speed) is the reusable core — it's how any Droste dive should
+be built. The 12-fold-symmetry insight that "all cycling destinations are
+one animation with different parameters" is also worth keeping. What needs
+to change is the framing: perhaps a slower cadence (one child per minute
+rather than per 5s) so the viewer has time to settle into each mini-clock;
+or ditching the fractal dive entirely and using nested dials as static
+visual richness only (though a first version tried that and it read as "a
+Droste illustration" rather than a working clock).
+

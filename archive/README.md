@@ -278,3 +278,19 @@ actual time is too ambiguous.
 
 Files preserved:
 - `ArcClock.tsx` — the single-arc implementation.
+
+## cat (formerly #032)
+
+**Concept.** A skeuomorphic cat on a carpet: the whole fluffy head slowly
+rotates to point at the current hour; a soft short tail sweeps out toward
+the current minute; a glowing red laser dot on the carpet is the second
+hand. The cat's wide-open pupils continuously track the laser relative to
+its own head rotation, so the eyes look convincingly alive.
+
+**Why it was archived.** Set aside for now, not shipping in the current
+gallery.
+
+Files preserved:
+- `CatClock.tsx` — full implementation including the `useSmoothCatAngles`
+  hook (32 ms tick for continuous motion), head/tail geometry, pupil-tracks-
+  laser transform, and the glowing-laser SVG filter.

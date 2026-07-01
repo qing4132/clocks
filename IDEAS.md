@@ -1092,3 +1092,29 @@ gallery image and animating only the depth-map digit positions inside it.
 implementations are short enough to re-write if the texture-based
 direction is tried.
 
+## Cat — 猫钟（built, then parked）
+
+**Concept.** A skeuomorphic cartoon cat as a clock. The whole fluffy head
+slowly rotates to point at the current hour; a soft short tail sweeps out
+toward the current minute; a glowing red laser dot on the carpet is the
+second hand. The cat's wide-open pupils continuously track the laser
+relative to its own head rotation, so the eyes look convincingly alive
+even though every part is driven by the wall clock.
+
+**What was tried.** Built as `src/clocks/cat/CatClock.tsx` after #031
+(Smile) and briefly registered as `#032`. The prototype used a 32 ms
+`useWallClock` cadence for smooth motion, computed float hour/minute/second
+angles, mapped head rotation to `hourAngle`, tail sweep to `minuteAngle`,
+laser position to `secondAngle` on a large orbit around the carpet, and
+computed pupil offsets as `secondAngle - hourAngle` (the laser's angle
+*relative to the head*, so the pupils track properly through head
+rotations). SVG drop-shadow and gaussian-glow filters added the fur
+depth and the laser bloom.
+
+**Why parked.** Set aside for now — not shipping in the current gallery.
+Code is preserved in `archive/cat/CatClock.tsx`.
+
+**If revisited.** The `useSmoothCatAngles` hook, the relative-angle pupil
+math, and the laser-glow filter recipe are all reusable for any future
+"animal follows a moving accent" clock.
+

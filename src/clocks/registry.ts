@@ -18,7 +18,6 @@ import {
   BreathingBlossom,
 } from "./breathing-blossom/variants";
 import RemainingClock from "./remaining/RemainingClock";
-import CatClock from "./cat/CatClock";
 
 import CenturySandClock from "./century/CenturySandClock";
 import { GameOfLifeClock } from "./game-of-life/variants";
@@ -284,13 +283,6 @@ export const clocks: ClockEntry[] = [
     description:
       "一张黄底黑边的圆脸：底部一段窄窄的浅笑，嘴角正好落在两只眼睛的正下方。没有眼眶，只有两颗黑色圆点作眼球——左眼是时针、右眼是分针，各自绕自己的眼位画一个小圆。于是每一分钟，两只眼睛都在不同方向地看，一天下来这张脸悄悄换过成千上万种滑稽表情。",
     Component: SmileClock,
-  },
-  {
-    slug: "cat",
-    name: "猫",
-    nameEn: "Cat",
-    description: "用拟物的手法演绎极其生动的表盘：毛茸茸的脑袋指向当前的「小时」，它会随着时间流逝缓缓扭动脖子；一条柔顺的短尾巴伸向外指示当前的「分钟」，上蹿下跳的红外激光点是秒针。黑猫的头永远平滑追踪，但它瞪大的瞳孔会不断地去捕捉激射的激光点。",
-    Component: CatClock,
   },
 ];
 

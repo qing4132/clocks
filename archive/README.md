@@ -307,6 +307,27 @@ actual time is too ambiguous.
 Files preserved:
 - `ArcClock.tsx` — the single-arc implementation.
 
+## smile (formerly #031)
+
+**Concept.** A yellow black-outlined round face with a thin smile at the
+bottom and two black pupil dots for eyes. The left pupil is the hour hand
+and the right pupil is the minute hand: each pupil orbits its own eye
+centre on a small circle (`PUPIL_ORBIT=12`), so at 12:00 both pupils sit
+at the top of their eyes, at 3:00 the right one is on the right of its
+eye, etc. No second hand — the hour/minute pupils drift continuously at
+sub-noticeable per-second increments (`m*0.1°/s` on the minute pupil,
+`0.5°/60°/s` on the hour pupil) so the eyes always look alive even
+though we only re-render once per wall-clock second. The mouth is a single
+`Q` bezier whose endpoints are pinned to `x = ±EYE_CX`, so each mouth
+corner sits directly under one eye. Every minute the face wears a slightly
+different expression; a day yields thousands of small silent grimaces.
+
+**Why it was archived.** Set aside for now, not shipping in the current
+gallery.
+
+Files preserved:
+- `SmileClock.tsx` — full implementation.
+
 ## cat (formerly #032)
 
 **Concept.** A skeuomorphic cat on a carpet: the whole fluffy head slowly

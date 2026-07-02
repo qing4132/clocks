@@ -1157,3 +1157,33 @@ or ditching the fractal dive entirely and using nested dials as static
 visual richness only (though a first version tried that and it read as "a
 Droste illustration" rather than a working clock).
 
+## Smile — 笑脸钟（built, then parked）
+
+**Concept.** A yellow black-outlined round face with a thin smile at the
+bottom and two black pupil dots for eyes. The left pupil is the hour hand
+and the right pupil is the minute hand: each pupil orbits its own eye
+centre on a small circle, so at 12:00 both pupils sit at the top of their
+respective eyes, at 3:00 the right pupil is on the right side of its eye,
+etc. No second hand — the hour/minute pupils drift continuously at
+sub-noticeable per-second increments so the eyes always look alive. Every
+minute the face wears a slightly different expression; a day yields
+thousands of small silent grimaces.
+
+**What was tried.** Built as `src/clocks/smile/SmileClock.tsx` and
+registered as #031. `useWallClock(1000)` for the tick; `hourAngle = h·30
++ m·0.5 + s·(0.5/60)` and `minuteAngle = m·6 + s·0.1` so the pupils
+walk smoothly between seconds even at 1 Hz render cadence; the mouth is
+a single `Q` bezier with endpoints pinned to `x = ±EYE_CX` so each mouth
+corner sits directly under one eye; `PUPIL_ORBIT=12`, `PUPIL_R=7`,
+`EYE_CY=-25` for the two eye centres on a 200-unit face.
+
+**Why parked.** Set aside for now — not shipping in the current gallery.
+Code is preserved in `archive/smile/SmileClock.tsx`.
+
+**If revisited.** The two-orbiting-pupils mechanism (each pupil is a
+separate hand rotating on its own small orbit rather than a full-radius
+hand from the centre) is reusable for any "face as clock" concept where
+you want the reading motion to stay inside the eyes; and the trick of
+pinning the mouth corners to `±EYE_CX` keeps the face composed at any
+size.
+

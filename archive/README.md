@@ -28,6 +28,18 @@ Files preserved:
 - `Base.tsx` — shared rendering used by the variants
 - `variants.tsx` — five tick / numeral treatments we tried (A–E)
 
+### Three Traces revisit (2026)
+
+A later revisit removed the ruler and reduced the clock to three partial
+rings. Hour, minute, and second occupy separate 90-degree sectors, so the
+rings can pass one another without their strokes crossing. Their weight and
+colour distinguish the three units; a small round red mark holds the centre.
+
+The base Three Traces design is preserved here; its later explorations were
+discarded.
+
+- `ThreeTracesClock.tsx` — complete standalone Three Traces implementation
+
 ## orb (formerly #008, second attempt)
 
 **Concept.** Three #001-style dials live on three mutually perpendicular

@@ -57,6 +57,51 @@ until it expires instantaneously. Find one simple form in which the mechanism
 is structurally necessary, rather than reviving the six rejected effects as
 stylistic variants.
 
+## Rendezvous — 相逢钟（built, then parked）
+
+**Concept.** The hour and minute hands meet eleven times in twelve hours, once
+every $720/11$ minutes. Those meetings reveal an eleven-part rhythm already
+latent inside an ordinary clock: the number eleven is not imposed as an
+alternate notation but produced by the relative speeds of the two hands.
+
+**What was tried.** A temporary study page tested three bodies: a complete #001
+face with eleven additional meeting marks; two time points joined by a chord
+whose length became zero at a meeting; and an eleven-petal rosette whose moving
+point returned to the center at each meeting.
+
+**Why parked.** The #001 version reduced the idea to an added layer, while the
+chord and rosette turned the mathematics into diagrams without producing a
+strong enough way to experience or read time. All three implementations were
+rejected and removed.
+
+**If revisited.** Start from the event of two independently moving things
+becoming one, not from eleven marks, a chord-length graph, or an eleven-petal
+curve. The form should make waiting for and passing through a meeting necessary
+to the clock, while preserving a credible way to read the current time.
+
+## Self-Marking — 自刻度钟（built, then parked）
+
+**Concept.** A clock should not begin with a completed scale. Time creates the
+marks by which it is measured: at second zero only the zero mark exists, each
+subsequent second adds its own mark, and by second 59 the minute has made all
+sixty marks before beginning again. The deeper idea is that measurement is a
+record left by elapsed time, not a grid waiting in advance.
+
+**What was tried.** A temporary study page tested three bodies: a #001-derived
+dial whose jumping second hand left marks behind it; three nested rings whose
+hour, minute, and second scales accumulated independently; and three horizontal
+rulers written from zero by elapsed hours, minutes, and seconds.
+
+**Why parked.** The dial remained #001 with an accumulating effect, while the
+nested rings and rulers became explanatory visualizations. None made the act of
+time producing its own measure feel inevitable or visually strong. All three
+implementations were rejected and removed.
+
+**If revisited.** Do not reuse the trailing second-hand dial, nested rings, or
+three rulers. Find a surface or instrument that genuinely cannot be read until
+time has inscribed it, so the growing scale is the clock's body rather than an
+animation placed on top of one.
+
 ## Zulu — 祖鲁钟（built, then parked）
 
 **Concept.** A #011-style digital clock that refuses local time and shows only

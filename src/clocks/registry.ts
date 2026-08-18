@@ -33,6 +33,7 @@ import NowClock from "./now/NowClock";
 import TypewriterClock from "./typewriter/TypewriterClock";
 import AntiScreenshotClock from "./anti-screenshot/AntiScreenshotClock";
 import WandererClock from "./wanderer/WandererClock";
+import ThirdsClock from "./thirds/ThirdsClock";
 
 export type ClockEntry = {
   slug: string;
@@ -280,6 +281,14 @@ export const clocks: ClockEntry[] = [
     description:
       "一只没有时针的 #001。整个画廊前 24 个位置构成它的 24 小时表盘：每到一个小时，它便占据对应编号，把那件作品交换到自己的 #031；午夜占据 #024。分针与秒针留在表面，而它所在的位置就是时针。",
     Component: WandererClock,
+  },
+  {
+    slug: "thirds",
+    name: "三分钟",
+    nameEn: "Thirds",
+    description:
+      "表盘被三等分，时、分、秒针固定在三个相隔 120° 的方向。三块完整刻度盘各自转动，把当前读数送到对应指针下方；靠近扇区边界的刻度与数字会连续淡出，让三套运动在同一个圆里安静交接。",
+    Component: ThirdsClock,
   },
 ];
 

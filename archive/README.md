@@ -4,6 +4,27 @@ These designs were prototyped but didn't make it into the final gallery.
 They're kept here for ideas and reference. Files in this folder are **not**
 included in the Next.js compile / build.
 
+## attention-lens
+
+**Concept.** A #001-style clock whose 60 second marks form an elastic
+coordinate system around the smooth second hand. Marks near the current
+second spread apart while marks farther away compress, so the present moment
+appears to claim more space than the rest of the minute. Hour and minute hands,
+numerals, colours and proportions remain those of the classic clock.
+
+The preserved version uses the original 25-degree sinusoidal warp. Stronger
+35 / 45 / 55-degree amplitude studies and later alternate clock forms were
+discarded.
+
+**Why it was archived.** The moving deformation is attractive, but the form
+still has an unresolved reading ambiguity: without the red indicator, a viewer
+may not know whether the expanded side or the compressed side represents the
+current second. The experiment is preserved rather than promoted while that
+relationship remains unresolved.
+
+Files preserved:
+- `attention-lens/AttentionLensClock.tsx` — complete standalone A01 implementation.
+
 ## expanding-rings (formerly #008)
 
 **Concept.** A vertical ruler runs from the center to the top of the dial,

@@ -24,3 +24,41 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@keyframes wanderer-soft-leave {
+  from { opacity: 1; filter: blur(0); transform: scale(1); }
+  to { opacity: 0; filter: blur(3.5px); transform: scale(0.975); }
+}
+
+@keyframes wanderer-soft-arrive {
+  from { opacity: 0; filter: blur(3.5px); transform: scale(0.975); }
+  to { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+
+@keyframes wanderer-name-leave {
+  from { opacity: 1; filter: blur(0); }
+  to { opacity: 0; filter: blur(1.75px); }
+}
+
+@keyframes wanderer-name-arrive {
+  from { opacity: 0; filter: blur(1.75px); }
+  to { opacity: 1; filter: blur(0); }
+}
+
+@keyframes wanderer-number-leave {
+  from { opacity: 1; filter: blur(0); transform: scale(1); }
+  to { opacity: 0; filter: blur(1.75px); transform: scale(0.94); }
+}
+
+@keyframes wanderer-number-arrive {
+  from { opacity: 0; filter: blur(1.75px); transform: scale(0.94); }
+  to { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="wanderer-soft-"],
+  [class*="wanderer-name-"],
+  [class*="wanderer-number-"] {
+    animation-duration: 1ms !important;
+  }
+}
+

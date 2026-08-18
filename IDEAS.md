@@ -32,6 +32,31 @@ dividing the day. If a clock commits to a non-modern time system, its internal
 hands and marks should usually follow that system instead of translating back
 to ordinary HH:MM readability.
 
+## Valid Until — 有效期钟（built, then parked）
+
+**Concept.** Show only the current `HH:MM`. That reading has a lifespan of
+exactly one minute: it begins fully present at the minute boundary, gradually
+spends its remaining duration, becomes almost absent at the final instant, and
+is replaced by the next fully present reading when the new minute begins. The
+core idea is to make the length or validity of one minute perceptible, not just
+to display which minute it is.
+
+**What was tried.** A temporary #011-derived study page tested six treatments:
+uniform fading, left-to-right erasure, sequential character disappearance,
+blurred dissolution, thinning seven-segment strokes, and a panel border whose
+remaining perimeter represented the term. All kept the same `HH:MM` time rule.
+
+**Why parked.** The underlying idea is worth keeping, but none of the visual
+forms felt inevitable. Some were merely disappearance effects; others made the
+minute's duration visible at the cost of weakening the directness and plainness
+of #011. No implementation from the study is retained.
+
+**If revisited.** Begin again from the conceptual distinction between a
+minute's continuously diminishing duration and a reading that remains correct
+until it expires instantaneously. Find one simple form in which the mechanism
+is structurally necessary, rather than reviving the six rejected effects as
+stylistic variants.
+
 ## Zulu — 祖鲁钟（built, then parked）
 
 **Concept.** A #011-style digital clock that refuses local time and shows only

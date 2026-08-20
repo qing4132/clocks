@@ -35,6 +35,7 @@ import AntiScreenshotClock from "./anti-screenshot/AntiScreenshotClock";
 import WandererClock from "./wanderer/WandererClock";
 import ThirdsClock from "./thirds/ThirdsClock";
 import { OverprintHaloClock } from "./overprint/OverprintClocks";
+import IllusionClock from "./illusion/IllusionClock";
 
 export type ClockEntry = {
   slug: string;
@@ -298,6 +299,14 @@ export const clocks: ClockEntry[] = [
     description:
       "时、分、秒各自成为一组巨大的两位数。小时用墨黑、分钟用石墨灰、秒用红色；三组数字只在对应单位变化时重新落位与转向，并以宽纸色描边维持重叠后的可读性。",
     Component: OverprintHaloClock,
+  },
+  {
+    slug: "illusion",
+    name: "Illusion",
+    nameEn: "Illusion",
+    description:
+      "红色秒针所到之处，整套角度空间随之弯曲：六十枚刻度和十二个数字持续改变位置，时针与分针也同步指向各自变形后的正确刻度。表盘看似失准，显示的时间却始终准确。",
+    Component: IllusionClock,
   },
 ];
 

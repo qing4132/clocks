@@ -1,0 +1,48 @@
+import type { LabExperiment } from "../types";
+
+export const roundTwoExperiments: LabExperiment[] = [
+  {
+    id: 102,
+    slug: "lab-r2-102-radical-center",
+    nameEn: "Radical Center",
+    description: "时、分、秒建立三只圆，它们被强制交于同一个时间点。",
+    mechanism: "三个圆心分别由时、分、秒定位；每只圆都穿过红色公共点。",
+    reading: "三个圆心分别对应时、分、秒，红色公共点是三者合成后的现在。",
+    status: "第二轮待定",
+    position: 134,
+    batch: 2,
+  },
+  {
+    id: 137,
+    slug: "lab-r2-137-palimpsest",
+    nameEn: "Palimpsest",
+    description: "最近十二个分钟被反复写在同一张纸上。",
+    mechanism: "每分钟留下一个略微错位、旋转并逐渐褪色的时间印迹。",
+    reading: "最深黑的一层是现在，浅层是逐渐被覆盖的过去。",
+    status: "第二轮待定",
+    position: 169,
+    batch: 2,
+  },
+  {
+    id: 162,
+    slug: "lab-r2-162-traffic-signal",
+    nameEn: "Traffic Signal",
+    description: "一分钟被重新编排成绿、黄、红三段交通周期。",
+    mechanism: "0–34 秒亮绿灯、35–39 秒亮黄灯、40–59 秒亮红灯。",
+    reading: "灯色给出当前阶段，亮灯外围的圆弧给出该阶段内部进度。",
+    status: "第二轮待定",
+    position: 194,
+    batch: 2,
+  },
+  {
+    id: 172,
+    slug: "lab-r2-172-ordinal-day",
+    nameEn: "Ordinal Day",
+    description: "365 或 366 天被压成一条可扫描的细密年轮。",
+    mechanism: "每一天对应环上的一个点；经过的日期变黑，今天放大标红。",
+    reading: "中心数字是今年的序数日，红点是它在全年周期中的位置。",
+    status: "第二轮待定",
+    position: 204,
+    batch: 2,
+  },
+];

@@ -13,18 +13,13 @@ import {
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { WallClockProvider } from "@/clocks/WallClockProvider";
-import { WandererGallery } from "../WandererGallery";
+import { LabGallery, type LabClock } from "./LabGallery";
 
 type Engine = {
   anchorVirtualMs: number;
   anchorRealMs: number;
   speed: number;
   paused: boolean;
-};
-
-type LabClock = {
-  slug: string;
-  nameEn: string;
 };
 
 const SPEEDS = [0.1, 0.5, 1, 5, 60, 3_600];
@@ -379,7 +374,7 @@ export function LabWorkspace({
             setSpeed={setSpeed}
             resetToNow={resetToNow}
           />
-          <WandererGallery clocks={clocks}>{children}</WandererGallery>
+          <LabGallery clocks={clocks}>{children}</LabGallery>
         </div>
       </main>
     </WallClockProvider>

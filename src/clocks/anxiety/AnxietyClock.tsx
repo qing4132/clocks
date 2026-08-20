@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { useWallClock } from "../useWallClock";
 
 const INK = "#1a1a1a";
@@ -11,24 +10,9 @@ type AnxietyClockProps = {
   label: string;
 };
 
-function AnxietyHand({ color }: { color: string }) {
-  const ref = useRef<SVGGElement>(null);
-
-  useEffect(() => {
-    let raf = 0;
-
-    function tick() {
-      const angle = (Date.now() % 1000) * 0.36;
-      ref.current?.setAttribute("transform", `rotate(${angle})`);
-      raf = requestAnimationFrame(tick);
-    }
-
-    tick();
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
+function AnxietyHand({ color, angle }: { color: string; angle: number }) {
   return (
-    <g ref={ref}>
+    <g transform={`rotate(${angle})`}>
       <line
         x1="0"
         y1="18"
@@ -43,7 +27,7 @@ function AnxietyHand({ color }: { color: string }) {
 }
 
 function AnxietyDial({ color, label }: AnxietyClockProps) {
-  const now = useWallClock(1000);
+  const now = useWallClock(16);
 
   const h = now ? now.getHours() % 12 : 0;
   const m = now ? now.getMinutes() : 0;
@@ -52,6 +36,7 @@ function AnxietyDial({ color, label }: AnxietyClockProps) {
   const secondAngle = s * 6;
   const minuteAngle = m * 6 + s * 0.1;
   const hourAngle = h * 30 + m * 0.5;
+  const anxietyAngle = now ? (now.getTime() % 1000) * 0.36 : 0;
 
   return (
     <svg
@@ -103,7 +88,7 @@ function AnxietyDial({ color, label }: AnxietyClockProps) {
 
       {now && (
         <>
-          <AnxietyHand color={color} />
+          <AnxietyHand color={color} angle={anxietyAngle} />
           <line
             x1="0"
             y1="10"

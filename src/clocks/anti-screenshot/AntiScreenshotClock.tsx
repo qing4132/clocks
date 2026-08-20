@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useWallClock } from "../useWallClock";
 
 /**
  * Anti-Screenshot — 反截图.
@@ -80,6 +81,12 @@ function digitBlocks(now: number, cols: number, rows: number): [number, number, 
 
 export default function AntiScreenshotClock() {
   const ref = useRef<HTMLCanvasElement>(null);
+  const now = useWallClock(32);
+  const nowRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    nowRef.current = now?.getTime() ?? null;
+  }, [now]);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -147,17 +154,17 @@ export default function AntiScreenshotClock() {
     const wrap = (n: number, m: number) => ((n % m) + m) % m;
 
     let raf = 0;
-    const t0 = performance.now();
-    const loop = (t: number) => {
+    const loop = () => {
       raf = requestAnimationFrame(loop);
       if (!cols) return;
-      const now = Date.now();
-      const minute = Math.floor(now / 60000);
+      const clockNow = nowRef.current;
+      if (clockNow === null) return;
+      const minute = Math.floor(clockNow / 60000);
       if (minute !== lastMin) {
-        buildMask(now);
+        buildMask(clockNow);
         lastMin = minute;
       }
-      const ox = Math.floor(((t - t0) / 1000) * CELLS_PER_SEC); // whole cells
+      const ox = Math.floor((clockNow / 1000) * CELLS_PER_SEC);
 
       ctx.clearRect(0, 0, W, H);
       ctx.save();

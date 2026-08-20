@@ -225,11 +225,16 @@ export default function ShengxiaoClock() {
   // a counter that ticks once per wall-clock minute (the 0-second mark)
   const beat = now ? Math.floor(now.getTime() / 60000) : 0;
   const resumeBeat = useRef<number | null>(null);
+  const nowRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    nowRef.current = now?.getTime() ?? null;
+  }, [now]);
 
   useEffect(() => {
     function handleVisibilityChange() {
-      if (document.visibilityState === "visible") {
-        resumeBeat.current = Math.floor(Date.now() / 60000);
+      if (document.visibilityState === "visible" && nowRef.current !== null) {
+        resumeBeat.current = Math.floor(nowRef.current / 60000);
       }
     }
 

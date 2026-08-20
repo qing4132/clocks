@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { ControlledTimeContext } from "./WallClockProvider";
 
 // Single shared rAF loop. Each subscriber gets notified at most once per
 // `cadenceMs` boundary aligned to wall-clock time, so every clock on the
@@ -62,18 +63,26 @@ function unsubscribe(sub: Subscriber) {
  * server / first render to avoid hydration mismatches.
  */
 export function useWallClock(cadenceMs: number = 1000): Date | null {
+  const controlledNowMs = useContext(ControlledTimeContext);
   const [now, setNow] = useState<Date | null>(null);
+  const controlledBucket =
+    controlledNowMs === null
+      ? null
+      : Math.floor(controlledNowMs / cadenceMs) * cadenceMs;
+  const controlledNow = useMemo(
+    () => (controlledBucket === null ? null : new Date(controlledBucket)),
+    [controlledBucket],
+  );
 
   useEffect(() => {
-    setNow(new Date());
     const sub: Subscriber = {
       cadence: cadenceMs,
-      lastBucket: Math.floor(Date.now() / cadenceMs),
+      lastBucket: -1,
       cb: setNow,
     };
     subscribe(sub);
     return () => unsubscribe(sub);
   }, [cadenceMs]);
 
-  return now;
+  return controlledNow ?? now;
 }

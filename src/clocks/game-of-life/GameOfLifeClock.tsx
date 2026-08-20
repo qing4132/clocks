@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useWallClock } from "../useWallClock";
 
 /**
  * #019 — Game of Life.  (Engine + dial. Technically this is a "Snark loop":
@@ -138,25 +139,29 @@ const GEN_PER_SEC = PERIOD / 60;
 const SECOND_PHASE = 42;
 
 /** Runs the phase-locked simulation; re-renders once per generation. */
-function useLifeGrid(): Uint8Array | null {
-  const [grid, setGrid] = useState<Uint8Array | null>(null);
-  const gridRef = useRef<Uint8Array>(seed());
-  const genRef = useRef<number>(0);
+function useLifeGrid(): Uint8Array {
+  const now = useWallClock(80);
+  const nowRef = useRef<number | null>(null);
+  const [grid, setGrid] = useState<Uint8Array>(() => seed());
+  const gridRef = useRef<Uint8Array>(grid);
+  const genRef = useRef<number | null>(null);
 
   useEffect(() => {
-    gridRef.current = seed();
-    genRef.current = 0;
-    setGrid(gridRef.current);
+    nowRef.current = now?.getTime() ?? null;
+  }, [now]);
 
+  useEffect(() => {
     const tick = () => {
-      const target = Math.floor((Date.now() / 1000) * GEN_PER_SEC) + SECOND_PHASE;
-      let delta = target - genRef.current;
-      if (delta <= 0) return;
-      if (delta > 40) {
-        // tab was asleep — resync exactly (the pattern is periodic)
+      const clockNow = nowRef.current;
+      if (clockNow === null) return;
+      const target = Math.floor((clockNow / 1000) * GEN_PER_SEC) + SECOND_PHASE;
+      if (target === genRef.current) return;
+
+      let delta = genRef.current === null ? PERIOD : target - genRef.current;
+      if (delta < 0 || delta > 40) {
         gridRef.current = seed();
-        let k = target % PERIOD;
-        while (k-- > 0) gridRef.current = stepLife(gridRef.current);
+        let phase = ((target % PERIOD) + PERIOD) % PERIOD;
+        while (phase-- > 0) gridRef.current = stepLife(gridRef.current);
       } else {
         while (delta-- > 0) gridRef.current = stepLife(gridRef.current);
       }
@@ -200,7 +205,7 @@ export function SnarkDial({
   children?: ReactNode;
 }) {
   const grid = useLifeGrid();
-  const paths = grid ? buildPaths(grid, CELL) : null;
+  const paths = buildPaths(grid, CELL);
   const fieldDeg = fieldSquared ? 45 : 0;
   const S = 78; // upright square half-side; squared-up loop spans ±69 with margin
 
@@ -236,12 +241,10 @@ export function SnarkDial({
     >
       {/* cream face, same as #001 */}
       {bg}
-      {paths && (
-        <g transform={`rotate(${fieldDeg})`}>
-          <path d={paths.mech} fill="#1a1a1a" opacity={fieldOpacity} />
-          <path d={paths.glider} fill="#c1121f" />
-        </g>
-      )}
+      <g transform={`rotate(${fieldDeg})`}>
+        <path d={paths.mech} fill="#1a1a1a" opacity={fieldOpacity} />
+        <path d={paths.glider} fill="#c1121f" />
+      </g>
       {/* the rim ring — default #001 black line, or a custom read-out frame */}
       {frame ?? defaultBorder}
       {children}

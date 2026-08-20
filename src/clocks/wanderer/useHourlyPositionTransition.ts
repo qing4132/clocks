@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useEffectEvent, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
+import { useWallClock } from "../useWallClock";
 
 const TRANSITION_MS = 1_400;
 
@@ -10,17 +11,14 @@ type HourlyPositionTransition = {
   transitioning: boolean;
 };
 
-function msUntilNextHour(now: Date) {
-  const nextHour = new Date(now);
-  nextHour.setMinutes(60, 0, 0);
-  return nextHour.getTime() - now.getTime();
-}
-
 export function useHourlyPositionTransition(
   getPosition: (hour: number) => number,
   canonicalPosition: number,
 ): HourlyPositionTransition {
   const resolvePosition = useEffectEvent(getPosition);
+  const now = useWallClock(250);
+  const hour = now?.getHours() ?? null;
+  const hasSynced = useRef(false);
   const [state, setState] = useState<HourlyPositionTransition>(() => ({
     currentPosition: canonicalPosition,
     previousPosition: canonicalPosition,
@@ -28,63 +26,44 @@ export function useHourlyPositionTransition(
   }));
 
   useEffect(() => {
+    if (hour === null) return;
+
     let syncTimer = 0;
-    let hourTimer = 0;
     let transitionTimer = 0;
-
-    function clearTimers() {
-      window.clearTimeout(hourTimer);
-      window.clearTimeout(transitionTimer);
-    }
-
-    function scheduleHourChange() {
-      window.clearTimeout(hourTimer);
-      const now = new Date();
-      hourTimer = window.setTimeout(() => {
-        const nextPosition = resolvePosition(new Date().getHours());
-        window.clearTimeout(transitionTimer);
-        setState((current) => ({
+    syncTimer = window.setTimeout(() => {
+      const nextPosition = resolvePosition(hour);
+      if (!hasSynced.current) {
+        hasSynced.current = true;
+        setState({
           currentPosition: nextPosition,
-          previousPosition: current.currentPosition,
-          transitioning: current.currentPosition !== nextPosition,
-        }));
+          previousPosition: nextPosition,
+          transitioning: false,
+        });
+        return;
+      }
+
+      setState((current) => {
+        if (current.currentPosition === nextPosition) return current;
         transitionTimer = window.setTimeout(() => {
-          setState((current) => ({
-            ...current,
-            previousPosition: current.currentPosition,
+          setState((latest) => ({
+            ...latest,
+            previousPosition: latest.currentPosition,
             transitioning: false,
           }));
         }, TRANSITION_MS);
-        scheduleHourChange();
-      }, msUntilNextHour(now));
-    }
-
-    function syncWithoutAnimation() {
-      clearTimers();
-      const currentPosition = resolvePosition(new Date().getHours());
-      setState({
-        currentPosition,
-        previousPosition: currentPosition,
-        transitioning: false,
+        return {
+          currentPosition: nextPosition,
+          previousPosition: current.currentPosition,
+          transitioning: true,
+        };
       });
-      scheduleHourChange();
-    }
-
-    function handleVisibilityChange() {
-      if (document.visibilityState === "visible") {
-        syncWithoutAnimation();
-      }
-    }
-
-    syncTimer = window.setTimeout(syncWithoutAnimation, 0);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    }, 0);
 
     return () => {
       window.clearTimeout(syncTimer);
-      clearTimers();
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.clearTimeout(transitionTimer);
     };
-  }, [canonicalPosition]);
+  }, [canonicalPosition, hour]);
 
   return state;
 }

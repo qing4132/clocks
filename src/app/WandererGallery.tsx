@@ -98,13 +98,13 @@ function GalleryCard({
   return (
     <Link
       href={`/clocks/${after.slug}`}
-      className="group relative block rounded-2xl border border-neutral-200 bg-white p-6 transition hover:border-neutral-900 hover:shadow-lg"
+      className="group relative block rounded-2xl border border-neutral-200 bg-white p-4 transition hover:border-neutral-900 hover:shadow-lg sm:p-6"
     >
-      <span className="absolute right-5 top-4 z-20 font-mono text-xs tabular-nums text-neutral-400">
+      <span className="absolute right-4 top-3 z-20 font-mono text-xs tabular-nums text-neutral-400 sm:right-5 sm:top-4">
         #{String(position).padStart(3, "0")}
       </span>
       <div className="flex aspect-square items-center justify-center">
-        <div className="origin-center scale-75">
+        <div className="origin-center scale-50 min-[280px]:scale-75">
           <ClockPreview>
             <div className="relative flex h-full w-full items-center justify-center">
               {layers.map(({ entry, role }) => (

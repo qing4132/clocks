@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { ControlledTimeContext } from "../WallClockProvider";
 
 /**
  * Typewriter — HH:MM as four digits being typed into an input field.
@@ -64,6 +65,50 @@ const CARET_COLOR = "#c1121f";
 
 type Frame = { str: string; cost: number };
 
+function TypewriterFace({
+  text,
+  caretVisible,
+}: {
+  text: string;
+  caretVisible: boolean;
+}) {
+  const startX = -(text.length * CELL) / 2;
+  const caretX = startX + text.length * CELL + CELL * 0.1;
+
+  return (
+    <svg
+      viewBox="-100 -100 200 200"
+      className="w-72 h-72 sm:w-96 sm:h-96"
+      role="img"
+      aria-label="Typewriter clock"
+    >
+      {text.split("").map((ch, i) => (
+        <text
+          key={i}
+          x={startX + i * CELL + CELL / 2}
+          y="2"
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontFamily="'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace"
+          fontSize={FONT_SIZE}
+          fill="#1a1a1a"
+        >
+          {ch}
+        </text>
+      ))}
+
+      <rect
+        x={caretX}
+        y={2 - CARET_H / 2 + CARET_DY}
+        width={CARET_W}
+        height={CARET_H}
+        fill={CARET_COLOR}
+        opacity={caretVisible ? 1 : 0}
+      />
+    </svg>
+  );
+}
+
 function computeFrames(
   from: string,
   to: string,
@@ -107,7 +152,7 @@ function markEggConsumed() {
   }
 }
 
-export default function TypewriterClock() {
+function LiveTypewriterClock() {
   const [display, setDisplay] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [blinkOn, setBlinkOn] = useState(true);
@@ -326,43 +371,23 @@ export default function TypewriterClock() {
   }, []);
 
   const text = display ?? "";
-  const startX = -(text.length * CELL) / 2;
-  const caretX = startX + text.length * CELL + CELL * 0.1;
   const caretVisible = busy || blinkOn;
 
-  return (
-    <svg
-      viewBox="-100 -100 200 200"
-      className="w-72 h-72 sm:w-96 sm:h-96"
-      role="img"
-      aria-label="Typewriter clock"
-    >
-      {display !== null &&
-        text.split("").map((ch, i) => (
-          <text
-            key={i}
-            x={startX + i * CELL + CELL / 2}
-            y="2"
-            textAnchor="middle"
-            dominantBaseline="central"
-            fontFamily="'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace"
-            fontSize={FONT_SIZE}
-            fill="#1a1a1a"
-          >
-            {ch}
-          </text>
-        ))}
+  return <TypewriterFace text={text} caretVisible={caretVisible} />;
+}
 
-      {/* blinking accent caret */}
-      <rect
-        x={caretX}
-        y={2 - CARET_H / 2 + CARET_DY}
-        width={CARET_W}
-        height={CARET_H}
-        fill={CARET_COLOR}
-        opacity={caretVisible ? 1 : 0}
+export default function TypewriterClock() {
+  const controlledNowMs = useContext(ControlledTimeContext);
+
+  if (controlledNowMs !== null) {
+    return (
+      <TypewriterFace
+        text={hhmm(new Date(controlledNowMs))}
+        caretVisible={Math.floor(controlledNowMs / 500) % 2 === 0}
       />
-    </svg>
-  );
+    );
+  }
+
+  return <LiveTypewriterClock />;
 }
 

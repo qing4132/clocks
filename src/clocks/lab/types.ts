@@ -8,6 +8,8 @@ export type LabExperiment = {
   status: string;
   position: number;
   batch: number;
+  face?: "round" | "none";
+  clip?: "svg" | "card";
 };
 
 export type ClockTime = {

@@ -215,40 +215,6 @@ function NumberEater({ t }: { t: ClockTime }) {
   );
 }
 
-function MovingGoalposts({ t }: { t: ClockTime }) {
-  const motion = t.minute;
-  const hand = polar(61, motion);
-
-  return (
-    <>
-      <g transform={`rotate(${round(motion * 360)})`}>
-        {Array.from({ length: 12 }, (_, index) => {
-          const point = polar(78, index / 12 + 0.08);
-          return (
-            <rect
-              key={index}
-              x={point.x - 3}
-              y={point.y - 7}
-              width="6"
-              height="14"
-              fill={index === t.h12 ? RED : INK}
-              transform={`rotate(${index * 30 + 29} ${point.x} ${point.y})`}
-            />
-          );
-        })}
-      </g>
-      <line x1="0" y1="0" x2={hand.x} y2={hand.y} stroke={INK} strokeWidth="4" strokeLinecap="round" />
-      <path
-        d={`M ${hand.x} ${hand.y} A 61 61 0 0 1 ${polar(61, motion + 0.08).x} ${polar(61, motion + 0.08).y}`}
-        fill="none"
-        stroke={RED}
-        strokeWidth="2"
-      />
-      <text x="0" y="8" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="8" fill={INK}>CHASE</text>
-    </>
-  );
-}
-
 export function renderRetainedExperiment(id: number, t: ClockTime): ReactNode {
   switch (id) {
     case 20: return <CliffordDust t={t} />;
@@ -257,7 +223,6 @@ export function renderRetainedExperiment(id: number, t: ClockTime): ReactNode {
     case 61: return <LunarPhase t={t} />;
     case 64: return <TimezoneChorus t={t} />;
     case 85: return <NumberEater t={t} />;
-    case 88: return <MovingGoalposts t={t} />;
     default: return null;
   }
 }

@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { clocks } from "@/clocks/registry";
 import { labExperiments } from "@/clocks/lab/shortlist";
 import { roundTwoExperiments } from "@/clocks/lab/round2/designs";
+import { roundThreeExperiments } from "@/clocks/lab/round3/designs";
+import { roundFiveExperiments } from "@/clocks/lab/round5/designs";
+import { roundSixExperiments } from "@/clocks/lab/round6/designs";
+import { overprintStudies } from "@/clocks/lab/overprint-studies/designs";
 import { ExperimentalClock } from "@/clocks/lab/ExperimentalClock";
 import { LabWorkspace } from "./LabWorkspace";
 
@@ -18,18 +22,23 @@ export default function LabPage() {
     position: index + 1,
     batch: 0,
   }));
+  const retainedExperiments = [
+    ...labExperiments,
+    ...roundTwoExperiments,
+    ...roundThreeExperiments,
+    ...roundFiveExperiments,
+    ...roundSixExperiments,
+  ].map((design) => ({ ...design, batch: 1 }));
 
   return (
-    <LabWorkspace
-      clocks={[...originalEntries, ...labExperiments, ...roundTwoExperiments]}
-    >
+    <LabWorkspace clocks={[...originalEntries, ...retainedExperiments, ...overprintStudies]}>
       {clocks.map(({ slug, Component }) => (
         <Component key={slug} />
       ))}
-      {labExperiments.map((design) => (
+      {retainedExperiments.map((design) => (
         <ExperimentalClock key={design.slug} design={design} />
       ))}
-      {roundTwoExperiments.map((design) => (
+      {overprintStudies.map((design) => (
         <ExperimentalClock key={design.slug} design={design} />
       ))}
     </LabWorkspace>

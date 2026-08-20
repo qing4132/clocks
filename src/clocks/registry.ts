@@ -34,6 +34,7 @@ import TypewriterClock from "./typewriter/TypewriterClock";
 import AntiScreenshotClock from "./anti-screenshot/AntiScreenshotClock";
 import WandererClock from "./wanderer/WandererClock";
 import ThirdsClock from "./thirds/ThirdsClock";
+import { OverprintHaloClock } from "./overprint/OverprintClocks";
 
 export type ClockEntry = {
   slug: string;
@@ -289,6 +290,14 @@ export const clocks: ClockEntry[] = [
     description:
       "表盘被三等分，时、分、秒针固定在三个相隔 120° 的方向。三块完整刻度盘各自转动，把当前读数送到对应指针下方；靠近扇区边界的刻度与数字会连续淡出，让三套运动在同一个圆里安静交接。",
     Component: ThirdsClock,
+  },
+  {
+    slug: "overprint",
+    name: "Overprint",
+    nameEn: "Overprint",
+    description:
+      "时、分、秒各自成为一组巨大的两位数。小时用墨黑、分钟用石墨灰、秒用红色；三组数字只在对应单位变化时重新落位与转向，并以宽纸色描边维持重叠后的可读性。",
+    Component: OverprintHaloClock,
   },
 ];
 

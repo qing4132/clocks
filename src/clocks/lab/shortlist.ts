@@ -79,17 +79,4 @@ export const labExperiments: LabExperiment[] = [
     position: 117,
     batch: 1,
   },
-  {
-    id: 88,
-    slug: "lab-088-moving-goalposts",
-    nameEn: "Moving Goalposts",
-    description: "指针追逐目标，而目标与它同速移动，因此永远无法缩短距离。",
-    mechanism:
-      "中央指针按分钟进度旋转，十二个目标刻块也以完全相同的角速度旋转，双方始终保持固定差距；红色刻块标出当前小时。",
-    reading:
-      "红块给出小时，中央指针相对页面正上方的角度近似分钟；红弧只是那段永远追不上的固定距离。由于刻度系本身在动，读时刻意不稳定。",
-    status: "视觉留存 · 机制待加强",
-    position: 120,
-    batch: 1,
-  },
 ];

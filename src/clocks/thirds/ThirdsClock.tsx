@@ -178,7 +178,7 @@ function FixedHand({
 }
 
 export default function ThirdsClock() {
-  const now = useWallClock(32);
+  const now = useWallClock(10);
   const hours = (now?.getHours() ?? 0) % 12;
   const minutes = now?.getMinutes() ?? 0;
   const seconds = now

@@ -22,6 +22,7 @@ function batchLabel(batch: number, count: number) {
   if (batch === 7) return "560 Studies";
   if (batch === 8) return `Archive Works ${count}`;
   if (batch === 9) return "727 Studies";
+  if (batch === 10) return "728 Studies";
   return `Retained ${count}`;
 }
 

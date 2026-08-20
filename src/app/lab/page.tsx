@@ -8,6 +8,7 @@ import { roundSixExperiments } from "@/clocks/lab/round6/designs";
 import { overprintStudies } from "@/clocks/lab/overprint-studies/designs";
 import { archiveComponents, archiveExperiments } from "@/clocks/lab/archive/entries";
 import { attentionLensStudies, attentionLensStudyComponents } from "@/clocks/lab/attention-lens-studies/entries";
+import { arcStudies, arcStudyComponents } from "@/clocks/lab/arc-studies/entries";
 import { ExperimentalClock } from "@/clocks/lab/ExperimentalClock";
 import { LabWorkspace } from "./LabWorkspace";
 
@@ -33,7 +34,7 @@ export default function LabPage() {
   ].map((design) => ({ ...design, batch: 1 }));
 
   return (
-    <LabWorkspace clocks={[...originalEntries, ...retainedExperiments, ...overprintStudies, ...archiveExperiments, ...attentionLensStudies]}>
+    <LabWorkspace clocks={[...originalEntries, ...retainedExperiments, ...overprintStudies, ...archiveExperiments, ...attentionLensStudies, ...arcStudies]}>
       {clocks.map(({ slug, Component }) => (
         <Component key={slug} />
       ))}
@@ -49,6 +50,10 @@ export default function LabPage() {
       })}
       {attentionLensStudies.map((design) => {
         const Component = attentionLensStudyComponents[design.id];
+        return <Component key={design.slug} />;
+      })}
+      {arcStudies.map((design) => {
+        const Component = arcStudyComponents[design.id];
         return <Component key={design.slug} />;
       })}
     </LabWorkspace>

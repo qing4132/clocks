@@ -19,11 +19,24 @@ export function useHourlyPositionTransition(
   const now = useWallClock(250);
   const hour = now?.getHours() ?? null;
   const hasSynced = useRef(false);
+  const resumedFromHidden = useRef(false);
+  const [resumeVersion, setResumeVersion] = useState(0);
   const [state, setState] = useState<HourlyPositionTransition>(() => ({
     currentPosition: canonicalPosition,
     previousPosition: canonicalPosition,
     transitioning: false,
   }));
+
+  useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.visibilityState !== "visible") return;
+      resumedFromHidden.current = true;
+      setResumeVersion((version) => version + 1);
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
 
   useEffect(() => {
     if (hour === null) return;
@@ -32,7 +45,9 @@ export function useHourlyPositionTransition(
     let transitionTimer = 0;
     syncTimer = window.setTimeout(() => {
       const nextPosition = resolvePosition(hour);
-      if (!hasSynced.current) {
+      const shouldAlignSilently = !hasSynced.current || resumedFromHidden.current;
+      resumedFromHidden.current = false;
+      if (shouldAlignSilently) {
         hasSynced.current = true;
         setState({
           currentPosition: nextPosition,
@@ -63,7 +78,7 @@ export function useHourlyPositionTransition(
       window.clearTimeout(syncTimer);
       window.clearTimeout(transitionTimer);
     };
-  }, [canonicalPosition, hour]);
+  }, [canonicalPosition, hour, resumeVersion]);
 
   return state;
 }

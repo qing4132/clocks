@@ -305,7 +305,7 @@ export const clocks: ClockEntry[] = [
     name: "Illusion",
     nameEn: "Illusion",
     description:
-      "红色秒针所到之处，整套角度空间随之弯曲：六十枚刻度和十二个数字持续改变位置，时针与分针也同步指向各自变形后的正确刻度。表盘看似失准，显示的时间却始终准确。",
+      "红色秒针所到之处，六十枚刻度和十二个数字持续弯曲；三根普通直针不随空间变形，仍按标准角度行走。稳定的指针与失准的表盘彼此冲突，时间由指针保持。",
     Component: IllusionClock,
   },
 ];

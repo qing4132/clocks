@@ -9,6 +9,8 @@ import { overprintStudies } from "@/clocks/lab/overprint-studies/designs";
 import { archiveComponents, archiveExperiments } from "@/clocks/lab/archive/entries";
 import { attentionLensStudies, attentionLensStudyComponents } from "@/clocks/lab/attention-lens-studies/entries";
 import { arcStudies, arcStudyComponents } from "@/clocks/lab/arc-studies/entries";
+import { Round1020Clock } from "@/clocks/lab/round-1020/Round1020Clock";
+import { round1020Studies } from "@/clocks/lab/round-1020/catalog";
 import { ExperimentalClock } from "@/clocks/lab/ExperimentalClock";
 import { LabWorkspace } from "./LabWorkspace";
 
@@ -34,7 +36,7 @@ export default function LabPage() {
   ].map((design) => ({ ...design, batch: 1 }));
 
   return (
-    <LabWorkspace clocks={[...originalEntries, ...retainedExperiments, ...overprintStudies, ...archiveExperiments, ...attentionLensStudies, ...arcStudies]}>
+    <LabWorkspace clocks={[...originalEntries, ...retainedExperiments, ...overprintStudies, ...archiveExperiments, ...attentionLensStudies, ...arcStudies, ...round1020Studies]}>
       {clocks.map(({ slug, Component }) => (
         <Component key={slug} />
       ))}
@@ -56,6 +58,9 @@ export default function LabPage() {
         const Component = arcStudyComponents[design.id];
         return <Component key={design.slug} />;
       })}
+      {round1020Studies.map((design) => (
+        <Round1020Clock key={design.slug} id={design.id} name={design.nameEn} />
+      ))}
     </LabWorkspace>
   );
 }

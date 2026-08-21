@@ -23,11 +23,7 @@ function polarPoint(angleDegrees: number, radius: number) {
   };
 }
 
-export default function IllusionClock({
-  warpedHands = false,
-}: {
-  warpedHands?: boolean;
-} = {}) {
+export default function IllusionClock() {
   const now = useWallClock(32);
   const hours = (now?.getHours() ?? 0) % 12;
   const minutes = now?.getMinutes() ?? 0;
@@ -79,15 +75,15 @@ export default function IllusionClock({
           </text>
         );
       })}
-      <line x1="0" y1="10" x2="0" y2="-50" stroke={INK} strokeWidth="5" strokeLinecap="round" transform={`rotate(${warpedHands ? warpedHourAngle : hourAngle})`} />
-      <line x1="0" y1="14" x2="0" y2="-74" stroke={INK} strokeWidth="3" strokeLinecap="round" transform={`rotate(${warpedHands ? warpedMinuteAngle : minuteAngle})`} />
+      <line x1="0" y1="9" x2="0" y2="-49" stroke={INK} strokeWidth="5" strokeLinecap="round" transform={`rotate(${warpedHourAngle})`} />
+      <line x1="0" y1="13" x2="0" y2="-72" stroke={INK} strokeWidth="3" strokeLinecap="round" transform={`rotate(${warpedMinuteAngle})`} />
       <line
         x1="0"
-        y1={warpedHands ? -79 : 20}
+        y1="20"
         x2="0"
-        y2={warpedHands ? -93 : -84}
+        y2="-84"
         stroke={RED}
-        strokeWidth={warpedHands ? 2 : 1.5}
+        strokeWidth="1.5"
         strokeLinecap="round"
         transform={`rotate(${secondAngle})`}
       />

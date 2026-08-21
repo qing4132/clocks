@@ -109,7 +109,7 @@ function AttentionLensWarpClock({
 }
 
 export function AttentionLensCoherentClock() {
-  return <IllusionClock warpedHands />;
+  return <IllusionClock />;
 }
 
 export function AttentionLensLocalClock() {

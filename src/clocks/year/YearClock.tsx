@@ -74,7 +74,8 @@ function useBlueRing(): string | null {
     }
 
     ctx.restore();
-    setUrl(c.toDataURL("image/png"));
+    const timer = window.setTimeout(() => setUrl(c.toDataURL("image/png")), 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   return url;

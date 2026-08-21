@@ -43,9 +43,6 @@ export default function SleepClock() {
   // sweep clockwise the long way (240°) — large-arc flag = 1
   const facePath = `M ${p1.x} ${p1.y} A ${R} ${R} 0 1 1 ${p2.x} ${p2.y} L 0 0 Z`;
 
-  // Is the hour hand currently inside the sleep sector?
-  const hourInSleep = H >= 23 || H < 7;
-
   return (
     <svg
       viewBox="-100 -100 200 200"

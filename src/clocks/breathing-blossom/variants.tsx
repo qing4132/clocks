@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import { useWallClock } from "../useWallClock";
 
 /**
@@ -292,7 +291,7 @@ function PetalRing({
 }
 
 // a soft glowing bud — gradient only, no hard edge — with faint stamen dots
-function Bud({ id, p }: { id: string; p: Palette }) {
+function Bud({ id }: { id: string }) {
   return (
     <>
       {/* breathing halo */}
@@ -336,9 +335,6 @@ type BlossomProps = {
   singleLayer?: boolean;
   borderless?: boolean;
   haze?: number; // gaussian blur stdDeviation on the bloom; 0 = none
-  // when true, the bloom is rotated once at mount so a petal's axis sits on the
-  // second light, and (paired with driftDur="60s") stays locked to it forever.
-  alignSeconds?: boolean;
   // spin the bloom anti-clockwise (petals drift against the second light)
   reverse?: boolean;
 };
@@ -356,7 +352,6 @@ function BlossomBase({
   singleLayer = false,
   borderless = false,
   haze = 0,
-  alignSeconds = false,
   reverse = false,
 }: BlossomProps) {
   // 50ms cadence → the second light glides smoothly instead of ticking
@@ -373,15 +368,6 @@ function BlossomBase({
   const minuteFrac = (m + secCont / 60) / 60;
   const RIM = 90;
   const secDot = polar(secCont * 6, RIM);
-
-  // Capture the second angle ONCE, the first frame we know the time. The SMIL
-  // drift (additive, starting at 0) is layered on top, so the bloom both starts
-  // on the second light and — with driftDur "60s" — keeps pace with it.
-  const alignRef = useRef<number | null>(null);
-  if (alignSeconds && alignRef.current === null && now) {
-    alignRef.current = secCont * 6;
-  }
-  const alignOffset = alignSeconds ? alignRef.current ?? 0 : 0;
 
   return (
     <svg
@@ -473,7 +459,7 @@ function BlossomBase({
               dOpen={8}
               sClosed={0.45}
               sOpen={1}
-              baseRotate={alignOffset}
+              baseRotate={0}
               driftTo={reverse ? -360 : 360}
               driftDur={driftDur}
               borderless={borderless}
@@ -498,7 +484,7 @@ function BlossomBase({
             )}
           </g>
 
-          <Bud id={id} p={p} />
+          <Bud id={id} />
 
           {/* seconds — a gentle light gliding smoothly round the rim */}
           <circle cx={secDot.x} cy={secDot.y} r={5} fill={`url(#${id}-sec)`} />
@@ -572,13 +558,13 @@ export function BreathingBlossom() {
  *   • Drift   — driftDur="200s", singleLayer, borderless. Decoupled from the
  *     second hand so the petals slowly precess. Retired: too slow, the motion
  *     read as almost static.
- *   • Locked  — driftDur="60s" + alignSeconds, so a petal axis rides the second
- *     light forever. Retired: too deliberate — the petal felt like a fat second
- *     hand, which killed the ambient quality.
+ *   • Locked  — aligned a petal axis with the second light. Retired: too
+ *     deliberate — the petal felt like a fat second hand, which killed the
+ *     ambient quality.
  *   • Reverse — driftDur="60s" + reverse, petals drift anti-clockwise against
  *     the second light. Retired by eye after a side-by-side.
- *   All revivable from a copy of #016 with those props (alignSeconds & reverse
- *   are still on BlossomBase).
+ *   Reverse remains available on BlossomBase; the retired lock experiment was
+ *   removed because no active clock uses it.
  *
  * ── UNSOLVED: petals vs. second-light coupling ────────────────
  * The bloom's drift (driftDur) and the second light (360°/60s) share the same

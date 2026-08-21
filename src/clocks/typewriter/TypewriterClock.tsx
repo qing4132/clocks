@@ -113,7 +113,6 @@ function computeFrames(
   from: string,
   to: string,
   deleteMs: number = DELETE_MS,
-  typeMs: number = TYPE_MS,
 ): Frame[] {
   let p = 0;
   while (p < from.length && p < to.length && from[p] === to[p]) p++;
@@ -174,7 +173,6 @@ function LiveTypewriterClock() {
 
     const init = hhmm(new Date());
     displayRef.current = init;
-    setDisplay(init);
 
     const timers: ReturnType<typeof setTimeout>[] = [];
     const clearTimers = () => {
@@ -329,6 +327,7 @@ function LiveTypewriterClock() {
     };
 
     plan();
+  timers.push(setTimeout(() => setDisplay(init), 0));
 
     // Re-plan when returning to the tab, since background timers may drift.
     // Also enforce the "strictly one shot per day" rule: if the egg was

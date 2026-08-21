@@ -3,7 +3,6 @@
 import { useWallClock } from "../useWallClock";
 
 const INK = "#1a1a1a";
-const PAPER = "#fafaf7";
 const RED = "#c1121f";
 
 function polar(angleDeg: number, r: number) {

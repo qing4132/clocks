@@ -1,7 +1,5 @@
 // Build a 4-Snark loop from the verified catalyst and find the C4 center that
 // makes a single injected glider circulate forever (a true oscillator).
-import { readFileSync } from "node:fs";
-
 const OFF = 1 << 14;
 const key = (x, y) => (x + OFF) * (1 << 16) + (y + OFF);
 const unkey = (k) => [Math.floor(k / (1 << 16)) - OFF, (k % (1 << 16)) - OFF];
@@ -30,12 +28,19 @@ function parseRLE(rle) {
     num = "";
   for (const ch of rle) {
     if (ch >= "0" && ch <= "9") num += ch;
-    else if (ch === "b") (x += num ? +num : 1), (num = "");
+    else if (ch === "b") {
+      x += num ? +num : 1;
+      num = "";
+    }
     else if (ch === "o") {
       const n = num ? +num : 1;
       for (let i = 0; i < n; i++) cells.push([x++, y]);
       num = "";
-    } else if (ch === "$") (y += num ? +num : 1), (x = 0), (num = "");
+    } else if (ch === "$") {
+      y += num ? +num : 1;
+      x = 0;
+      num = "";
+    }
     else if (ch === "!") break;
   }
   return cells;

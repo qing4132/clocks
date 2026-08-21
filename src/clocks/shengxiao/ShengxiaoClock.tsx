@@ -91,7 +91,7 @@ function Animal({
   cy,
   beat,
   second,
-  resumeBeat,
+  resumeBeatRef,
 }: {
   cp: string;
   active: boolean;
@@ -99,17 +99,13 @@ function Animal({
   cy: number;
   beat: number;
   second: number;
-  resumeBeat: { current: number | null };
+  resumeBeatRef: { current: number | null };
 }) {
   const [data, setData] = useState<LottieJSON | null>(() => animationCache.get(cp) ?? null);
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const prevBeat = useRef<number | null>(null);
 
   useEffect(() => {
-    if (animationCache.has(cp)) {
-      setData(animationCache.get(cp)!);
-      return;
-    }
     let alive = true;
     loadAnimation(cp)
       .then((j) => {
@@ -138,8 +134,8 @@ function Animal({
     if (!l || !active || !data) return;
     const prev = prevBeat.current;
     prevBeat.current = beat;
-    if (resumeBeat.current === beat) {
-      resumeBeat.current = null;
+    if (resumeBeatRef.current === beat) {
+      resumeBeatRef.current = null;
       return;
     }
     if (prev === null || beat - prev !== 1 || second !== 0) return; // mount, fast-forward, or resume: don't play
@@ -166,7 +162,7 @@ function Animal({
     } else {
       l.playSegments([ip, op], true);
     }
-  }, [beat, second, active, data, cp, resumeBeat]);
+  }, [beat, second, active, data, cp, resumeBeatRef]);
 
   const size = active ? ANIMAL_SIZE.active : ANIMAL_SIZE.inactive;
   // The dragon's Noto animation translates off-canvas as it flies; a CSS mask
@@ -224,7 +220,7 @@ export default function ShengxiaoClock() {
   const k = now ? Math.floor(((h + 1) % 24) / 2) : -1;
   // a counter that ticks once per wall-clock minute (the 0-second mark)
   const beat = now ? Math.floor(now.getTime() / 60000) : 0;
-  const resumeBeat = useRef<number | null>(null);
+  const resumeBeatRef = useRef<number | null>(null);
   const nowRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -234,7 +230,7 @@ export default function ShengxiaoClock() {
   useEffect(() => {
     function handleVisibilityChange() {
       if (document.visibilityState === "visible" && nowRef.current !== null) {
-        resumeBeat.current = Math.floor(nowRef.current / 60000);
+        resumeBeatRef.current = Math.floor(nowRef.current / 60000);
       }
     }
 
@@ -263,7 +259,7 @@ export default function ShengxiaoClock() {
             const ang = (i * 30 * Math.PI) / 180;
             const cx = 50 + Math.sin(ang) * R_RING;
             const cy = 50 - Math.cos(ang) * R_RING;
-            return <Animal key={cp} cp={cp} active={i === k} cx={cx} cy={cy} beat={beat} second={s} resumeBeat={resumeBeat} />;
+            return <Animal key={cp} cp={cp} active={i === k} cx={cx} cy={cy} beat={beat} second={s} resumeBeatRef={resumeBeatRef} />;
           })}
 
         {/* small 时辰-progress and second hands in the empty centre */}

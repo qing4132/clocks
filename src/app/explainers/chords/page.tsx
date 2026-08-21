@@ -167,7 +167,7 @@ export default function ChordsExplainer() {
         <section className="text-xs text-neutral-500 leading-relaxed pt-4 border-t border-neutral-200">
           <p>
             举个例子，k = 2 时：点 1 → 点 2，点 2 → 点 4，点 3 → 点 6，…，点 30 → 点 0，点 31 → 点 2，…
-            每条弦都向"前一倍"的位置连，全部叠加起来包络出心形。
+            每条弦都向“前一倍”的位置连，全部叠加起来包络出心形。
           </p>
           <p className="mt-2">
             为什么是心形？因为这是一个内摆线（epicycloid）的离散采样 —

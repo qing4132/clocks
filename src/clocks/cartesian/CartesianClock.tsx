@@ -34,14 +34,9 @@ export default function CartesianClock() {
   const colW = W / 12;
   const rowH = Hgt / 60;
 
-  const cellSize = 22;
   // Cell centre uses fractional (h, m) so it glides smoothly through time.
   const cellCx = round(X0 + hFrac * colW);
   const cellCy = round(Y0 - mFrac * rowH);
-  const cellX = round(cellCx - cellSize / 2);
-  const cellY = round(cellCy - cellSize / 2);
-  const cellW = cellSize;
-  const cellH = cellSize;
 
   return (
     <svg

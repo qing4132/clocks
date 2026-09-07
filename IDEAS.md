@@ -32,6 +32,66 @@ dividing the day. If a clock commits to a non-modern time system, its internal
 hands and marks should usually follow that system instead of translating back
 to ordinary HH:MM readability.
 
+## Upright — 不倒钟（built, then parked）
+
+**Concept.** Reuse #001 exactly, with one difference: on a device with motion
+sensors, counter-rotate the complete clock against gravity so that 12 always
+points physically upward no matter how the phone is turned. The clock treats
+the viewer's device as an object in the world instead of assuming that the top
+of the viewport is always up.
+
+**What was tried.** Built as `src/clocks/upright/UprightClock.tsx` and briefly
+registered as #035. The wrapper projected gravity onto the screen plane from
+`DeviceOrientationEvent.beta` and `.gamma`, compensated for the browser's
+current screen-orientation angle, and rotated the untouched
+`ClassicRoundClock`. Portrait, locked landscape, automatic landscape, upside
+down and diagonal postures were verified; when the phone was nearly flat, the
+clock held its last stable direction because physical up is then undefined in
+the screen plane.
+
+**Why parked.** Browser access to orientation sensors is inconsistent and
+available only in a secure HTTPS context. In iOS Safari it also requires a user
+gesture and an explicit permission prompt, so the clock cannot simply run when
+encountered in the gallery. Denial, unsupported hardware and browser-specific
+sensor behavior create visibly different works on different devices. That
+friction conflicts with the gallery rule that a clock should not depend on
+active viewer interaction.
+
+**If revisited.** Reconsider it in a native app, an installation context where
+sensor permission is already part of onboarding, or after browsers provide a
+consistent permissionless signal for physical screen rotation. Keep the exact
+#001 reuse and gravity projection; do not reduce it to the four discrete
+portrait/landscape orientations already handled by normal responsive layout.
+
+## Half-Open — 半开钟（built, then parked）
+
+**Concept.** A displayed second such as `14:42:37` does not name an infinitely
+precise instant. It names the half-open interval
+`[14:42:37, 14:42:38)`: the left boundary belongs to the reading and the right
+boundary belongs to the next one. The idea is to make a clock state exactly
+what finite-resolution time notation means.
+
+**What was tried.** Four temporary Lab studies were built as #1080–#1083:
+
+- literal interval notation with a square left bracket and round right bracket
+- a red millisecond marker moving between closed and open endpoints
+- adjacent one-second cells tiling the time continuum without gaps or overlaps
+- successively magnified half-open hour, minute and second intervals
+
+All four handled ordinary second, minute rollover and midnight rollover
+correctly. Their implementations and Lab wiring were then removed.
+
+**Why parked.** Every treatment looked like mathematical notation, a timeline,
+or an explanatory instrument rather than a clock with a convincing body. The
+closed/open distinction required so much diagrammatic scaffolding that the
+visual explanation outweighed the experience of time. The concept remains
+precise, but none of these forms deserves refinement.
+
+**If revisited.** Do not revive brackets, endpoint rails, adjacent cells or
+nested magnification. Return only if the asymmetry between "belongs to now"
+and "already belongs to next" can become an immediate visual fact without a
+diagram or explanatory notation.
+
 ## Valid Until — 有效期钟（built, then parked）
 
 **Concept.** Show only the current `HH:MM`. That reading has a lifespan of

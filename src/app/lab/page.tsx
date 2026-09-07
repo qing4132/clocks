@@ -11,6 +11,10 @@ import { attentionLensStudies, attentionLensStudyComponents } from "@/clocks/lab
 import { arcStudies, arcStudyComponents } from "@/clocks/lab/arc-studies/entries";
 import { Round1020Clock } from "@/clocks/lab/round-1020/Round1020Clock";
 import { round1020Studies } from "@/clocks/lab/round-1020/catalog";
+import { TimeConsoleClock } from "@/clocks/lab/utility-clock/TimeConsoleClock";
+import { timeConsoleStudy } from "@/clocks/lab/utility-clock/entry";
+import { YamanoteClock } from "@/clocks/lab/yamanote/YamanoteClock";
+import { yamanoteStudy } from "@/clocks/lab/yamanote/entry";
 import { ExperimentalClock } from "@/clocks/lab/ExperimentalClock";
 import { LabWorkspace } from "./LabWorkspace";
 
@@ -36,7 +40,7 @@ export default function LabPage() {
   ].map((design) => ({ ...design, batch: 1 }));
 
   return (
-    <LabWorkspace clocks={[...originalEntries, ...retainedExperiments, ...overprintStudies, ...archiveExperiments, ...attentionLensStudies, ...arcStudies, ...round1020Studies]}>
+    <LabWorkspace clocks={[...originalEntries, ...retainedExperiments, ...overprintStudies, ...archiveExperiments, ...attentionLensStudies, ...arcStudies, ...round1020Studies, timeConsoleStudy, yamanoteStudy]}>
       {clocks.map(({ slug, Component }) => (
         <Component key={slug} />
       ))}
@@ -61,6 +65,8 @@ export default function LabPage() {
       {round1020Studies.map((design) => (
         <Round1020Clock key={design.slug} id={design.id} name={design.nameEn} />
       ))}
+      <TimeConsoleClock />
+      <YamanoteClock />
     </LabWorkspace>
   );
 }

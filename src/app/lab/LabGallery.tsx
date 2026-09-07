@@ -23,7 +23,9 @@ function batchLabel(batch: number, count: number) {
   if (batch === 8) return `Archive Works ${count}`;
   if (batch === 9) return "727 Studies";
   if (batch === 10) return "728 Studies";
-  if (batch === 11) return "1020–1076 · Psychedelic";
+  if (batch === 11) return "1020–1079 · Psychedelic";
+  if (batch === 12) return "24 · 7";
+  if (batch === 13) return "山手線";
   return `Retained ${count}`;
 }
 

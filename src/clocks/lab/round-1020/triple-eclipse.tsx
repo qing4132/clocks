@@ -50,7 +50,57 @@ const PALETTES: Record<number, Palette> = {
   },
 };
 
-function TripleEclipse({ time, palette }: { time: ClockTime; palette: Palette }) {
+const DRIFT_DURATIONS = [17_000, 23_000, 29_000] as const;
+
+type HslColor = {
+  hue: number;
+  saturation: number;
+  lightness: number;
+};
+
+function randomUnit(seed: number) {
+  let value = seed | 0;
+  value = Math.imul(value ^ (value >>> 16), 0x45d9f3b);
+  value = Math.imul(value ^ (value >>> 16), 0x45d9f3b);
+  return ((value ^ (value >>> 16)) >>> 0) / 4_294_967_296;
+}
+
+function randomColor(step: number, channel: number): HslColor {
+  const seed = step * 3 + channel * 10_007;
+  return {
+    hue: randomUnit(seed) * 360,
+    saturation: 58 + randomUnit(seed + 1) * 18,
+    lightness: 70 + randomUnit(seed + 2) * 10,
+  };
+}
+
+function mix(from: number, to: number, amount: number) {
+  return from + (to - from) * amount;
+}
+
+function driftColor(now: number, channel: number) {
+  const position = now / DRIFT_DURATIONS[channel];
+  const step = Math.floor(position);
+  const progress = position - step;
+  const from = randomColor(step, channel);
+  const to = randomColor(step + 1, channel);
+  const hueDistance = ((to.hue - from.hue + 540) % 360) - 180;
+  const hue = (from.hue + hueDistance * progress + 360) % 360;
+  const saturation = mix(from.saturation, to.saturation, progress);
+  const lightness = mix(from.lightness, to.lightness, progress);
+
+  return `hsl(${hue.toFixed(1)}, ${saturation.toFixed(1)}%, ${lightness.toFixed(1)}%)`;
+}
+
+function TripleEclipse({
+  time,
+  palette,
+  completeFace = false,
+}: {
+  time: ClockTime;
+  palette: Palette;
+  completeFace?: boolean;
+}) {
   const circles = HANDS.map((hand, index) => {
     const fraction = hand.fraction(time);
     return {
@@ -63,6 +113,16 @@ function TripleEclipse({ time, palette }: { time: ClockTime; palette: Palette })
   });
   const maskId = `round1020-triple-${palette.id}-mask`;
   const faceClipId = `round1020-triple-${palette.id}-face`;
+  const face = (
+    <ClassicFace
+      time={time}
+      showFace={false}
+      showHands={false}
+      rimColor={INK}
+      tickColor={() => INK}
+      numeralColor={() => INK}
+    />
+  );
 
   return (
     <>
@@ -91,16 +151,7 @@ function TripleEclipse({ time, palette }: { time: ClockTime; palette: Palette })
         ))}
       </g>
 
-      <g mask={`url(#${maskId})`}>
-        <ClassicFace
-          time={time}
-          showFace={false}
-          showHands={false}
-          rimColor={INK}
-          tickColor={() => INK}
-          numeralColor={() => INK}
-        />
-      </g>
+      {completeFace ? face : <g mask={`url(#${maskId})`}>{face}</g>}
 
       <ClassicFace
         time={time}
@@ -116,9 +167,22 @@ function TripleEclipse({ time, palette }: { time: ClockTime; palette: Palette })
   );
 }
 
+function DriftingTripleEclipse({ time }: { time: ClockTime }) {
+  const now = time.date.getTime();
+  const palette: Palette = {
+    id: "drift",
+    colors: [driftColor(now, 0), driftColor(now, 1), driftColor(now, 2)],
+    opacities: [0.62, 0.62, 0.62],
+  };
+
+  return <TripleEclipse time={time} palette={palette} completeFace />;
+}
+
 export const tripleEclipseRenderers = Object.fromEntries(
   Object.entries(PALETTES).map(([id, palette]) => [
     Number(id),
     ({ time }: { time: ClockTime }) => <TripleEclipse time={time} palette={palette} />,
   ]),
 );
+
+tripleEclipseRenderers[1079] = ({ time }: { time: ClockTime }) => <DriftingTripleEclipse time={time} />;

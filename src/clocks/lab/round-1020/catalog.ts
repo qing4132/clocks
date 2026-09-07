@@ -142,6 +142,18 @@ const tripleEclipseEntries: LabExperiment[] = [
     batch: 11,
     face: "none",
   },
+  {
+    id: 1079,
+    slug: "round-1020-1079-triple-eclipse-drift",
+    nameEn: "Triple Eclipse · Drift",
+    description: "完整表盘始终可见，时、分、秒三圆在其上各自缓慢游向下一枚随机生成的柔和颜色。",
+    mechanism: "三个色彩通道的每段渐变分别持续 17、23、29 秒，由墙上时间生成可复现的随机 HSL 目标，并沿最短色相路径匀速渐变。",
+    reading: "完整边框、刻度、数字与三针始终保持 #001 的标准读法，三枚色圆只改变表盘内部的色域。",
+    status: "round 1020 · triple eclipse generative palette",
+    position: 1079,
+    batch: 11,
+    face: "none",
+  },
 ];
 
 export const round1020Studies: LabExperiment[] = [...entries.map(([

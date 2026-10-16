@@ -6,7 +6,7 @@
  * means every digital-family clock looks identical at the segment level.
  */
 
-const SEGMENTS: Record<string, string[]> = {
+export const SEGMENTS: Record<string, string[]> = {
   "0": ["a", "b", "c", "d", "e", "f"],
   "1": ["b", "c"],
   "2": ["a", "b", "d", "e", "g"],

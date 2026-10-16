@@ -47,6 +47,38 @@ npm run dev
 
 Then open [http://localhost:3000](http://localhost:3000).
 
+Lab 和弦图演示仅在本地开发时提供：
+
+- [Lab](http://localhost:3000/lab/)：实验作品、归档预览和时间控制。
+- [Chords explainer](http://localhost:3000/explainers/chords/)：弦图交互演示。
+
+These previews are development-only. Their route files use `page.dev.tsx`,
+which is enabled only by `next dev`; production builds do not include these
+routes or their client bundles. Keep new experimental pages on this convention.
+Lab artwork is imported from its source directory, not served from `public/`.
+
+## Production / 发布
+
+```bash
+npm test
+npm run build
+```
+
+线上只发布正式画廊：首页 `/` 和从画廊进入的正式作品详情
+`/clocks/[slug]/`。Lab、演示页面和实验图片不进入生产导出。
+已否决且未接入页面的 New Forms（1084–1093）已清理，其余实验保留在本地。
+
+Deploy only the generated `out/` directory. It contains the formal gallery,
+registered clock detail pages, their assets, and Next.js error pages.
+`npm run build` also verifies the actual route manifest and exported files,
+failing if a preview page or Lab artwork leaks into the release.
+Replace the previous deployment rather than overlaying files, so old Lab URLs
+and assets are removed as well.
+
+`npm test` runs the retained Lab studies and the development/production route
+boundary checks. Production changes must preserve the gallery's detail links;
+new candidates belong in Lab until they are explicitly selected in the registry.
+
 ## Rights / 权利
 
 Copyright (c) qinglin. All rights reserved.

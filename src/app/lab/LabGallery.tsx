@@ -1,6 +1,6 @@
 "use client";
 
-import { Children, useState, type ReactNode } from "react";
+import { Children, useEffect, useRef, useState, type ReactNode } from "react";
 import { ClockPreview } from "../ClockPreview";
 
 const PAGE_SIZE = 20;
@@ -9,6 +9,7 @@ export type LabClock = {
   slug: string;
   nameEn: string;
   description: string;
+  hintZh?: string;
   mechanism?: string;
   reading?: string;
   status?: string;
@@ -26,6 +27,14 @@ function batchLabel(batch: number, count: number) {
   if (batch === 11) return "1020–1079 · Psychedelic";
   if (batch === 12) return "24 · 7";
   if (batch === 13) return "山手線";
+  if (batch === 15) return `Back to 001 ${count}`;
+  if (batch === 16) return `Perception ${count}`;
+  if (batch === 17) return `Open ${count}`;
+  if (batch === 18) return `原色 ${count}`;
+  if (batch === 19) return "Amoeba";
+  if (batch === 20) return `新作 ${count}`;
+  if (batch === 21) return `三向变体 ${count}`;
+  if (batch === 22) return `关系钟 ${count}`;
   return `Retained ${count}`;
 }
 
@@ -40,6 +49,8 @@ export function LabGallery({
   const firstExperimentBatch = batches.findLast((batch) => batch > 1) ?? batches.find((batch) => batch > 0);
   const [activeBatch, setActiveBatch] = useState(firstExperimentBatch ?? batches[0] ?? 0);
   const [activePage, setActivePage] = useState(0);
+  const [dismissedHint, setDismissedHint] = useState<string | null>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
   const clockNodes = Children.toArray(children);
   const batchEntries = clocks
     .map((clock, index) => ({ ...clock, node: clockNodes[index] }))
@@ -51,9 +62,25 @@ export function LabGallery({
     ? batchEntries.slice(visiblePage * PAGE_SIZE, (visiblePage + 1) * PAGE_SIZE)
     : batchEntries;
 
+  useEffect(() => {
+    const tabs = tabsRef.current;
+    if (!tabs) return;
+    const revealActiveTab = () => {
+      const active = tabs.querySelector<HTMLButtonElement>('[aria-pressed="true"]');
+      if (!active) return;
+      const viewport = tabs.getBoundingClientRect();
+      const button = active.getBoundingClientRect();
+      tabs.scrollLeft += Math.min(0, button.left - viewport.left) + Math.max(0, button.right - viewport.right);
+    };
+    revealActiveTab();
+    const observer = new ResizeObserver(revealActiveTab);
+    observer.observe(tabs);
+    return () => observer.disconnect();
+  }, [activeBatch]);
+
   return (
     <section aria-label="Clock experiments">
-      <div className="mb-6 flex gap-px overflow-x-auto border border-neutral-300 bg-neutral-300 p-px">
+      <div ref={tabsRef} className="mb-6 flex gap-px overflow-x-auto border border-neutral-300 bg-neutral-300 p-px">
         {batches.map((batch) => (
           <button
             key={batch}
@@ -102,7 +129,12 @@ export function LabGallery({
         {entries.map((entry) => (
           <article
             key={entry.slug}
-            title={entry.description}
+            title={entry.hintZh ? undefined : entry.description}
+            tabIndex={entry.hintZh ? 0 : undefined}
+            aria-describedby={entry.hintZh ? `${entry.slug}-hint` : undefined}
+            onMouseEnter={() => setDismissedHint(null)}
+            onFocus={() => setDismissedHint(null)}
+            onKeyDown={(event) => { if (event.key === "Escape") setDismissedHint(entry.slug); }}
             className={`group relative block rounded-2xl border border-neutral-200 bg-white p-4 transition hover:border-neutral-900 hover:shadow-lg sm:p-6 ${
               entry.clip === "card" ? "overflow-hidden" : ""
             }`}
@@ -118,6 +150,11 @@ export function LabGallery({
             <div className="relative mt-2 h-5 text-center text-sm leading-5 tracking-wide text-neutral-500">
               {entry.nameEn}
             </div>
+            {entry.hintZh && <div
+              id={`${entry.slug}-hint`}
+              role="tooltip"
+              className={`pointer-events-none absolute inset-x-3 bottom-12 z-30 rounded-md bg-neutral-950 px-3 py-2 text-left text-xs leading-relaxed text-white shadow-md ${dismissedHint === entry.slug ? "invisible" : "invisible group-hover:visible group-focus-within:visible"}`}
+            >{entry.hintZh}</div>}
           </article>
         ))}
       </div>

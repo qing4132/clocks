@@ -1,6 +1,9 @@
 "use client";
 
 import { useWallClock } from "../useWallClock";
+import milkmaid from "../../src/clocks/lab/archive/assets/milkmaid.jpg";
+import milkmaidFace from "../../src/clocks/lab/archive/assets/milkmaid-clock-face.png";
+import milkmaidHand from "../../src/clocks/lab/archive/assets/milkmaid-clock-hand.png";
 
 const CLOCK = {
   x: 75.4,
@@ -37,7 +40,7 @@ function HandLayer({
         top: `${CLOCK.y + clockHeight * (CLOCK.dialY / 100)}%`,
         width: `${HAND.width * scale}%`,
         height: `${HAND.width * scale * HAND.aspect}%`,
-        backgroundImage: "url('/art/milkmaid-clock-hand.png')",
+        backgroundImage: `url('${milkmaidHand.src}')`,
         opacity,
         transform: `translate(-${HAND.pivotX}%, -${HAND.pivotY}%) rotate(${angle - 90}deg)`,
         transformOrigin: `${HAND.pivotX}% ${HAND.pivotY}%`,
@@ -63,7 +66,7 @@ export default function MilkmaidClock() {
       className="relative h-72 w-72 overflow-hidden rounded-sm bg-stone-100 bg-cover bg-center shadow-xl sm:h-96 sm:w-96"
       role="img"
       aria-label="Milkmaid antique wall clock"
-      style={{ backgroundImage: "url('/art/milkmaid.jpg')" }}
+      style={{ backgroundImage: `url('${milkmaid.src}')` }}
     >
       <div
         className="absolute rounded-full bg-stone-900/30 blur-md"
@@ -82,7 +85,7 @@ export default function MilkmaidClock() {
           top: `${CLOCK.y}%`,
           width: `${CLOCK.width}%`,
           height: `${clockHeight}%`,
-          backgroundImage: "url('/art/milkmaid-clock-face.png')",
+          backgroundImage: `url('${milkmaidFace.src}')`,
         }}
       />
 

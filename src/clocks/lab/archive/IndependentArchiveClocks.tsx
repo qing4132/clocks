@@ -1,6 +1,9 @@
 "use client";
 
 import { useWallClock } from "../../useWallClock";
+import milkmaid from "./assets/milkmaid.jpg";
+import milkmaidFace from "./assets/milkmaid-clock-face.png";
+import milkmaidHand from "./assets/milkmaid-clock-hand.png";
 
 const INK = "#1a1a1a";
 const PAPER = "#fafaf7";
@@ -160,7 +163,7 @@ const MILKMAID_HAND = { width: 15.2, aspect: 224 / 1187, pivotX: 19.7, pivotY: 5
 
 function MilkmaidHand({ angle, scale, opacity }: { angle: number; scale: number; opacity: number }) {
   const clockHeight = MILKMAID_CLOCK.width * MILKMAID_CLOCK.aspect;
-  return <div className="absolute bg-contain bg-no-repeat" style={{ left: `${MILKMAID_CLOCK.x + MILKMAID_CLOCK.width * MILKMAID_CLOCK.dialX / 100}%`, top: `${MILKMAID_CLOCK.y + clockHeight * MILKMAID_CLOCK.dialY / 100}%`, width: `${MILKMAID_HAND.width * scale}%`, height: `${MILKMAID_HAND.width * scale * MILKMAID_HAND.aspect}%`, backgroundImage: "url('/art/milkmaid-clock-hand.png')", opacity, transform: `translate(-${MILKMAID_HAND.pivotX}%, -${MILKMAID_HAND.pivotY}%) rotate(${angle - 90}deg)`, transformOrigin: `${MILKMAID_HAND.pivotX}% ${MILKMAID_HAND.pivotY}%` }} />;
+  return <div className="absolute bg-contain bg-no-repeat" style={{ left: `${MILKMAID_CLOCK.x + MILKMAID_CLOCK.width * MILKMAID_CLOCK.dialX / 100}%`, top: `${MILKMAID_CLOCK.y + clockHeight * MILKMAID_CLOCK.dialY / 100}%`, width: `${MILKMAID_HAND.width * scale}%`, height: `${MILKMAID_HAND.width * scale * MILKMAID_HAND.aspect}%`, backgroundImage: `url('${milkmaidHand.src}')`, opacity, transform: `translate(-${MILKMAID_HAND.pivotX}%, -${MILKMAID_HAND.pivotY}%) rotate(${angle - 90}deg)`, transformOrigin: `${MILKMAID_HAND.pivotX}% ${MILKMAID_HAND.pivotY}%` }} />;
 }
 
 export function MilkmaidArchiveClock() {
@@ -170,9 +173,9 @@ export function MilkmaidArchiveClock() {
   const seconds = now?.getSeconds() ?? 0;
   const clockHeight = MILKMAID_CLOCK.width * MILKMAID_CLOCK.aspect;
   return (
-    <div className="relative h-72 w-72 overflow-hidden rounded-sm bg-stone-100 bg-cover bg-center shadow-xl sm:h-96 sm:w-96" role="img" aria-label="Milkmaid antique wall clock" style={{ backgroundImage: "url('/art/milkmaid.jpg')" }}>
+    <div className="relative h-72 w-72 overflow-hidden rounded-sm bg-stone-100 bg-cover bg-center shadow-xl sm:h-96 sm:w-96" role="img" aria-label="Milkmaid antique wall clock" style={{ backgroundImage: `url('${milkmaid.src}')` }}>
       <div className="absolute rounded-full bg-stone-900/30 blur-md" style={{ left: `${MILKMAID_CLOCK.x + MILKMAID_CLOCK.width * 0.34}%`, top: `${MILKMAID_CLOCK.y + clockHeight * 0.35}%`, width: `${MILKMAID_CLOCK.width * 0.95}%`, height: `${clockHeight * 0.72}%`, transform: "translate(20%, 13%) rotate(7deg)" }} />
-      <div className="absolute bg-contain bg-no-repeat" style={{ left: `${MILKMAID_CLOCK.x}%`, top: `${MILKMAID_CLOCK.y}%`, width: `${MILKMAID_CLOCK.width}%`, height: `${clockHeight}%`, backgroundImage: "url('/art/milkmaid-clock-face.png')" }} />
+      <div className="absolute bg-contain bg-no-repeat" style={{ left: `${MILKMAID_CLOCK.x}%`, top: `${MILKMAID_CLOCK.y}%`, width: `${MILKMAID_CLOCK.width}%`, height: `${clockHeight}%`, backgroundImage: `url('${milkmaidFace.src}')` }} />
       {now && <><MilkmaidHand angle={hours * 30 + minutes * 0.5} scale={0.22} opacity={0.96} /><MilkmaidHand angle={minutes * 6 + seconds * 0.1} scale={0.32} opacity={0.98} /><MilkmaidHand angle={seconds * 6} scale={0.36} opacity={0.68} /></>}
     </div>
   );

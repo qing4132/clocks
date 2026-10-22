@@ -162,6 +162,120 @@ three rulers. Find a surface or instrument that genuinely cannot be read until
 time has inscribed it, so the growing scale is the clock's body rather than an
 animation placed on top of one.
 
+## Phase Lock — 锁相钟（built, then parked）
+
+**Concept.** A #001 face whose hour and minute hands are sliced into radial
+segments revolving at slightly different integer-harmonic speeds
+($\theta_k = \theta_{\text{true}} + 360^\circ \cdot k \cdot \psi(u)$). For 58
+seconds of each minute the segments scatter across the dial like desynchronized
+metronomes, while only the outermost tip segments ($k = 0$) stay anchored to
+the true hour and minute bearings. At `:30` the even and odd harmonics snap
+into antipodal symmetry, and at `:00` all phase offsets vanish simultaneously
+so the scattered fragments lock into two complete, solid #001 hands.
+
+**What was tried.** Built as temporary Lab study #1548 (`PhaseLockClock.tsx` in
+`src/clocks/lab/round-1548/`). The hour hand was split into seven segments and
+the minute hand into eleven, accompanied by ten fine harmonic chorus needles and
+a Gaussian-windowed phase curve $\psi(u)$ that flattened the angular velocity
+around the minute rollover. Both implementations and Lab wiring were removed
+after review.
+
+**Why parked.** At `:00` the alignment is clean, but during the rest of the
+minute the spinning radial fragments read as a cluttered pinwheel inside #001
+rather than an inevitable way of experiencing the minute's cycle. The outer
+anchor tips kept the clock readable, yet they also exposed that the inner
+harmonic segments were performing a visual effect around an ordinary readout.
+
+**If revisited.** Do not slice #001's radial hands into spinning concentric
+dashes. Start from a geometry where phase dispersion and once-per-minute
+coherence are the only structure on the face, without needing a separate
+always-accurate tip layer or decorative chorus needles.
+
+## Pursuit — 追捕钟（built, then parked）
+
+**Concept.** Invert #034 Illusion: instead of the second hand warping the dial
+as it passes, the twelve numerals and sixty ticks actively flee around the rim
+along a time-varying wave, and the hour, minute, and second hands must
+continuously accelerate, decelerate, and bend along pursuit curves to keep
+their tips locked onto the escaping marks.
+
+**What was tried.** Built as temporary Lab study #1549 (`PursuitClock.tsx` in
+`src/clocks/lab/round-1548/`). A strictly monotonic circle diffeomorphism
+$W(\alpha, t)$ combined a three-minute full-turn drift, a 24-second breathing
+oscillation, and local repulsion waves ahead of the second and minute bearings.
+Numerals flinched inward near approaching hands and trailed short dashed wake
+arcs, while the three hands were drawn as quadratic pursuit curves whose tips
+landed on $W(\theta, t)$. Removed after review.
+
+**Why parked.** Because both the scale and the hand tips were transformed by
+the same circle mapping $W(\alpha, t)$, the result remained visually and
+structurally too close to #034 Illusion plus a global rotation and curved hand
+shafts. The wakes and radial flinches added graphic busyness without making the
+"chasing" relationship feel distinct enough from a warped dial.
+
+**If revisited.** Avoid applying a shared continuous angular warp to a full
+#001 face. If the idea of fleeing marks returns, let only the marks currently
+being approached break away discretely, or let the hands have a finite maximum
+pursuit speed so they genuinely lag and catch up rather than staying
+algebraically glued to the warped coordinate system.
+
+## Chart — 时间海图（built, then parked）
+
+**Concept.** Treat the 200×200 round frame not as a self-contained dial where
+hands spin in place, but as a fixed optical sight moving across a vast 24×60
+full-day nautical chart. The viewer reads the exact `HH:MM:SS` under a fixed
+red crosshair at the center while past minutes drift out of the frame and
+upcoming minutes and hour boundaries approach from the horizon.
+
+**What was tried.** Built as temporary Lab study #1550 (`ChartClock.tsx` in
+`src/clocks/lab/round-1548/`). Beneath an $r = 89$ compass bezel, a continuous
+helical grid scrolled at 54 SVG units per minute horizontally and 64 units per
+hour vertically, with a slight slope so each 60-minute lane joined the next
+hour seamlessly. The chart carried minute meridians, 10-second dashed
+sub-meridians, 1-second scale teeth, boxed `HH:MM` station beacons, and 1,440
+deterministic bathymetric contour cells. Removed after review.
+
+**Why parked.** Layering meridians, sub-meridians, contour ellipses, sounding
+numbers, station boxes, and a red reticle inside a 200-unit circle made the
+face look like a crowded instrument diagram rather than a quiet, strong clock.
+Because the station boxes already printed `HH:MM` text near the crosshair, the
+spatial chart became decorative scaffolding around a moving digital label.
+
+**If revisited.** Strip away the literal `HH:MM` text boxes, bathymetric
+contours, and dense instrument overlays. If a moving-field viewport clock is
+revisited, the scale geometry itself must carry the reading cleanly at a glance
+without relying on printed timestamp plaques sliding past the center.
+
+## Amnesia — 健忘钟（parked, brainstorm）
+
+**Concept.** The complete #001 dial, numerals, and black hour/minute hands sit
+in their normal places but are invisible on the paper by default. Only the red
+second hand is permanently visible; as it sweeps around the face, whatever lies
+underneath its current angle briefly develops in dark ink and fades back into
+the paper over 5–6 seconds. Because the hour and minute hands are rarely at the
+same angle, they never appear on screen at the same instant — the viewer must
+hold the first hand's position in short-term working memory until the second
+hand sweeps across the other.
+
+## Epicycle Scribe — 周转圆手写钟（parked, brainstorm）
+
+**Concept.** Bridge analog rotation and digital writing: a single chain of
+nested circles rotating at constant integer-multiple angular velocities (a
+discrete Fourier epicycle chain) whose terminal red pen traces out the current
+`HH:MM` as one continuous cursive stroke over the course of each 60-second
+minute. Each minute boundary recomputes the Fourier coefficients for the new
+`HH:MM` path so purely uniform circular motions conspire to write numerals on
+paper.
+
+## Proofreader — 红笔改稿钟（parked, brainstorm）
+
+**Concept.** An editorial counterpoint to #029 Typewriter. The face begins the
+quarter-hour with a clean serif `HH:MM` proof printed in black ink. As each new
+minute arrives, the old digits are not erased; instead, a red proofreader's pen
+strikes through the outdated digits, draws a caret or leader line into the
+margin, and writes the new minute in italic red ink over the course of the
+minute, accumulating a visible trail of revisions until the sheet is reset.
+
 ## Zulu — 祖鲁钟（built, then parked）
 
 **Concept.** A #011-style digital clock that refuses local time and shows only
